@@ -1,0 +1,48 @@
+liip_imagine:
+    resolvers:
+        default:
+            web_path:
+                web_root: '%kernel.project_dir%/public'
+                cache_prefix: 'media/cache'
+
+    loaders:
+        default:
+            filesystem:
+                data_root:
+                    - '%kernel.project_dir%/public'
+
+    driver: 'gd'
+    cache: default
+    data_loader: default
+    default_image: null
+
+    filter_sets:
+        # Thumbnail for admin and grid views
+        thumb:
+            quality: 85
+            filters:
+                thumbnail: { size: [300, 300], mode: outbound }
+
+        # Small - for mobile displays
+        sm:
+            quality: 90
+            filters:
+                relative_resize: { widen: 640 }
+
+        # Medium - for tablet displays
+        md:
+            quality: 90
+            filters:
+                relative_resize: { widen: 1024 }
+
+        # Large - for desktop displays
+        lg:
+            quality: 90
+            filters:
+                relative_resize: { widen: 1920 }
+
+        # Extra large - for high-res displays
+        xl:
+            quality: 92
+            filters:
+                relative_resize: { widen: 2560 }

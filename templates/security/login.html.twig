@@ -1,0 +1,202 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Admin Login - Sam Wilkinson{% endblock %}
+
+{% block body_class %}accent-signal{% endblock %}
+
+{% block body %}
+<main class="min-h-screen flex items-stretch bg-paper overflow-hidden">
+    {# Left panel - Restrained prairie lines aesthetic #}
+    <div class="hidden lg:flex lg:w-1/2 xl:w-[45%] relative bg-gradient-to-br from-walnut via-cognac to-walnut overflow-hidden">
+        {# Single dominant prairie line - FLW compression/release #}
+        <div class="absolute inset-0 opacity-[0.15]">
+            {# Primary horizon line at golden ratio #}
+            <div class="absolute top-[38.2%] left-0 right-0">
+                <div class="h-px bg-bone"></div>
+                <div class="h-16 bg-gradient-to-b from-bone/30 to-transparent"></div>
+            </div>
+
+            {# Secondary line - creating rhythm #}
+            <div class="absolute top-[61.8%] left-0 right-0">
+                <div class="h-px bg-bone/60"></div>
+                <div class="h-8 bg-gradient-to-b from-bone/15 to-transparent"></div>
+            </div>
+        </div>
+
+        {# Subtle wood grain texture #}
+        <div class="absolute inset-0 opacity-[0.06] mix-blend-overlay" style="background-image: url('data:image/svg+xml,%3Csvg width=\'800\' height=\'800\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'grain\'%3E%3CfeTurbulence baseFrequency=\'0.7,1.8\' numOctaves=\'3\' seed=\'42\'/%3E%3C/filter%3E%3Crect width=\'800\' height=\'800\' filter=\'url(%23grain)\' opacity=\'0.5\'/%3E%3C/svg%3E');"></div>
+
+        {# Content - generous negative space #}
+        <div class="relative z-10 flex flex-col justify-between p-12 xl:p-20 text-bone">
+            {# Top - Clean branding #}
+            <div>
+                <div class="text-xs font-mono uppercase tracking-[0.25em] text-bone/50 mb-6">Admin Portal</div>
+                <h1 class="font-display text-6xl xl:text-7xl font-medium leading-[0.95] mb-3">
+                    Sam<br/>Wilkinson
+                </h1>
+                <div class="w-16 h-px bg-mustard mt-8"></div>
+            </div>
+
+            {# Middle - Single restrained object (economy of motion) #}
+            <div class="flex items-center justify-center py-20">
+                {# Simple geometric lock - cockpit clarity #}
+                <div class="relative">
+                    <svg class="w-20 h-20 text-bone/20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="0.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Right panel - Precision form with negative space #}
+    <div class="flex-1 flex items-center justify-center p-8 lg:p-16 relative">
+        {# Minimal paper texture #}
+        <div class="absolute inset-0 opacity-[0.02] mix-blend-multiply pointer-events-none" style="background-image: url('data:image/svg+xml,%3Csvg width=\'400\' height=\'400\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noise\'%3E%3CfeTurbulence baseFrequency=\'1.5\' numOctaves=\'3\'/%3E%3C/filter%3E%3Crect width=\'400\' height=\'400\' filter=\'url(%23noise)\' opacity=\'0.5\'/%3E%3C/svg%3e');"></div>
+
+        {# Mobile-only header #}
+        <div class="absolute top-0 left-0 right-0 p-8 lg:hidden border-b border-stone/10">
+            <div class="text-xs font-mono uppercase tracking-[0.2em] text-stone mb-2">Admin Portal</div>
+            <h1 class="font-display text-4xl font-medium text-ink">Sam Wilkinson</h1>
+        </div>
+
+        <div class="relative w-full max-w-md mt-32 lg:mt-0">
+            {# Form container - architectural restraint #}
+            <div class="relative">
+                {# Elevated plane - dry shadow #}
+                <div class="absolute -inset-2 bg-stone/5 blur-xl rounded-2xl"></div>
+
+                {# Main panel - chamfered #}
+                <div class="relative bg-bone rounded-xl border border-stone/10 overflow-hidden" style="box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);">
+                    {# Hairline accent - single stroke #}
+                    <div class="h-px bg-gradient-to-r from-transparent via-signal to-transparent"></div>
+
+                    <div class="p-10 lg:p-12">
+                        {# Header - museum label clarity #}
+                        <div class="mb-10">
+                            <h2 class="font-display text-4xl lg:text-5xl font-medium text-ink leading-[1.1]">
+                                Welcome Back
+                            </h2>
+                        </div>
+
+                        {# Already logged in #}
+                        {% if app.user %}
+                            <div class="mb-8 p-5 bg-mustard/8 border border-mustard/20 rounded">
+                                <div class="flex items-start gap-3">
+                                    <div class="w-1 h-full bg-mustard rounded-full flex-shrink-0"></div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-sm text-graphite mb-3 leading-relaxed">
+                                            Authenticated as<br/>
+                                            <span class="font-mono text-ink font-medium">{{ app.user.userIdentifier }}</span>
+                                        </p>
+                                        <div class="flex gap-4 text-xs">
+                                            <a href="{{ path('admin') }}" class="text-signal hover:text-cognac transition-colors font-medium">
+                                                Enter Admin →
+                                            </a>
+                                            <span class="text-stone/40">or</span>
+                                            <a href="{{ path('app_logout') }}" class="text-graphite hover:text-ink transition-colors">
+                                                Logout
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        {# Error message #}
+                        {% if error %}
+                            <div class="mb-8 p-5 bg-signal/5 border border-signal/20 rounded" role="alert">
+                                <div class="flex items-start gap-3">
+                                    <div class="w-1 h-full bg-signal rounded-full flex-shrink-0"></div>
+                                    <p class="text-sm text-signal font-medium flex-1 leading-relaxed">
+                                        {{ error.messageKey|trans(error.messageData, 'security') }}
+                                    </p>
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        {# Login form - cockpit precision #}
+                        <form method="post" class="space-y-7">
+                            {# Email field #}
+                            <div>
+                                <label for="username" class="block text-[11px] font-mono uppercase tracking-[0.15em] text-cognac mb-3">
+                                    Email
+                                </label>
+                                <input
+                                    type="email"
+                                    value="{{ last_username }}"
+                                    name="_username"
+                                    id="username"
+                                    class="w-full px-4 py-3.5 bg-paper border border-stone/20 rounded text-ink placeholder-stone/40 focus:outline-none focus:border-signal/60 focus:ring-1 focus:ring-signal/20 transition-all"
+                                    autocomplete="email"
+                                    required
+                                    autofocus
+                                    placeholder="you@example.com"
+                                    style="font-size: 15px;"
+                                >
+                            </div>
+
+                            {# Password field #}
+                            <div>
+                                <label for="password" class="block text-[11px] font-mono uppercase tracking-[0.15em] text-cognac mb-3">
+                                    Password
+                                </label>
+                                <input
+                                    type="password"
+                                    name="_password"
+                                    id="password"
+                                    class="w-full px-4 py-3.5 bg-paper border border-stone/20 rounded text-ink placeholder-stone/40 focus:outline-none focus:border-signal/60 focus:ring-1 focus:ring-signal/20 transition-all"
+                                    autocomplete="current-password"
+                                    required
+                                    placeholder="••••••••••••"
+                                    style="font-size: 15px;"
+                                >
+                            </div>
+
+                            {# CSRF token #}
+                            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                            {# Submit - clean, no gloss #}
+                            <div class="pt-3">
+                                <button
+                                    type="submit"
+                                    class="w-full bg-signal hover:bg-cognac text-bone font-medium py-4 rounded transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-signal/40 focus:ring-offset-2 focus:ring-offset-bone"
+                                    style="letter-spacing: 0.03em;"
+                                >
+                                    Sign In
+                                </button>
+                            </div>
+                        </form>
+
+                        {# Footer - hairline separation #}
+                        <div class="mt-10 pt-8 border-t border-stone/10">
+                            <a href="{{ path('app_home') }}" class="text-xs text-stone hover:text-ink transition-colors font-mono uppercase tracking-[0.12em] flex items-center justify-center gap-2 group">
+                                <svg class="w-3 h-3 transform group-hover:-translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+                                </svg>
+                                Back to Site
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {# Dev credentials - restrained #}
+            {% if app.environment == 'dev' %}
+                <div class="mt-6 p-4 bg-mustard/5 border border-mustard/15 rounded">
+                    <div class="flex items-start gap-3">
+                        <div class="w-1 h-full bg-mustard/40 rounded-full flex-shrink-0 mt-1"></div>
+                        <div class="flex-1 text-xs text-walnut">
+                            <div class="font-medium mb-1.5 uppercase tracking-wide" style="font-size: 10px; letter-spacing: 0.1em;">Development Mode</div>
+                            <div class="font-mono text-[11px] leading-relaxed space-y-0.5 text-walnut/80">
+                                <div>admin@samwilkinson.local</div>
+                                <div>admin</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</main>
+{% endblock %}

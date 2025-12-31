@@ -1,0 +1,6 @@
+vich_uploader:
+    mappings:
+        photos:
+            # Production: Use Cloudflare R2 via Flysystem
+            upload_destination: oneup_flysystem.r2_filesystem
+            # R2 URLs will be handled by a custom URL generator for signed URLs

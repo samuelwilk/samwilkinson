@@ -1,0 +1,28 @@
+# See https://github.com/1up-lab/OneupFlysystemBundle/blob/master/doc/index.md
+oneup_flysystem:
+    adapters:
+        r2_adapter:
+            awss3v3:
+                client: Aws\S3\S3Client
+                bucket: '%env(R2_BUCKET)%'
+                prefix: 'photos/'
+                options:
+                    ACL: 'private'
+
+    filesystems:
+        r2_filesystem:
+            adapter: r2_adapter
+            visibility: private
+
+# AWS S3 Client Service Configuration
+services:
+    Aws\S3\S3Client:
+        arguments:
+            -
+                version: 'latest'
+                region: 'auto' # Cloudflare R2 uses 'auto' region
+                endpoint: '%env(R2_ENDPOINT)%'
+                credentials:
+                    key: '%env(R2_ACCESS_KEY_ID)%'
+                    secret: '%env(R2_SECRET_ACCESS_KEY)%'
+                use_path_style_endpoint: false
