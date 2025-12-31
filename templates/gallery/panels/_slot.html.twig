@@ -1,0 +1,25 @@
+{# Shared slot template for rendering a single photo within a panel #}
+<div class="absolute slot-photo"
+     style="left: {{ slot.x }}%; top: {{ slot.y }}%; width: {{ slot.w }}%; height: {{ slot.h }}%; transform: rotate({{ slot.rot }}deg); z-index: {{ slot.z }};">
+    <img
+        src="{{ slot.photo.url }}"
+        alt="{{ slot.photo.alt|default('') }}"
+        class="w-full h-full object-contain"
+        loading="lazy"
+        decoding="async"
+    />
+
+    {# Museum label with EXIF data #}
+    {% set hasExif = slot.photo.focalLength or slot.photo.aperture or slot.photo.shutterSpeed or slot.photo.iso or slot.photo.exposureCompensation %}
+    {% if hasExif %}
+        <div class="absolute bottom-4 left-4 bg-bone/90 backdrop-blur-sm px-3 py-2 rounded border-l-2 border-persimmon">
+            <div class="text-xs font-mono text-graphite whitespace-nowrap">
+                {% if slot.photo.focalLength %}{{ slot.photo.focalLength }}{% endif %}
+                {% if slot.photo.aperture %}{% if slot.photo.focalLength %} • {% endif %}{{ slot.photo.aperture }}{% endif %}
+                {% if slot.photo.shutterSpeed %}{% if slot.photo.focalLength or slot.photo.aperture %} • {% endif %}{{ slot.photo.shutterSpeed }}{% endif %}
+                {% if slot.photo.iso %}{% if slot.photo.focalLength or slot.photo.aperture or slot.photo.shutterSpeed %} • {% endif %}ISO {{ slot.photo.iso }}{% endif %}
+                {% if slot.photo.exposureCompensation %}{% if slot.photo.focalLength or slot.photo.aperture or slot.photo.shutterSpeed or slot.photo.iso %} • {% endif %}{{ slot.photo.exposureCompensation }}{% endif %}
+            </div>
+        </div>
+    {% endif %}
+</div>

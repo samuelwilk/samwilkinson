@@ -1,0 +1,6 @@
+{# Generic photo panel - renders all slots #}
+<div class="relative w-full h-full overflow-hidden">
+    {% for slot in panel.slots %}
+        {% include 'gallery/panels/_slot.html.twig' with { slot: slot } %}
+    {% endfor %}
+</div>
