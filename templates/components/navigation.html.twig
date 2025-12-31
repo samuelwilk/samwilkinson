@@ -1,0 +1,81 @@
+{# Site Navigation - Modernist Warm Minimalism #}
+<nav class="site-nav"
+     data-controller="nav-scroll mobile-menu"
+     data-nav-scroll-threshold-value="100"
+     role="navigation"
+     aria-label="Main navigation">
+
+  <div class="nav-container">
+    {# Logo / Site Title #}
+    <a href="{{ path('app_home') }}" class="site-logo">
+      Sam Wilkinson
+    </a>
+
+    {# Desktop Navigation Links #}
+    <div class="desktop-nav-links">
+      <a href="{{ path('app_build') }}"
+         class="nav-link {% if app.request.attributes.get('_route') starts with 'app_build' %}active{% endif %}">
+        Build
+      </a>
+      <a href="{{ path('app_stills') }}"
+         class="nav-link {% if app.request.attributes.get('_route') starts with 'app_stills' %}active{% endif %}">
+        Stills
+      </a>
+      <a href="{{ path('app_studio') }}"
+         class="nav-link {% if app.request.attributes.get('_route') starts with 'app_studio' %}active{% endif %}">
+        Studio
+      </a>
+    </div>
+
+    {# Mobile Hamburger Button #}
+    <button class="hamburger"
+            data-action="click->mobile-menu#toggle"
+            aria-label="Open menu"
+            aria-expanded="false"
+            data-mobile-menu-target="button">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </button>
+  </div>
+
+  {# Mobile Menu Overlay (dim background) #}
+  <div class="mobile-menu-overlay"
+       data-mobile-menu-target="overlay"
+       data-action="click->mobile-menu#close"
+       aria-hidden="true"></div>
+
+  {# Mobile Menu Panel #}
+  <div class="mobile-menu-panel"
+       data-mobile-menu-target="panel"
+       role="dialog"
+       aria-modal="true"
+       aria-label="Mobile navigation menu">
+
+    {# Close Button #}
+    <button class="mobile-close-btn"
+            data-action="click->mobile-menu#close"
+            aria-label="Close menu">
+      ×
+    </button>
+
+    {# Mobile Navigation Links #}
+    <div class="mobile-nav-links" data-mobile-menu-target="links">
+      <a href="{{ path('app_build') }}"
+         class="mobile-nav-link {% if app.request.attributes.get('_route') starts with 'app_build' %}active{% endif %}"
+         data-action="click->mobile-menu#close">
+        Build
+      </a>
+      <a href="{{ path('app_stills') }}"
+         class="mobile-nav-link {% if app.request.attributes.get('_route') starts with 'app_stills' %}active{% endif %}"
+         data-action="click->mobile-menu#close">
+        Stills
+      </a>
+      <a href="{{ path('app_studio') }}"
+         class="mobile-nav-link {% if app.request.attributes.get('_route') starts with 'app_studio' %}active{% endif %}"
+         data-action="click->mobile-menu#close">
+        Studio
+      </a>
+    </div>
+  </div>
+</nav>
