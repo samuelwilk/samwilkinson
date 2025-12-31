@@ -1,0 +1,74 @@
+{#
+  Responsive Image Component
+
+  Usage:
+    {% import 'components/image.html.twig' as img %}
+    {{ img.responsive(photo, 'Alt text', 'object-cover w-full h-64') }}
+
+  Parameters:
+    - photo: Photo entity with imageName property
+    - alt: Alt text for accessibility
+    - class: Additional CSS classes (optional)
+    - sizes: Custom sizes attribute (optional)
+    - eager: Disable lazy loading (optional, default false)
+#}
+
+{% macro responsive(photo, alt, class = '', sizes = '100vw', eager = false) %}
+  {% if photo and photo.imageName %}
+    <picture>
+      {# WebP sources for modern browsers - performance optimization #}
+      <source
+        type="image/webp"
+        srcset="{{ vich_uploader_asset(photo, 'imageFile') | imagine_filter('thumb') }} 400w,
+                {{ vich_uploader_asset(photo, 'imageFile') | imagine_filter('sm') }} 640w,
+                {{ vich_uploader_asset(photo, 'imageFile') | imagine_filter('md') }} 1024w,
+                {{ vich_uploader_asset(photo, 'imageFile') | imagine_filter('lg') }} 1280w,
+                {{ vich_uploader_asset(photo, 'imageFile') | imagine_filter('xl') }} 1920w"
+        sizes="{{ sizes }}" />
+
+      {# Fallback JPEG for compatibility #}
+      <img
+        src="{{ vich_uploader_asset(photo, 'imageFile') | imagine_filter('md') }}"
+        srcset="{{ vich_uploader_asset(photo, 'imageFile') | imagine_filter('thumb') }} 400w,
+                {{ vich_uploader_asset(photo, 'imageFile') | imagine_filter('sm') }} 640w,
+                {{ vich_uploader_asset(photo, 'imageFile') | imagine_filter('md') }} 1024w,
+                {{ vich_uploader_asset(photo, 'imageFile') | imagine_filter('lg') }} 1280w,
+                {{ vich_uploader_asset(photo, 'imageFile') | imagine_filter('xl') }} 1920w"
+        sizes="{{ sizes }}"
+        alt="{{ alt }}"
+        class="{{ class }}"
+        {% if not eager %}loading="lazy"{% endif %}
+        decoding="async" />
+    </picture>
+  {% endif %}
+{% endmacro %}
+
+{#
+  Simple image variant - single size, no responsive behavior
+  Useful for thumbnails and small UI elements
+#}
+{% macro simple(photo, alt, filter = 'thumb', class = '', eager = false) %}
+  {% if photo and photo.imageName %}
+    <img
+      src="{{ vich_uploader_asset(photo, 'imageFile') | imagine_filter(filter) }}"
+      alt="{{ alt }}"
+      class="{{ class }}"
+      {% if not eager %}loading="lazy"{% endif %}
+      decoding="async" />
+  {% endif %}
+{% endmacro %}
+
+{#
+  Background image variant - for hero sections and cards
+  Uses CSS background-image with object-fit fallback
+#}
+{% macro background(photo, filter = 'lg', class = '') %}
+  {% if photo and photo.imageName %}
+    <div
+      class="bg-cover bg-center {{ class }}"
+      style="background-image: url('{{ vich_uploader_asset(photo, 'imageFile') | imagine_filter(filter) }}');"
+      role="img"
+      aria-label="{{ photo.title ?? 'Image' }}">
+    </div>
+  {% endif %}
+{% endmacro %}

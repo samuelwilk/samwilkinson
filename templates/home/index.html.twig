@@ -1,0 +1,120 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Sam Wilkinson{% endblock %}
+
+{% block body %}
+<div class="min-h-screen bg-paper">
+    {# Hero Section - Compression/Release rhythm #}
+    <header class="max-w-7xl mx-auto px-8 pt-24 pb-32 md:pt-32 md:pb-40">
+        <div class="max-w-4xl">
+            {# Overline - Museum label style #}
+            <div class="museum-label text-stone mb-6 tracking-wider">
+                Portfolio 2025
+            </div>
+
+            {# Hero Title - Architectural typography #}
+            <h1 class="font-display text-6xl md:text-7xl lg:text-8xl font-normal text-ink mb-8 leading-none tracking-tight">
+                Sam Wilkinson
+            </h1>
+
+            {# Subhead - Generous leading #}
+            <p class="text-xl md:text-2xl text-graphite max-w-3xl leading-relaxed">
+                Developer & Photographer. Building with craft, precision, and quiet confidence.
+            </p>
+
+            {# Subtle accent line - architectural detail #}
+            <div class="mt-12 w-24 h-px bg-signal"></div>
+        </div>
+    </header>
+
+    {# Object Cards - Hero objects in space #}
+    <section class="max-w-7xl mx-auto px-8 pb-24">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+
+            {# Build Card - Signal Red accent #}
+            <article class="group object-card p-10 accent-signal relative overflow-hidden">
+                {# Subtle accent indicator #}
+                <div class="absolute top-0 right-0 w-1 h-16 bg-accent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+                <div class="flex items-center justify-between mb-6 pb-5 border-b border-stone/20">
+                    <h2 class="museum-label text-ink text-base">Build</h2>
+                    <span class="text-accent text-2xl transform group-hover:translate-x-1 transition-transform duration-200">→</span>
+                </div>
+
+                <p class="text-graphite leading-relaxed mb-8 min-h-[4.5rem]">
+                    Projects, skills, and case studies. See how constraints become solutions.
+                </p>
+
+                <div class="inset-panel px-5 py-4 mt-auto">
+                    <div class="flex justify-between items-baseline">
+                        <span class="museum-label text-stone text-xs">Status</span>
+                        <span class="museum-value text-graphite text-sm">Q1 2025</span>
+                    </div>
+                </div>
+            </article>
+
+            {# Stills Card - Teal accent #}
+            <article class="group object-card p-10 accent-teal relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-1 h-16 bg-accent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+                <div class="flex items-center justify-between mb-6 pb-5 border-b border-stone/20">
+                    <h2 class="museum-label text-ink text-base">Stills</h2>
+                    <span class="text-accent text-2xl transform group-hover:translate-x-1 transition-transform duration-200">→</span>
+                </div>
+
+                <p class="text-graphite leading-relaxed mb-8 min-h-[4.5rem]">
+                    Photography collections from around the world. Film peel interaction, EXIF details.
+                </p>
+
+                <div class="inset-panel px-5 py-4 mt-auto">
+                    <div class="flex justify-between items-baseline">
+                        <span class="museum-label text-stone text-xs">Status</span>
+                        <span class="museum-value text-graphite text-sm">Q1 2025</span>
+                    </div>
+                </div>
+            </article>
+
+            {# Studio Card - Mustard accent #}
+            <article class="group object-card p-10 accent-mustard relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-1 h-16 bg-accent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+                <div class="flex items-center justify-between mb-6 pb-5 border-b border-stone/20">
+                    <h2 class="museum-label text-ink text-base">Studio</h2>
+                    <span class="text-accent text-2xl transform group-hover:translate-x-1 transition-transform duration-200">→</span>
+                </div>
+
+                <p class="text-graphite leading-relaxed mb-8 min-h-[4.5rem]">
+                    Notes, essays, and observations. The workspace where ideas take shape.
+                </p>
+
+                <div class="inset-panel px-5 py-4 mt-auto">
+                    <div class="flex justify-between items-baseline">
+                        <span class="museum-label text-stone text-xs">Status</span>
+                        <span class="museum-value text-graphite text-sm">Q1 2025</span>
+                    </div>
+                </div>
+            </article>
+
+        </div>
+    </section>
+
+    {# Footer - Architectural restraint #}
+    <footer class="max-w-7xl mx-auto px-8 py-16 border-t border-stone/20">
+        <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="text-center md:text-left">
+                <p class="museum-label text-stone text-xs mb-2">
+                    Built with Symfony {{ constant('Symfony\\Component\\HttpKernel\\Kernel::VERSION') }} & Tailwind CSS
+                </p>
+                <p class="text-sm text-stone/70">
+                    Modernist warm minimalism • Crafted tech • Analog futurism
+                </p>
+            </div>
+
+            {# Year mark - Subtle architectural detail #}
+            <div class="museum-value text-stone text-sm tabular-nums">
+                {{ "now"|date("Y") }}
+            </div>
+        </div>
+    </footer>
+</div>
+{% endblock %}

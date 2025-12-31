@@ -1,0 +1,139 @@
+{#
+  Spec Placard Component - For Build Case Studies
+
+  Museum-style specification placard with hierarchical information display
+  Inspired by exhibition labels with precise typography and generous spacing
+#}
+
+{#
+  Full Spec Placard - Complete project specification
+
+  Usage:
+    {% import 'components/placard.html.twig' as placard %}
+    {{ placard.spec({
+      title: 'E-Commerce Platform Rebuild',
+      role: 'Lead Backend Developer',
+      constraints: ['Legacy data migration', 'Zero downtime deployment', 'PCI compliance'],
+      outcome: 'Migrated 2M+ records with 99.99% data integrity',
+      metrics: {
+        'Performance': '+340% faster checkout',
+        'Conversion': '+28% increase',
+        'Uptime': '99.97% SLA exceeded'
+      }
+    }) }}
+
+  Parameters:
+    - spec: Object with title, role, constraints, outcome, metrics
+    - class: Additional CSS classes (optional)
+#}
+{% macro spec(spec, class = '') %}
+  <div class="inset-panel p-8 md:p-10 {{ class }}">
+    {# Title - Project Name #}
+    {% if spec.title is defined %}
+      <h3 class="font-display text-2xl md:text-3xl text-ink mb-6 leading-tight">
+        {{ spec.title }}
+      </h3>
+    {% endif %}
+
+    {# Role - What was built #}
+    {% if spec.role is defined %}
+      <div class="mb-6 pb-6 hairline-dark border-b">
+        <div class="museum-label text-stone mb-2">Role</div>
+        <div class="text-lg text-graphite">{{ spec.role }}</div>
+      </div>
+    {% endif %}
+
+    {# Constraints - Technical challenges #}
+    {% if spec.constraints is defined and spec.constraints is iterable %}
+      <div class="mb-6 pb-6 hairline-dark border-b">
+        <div class="museum-label text-stone mb-3">Constraints</div>
+        <ul class="space-y-2">
+          {% for constraint in spec.constraints %}
+            <li class="text-graphite flex items-start">
+              <span class="text-accent mr-2">—</span>
+              <span>{{ constraint }}</span>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+
+    {# Outcome - What was achieved #}
+    {% if spec.outcome is defined %}
+      <div class="mb-6 pb-6 hairline-dark border-b">
+        <div class="museum-label text-stone mb-2">Outcome</div>
+        <div class="text-lg text-ink font-medium">{{ spec.outcome }}</div>
+      </div>
+    {% endif %}
+
+    {# Metrics - Quantifiable results #}
+    {% if spec.metrics is defined and spec.metrics is iterable %}
+      <div>
+        <div class="museum-label text-stone mb-4">Metrics</div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {% for label, value in spec.metrics %}
+            <div>
+              <div class="museum-value text-accent text-xl mb-1">{{ value }}</div>
+              <div class="text-sm text-stone">{{ label }}</div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+  </div>
+{% endmacro %}
+
+{#
+  Simple Info Placard - Minimal metadata display
+
+  Usage:
+    {{ placard.info({
+      'Technology': 'Symfony 7.4, PostgreSQL',
+      'Year': '2024',
+      'Status': 'Production'
+    }) }}
+
+  Parameters:
+    - data: Key-value pairs to display
+    - class: Additional CSS classes (optional)
+    - columns: Number of columns (default: 2)
+#}
+{% macro info(data, class = '', columns = 2) %}
+  <div class="inset-panel p-6 {{ class }}">
+    <div class="grid grid-cols-1 md:grid-cols-{{ columns }} gap-4">
+      {% for label, value in data %}
+        <div>
+          <div class="museum-label text-stone mb-1">{{ label }}</div>
+          <div class="museum-value text-ink">{{ value }}</div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endmacro %}
+
+{#
+  Timeline Placard - For project phases or milestones
+
+  Usage:
+    {{ placard.timeline([
+      {date: 'Jan 2024', event: 'Discovery & Architecture'},
+      {date: 'Feb 2024', event: 'Core Development'},
+      {date: 'Mar 2024', event: 'Launch'}
+    ]) }}
+
+  Parameters:
+    - items: Array of {date, event} objects
+    - class: Additional CSS classes (optional)
+#}
+{% macro timeline(items, class = '') %}
+  <div class="inset-panel p-6 {{ class }}">
+    <div class="space-y-4">
+      {% for item in items %}
+        <div class="flex items-baseline gap-4 pb-4 {% if not loop.last %}hairline-dark border-b{% endif %}">
+          <div class="museum-value text-accent min-w-[100px]">{{ item.date }}</div>
+          <div class="text-graphite">{{ item.event }}</div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endmacro %}

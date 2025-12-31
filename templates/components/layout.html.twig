@@ -1,0 +1,189 @@
+{#
+  Layout Components - Panels, Cards, and Containers
+
+  Reusable layout primitives following the modernist warm minimalism aesthetic
+  Based on the established design system with precise shadows and surfaces
+#}
+
+{#
+  Inset Panel - Recessed surface with subtle shadow
+
+  Usage:
+    {% import 'components/layout.html.twig' as layout %}
+    {% call layout.panel('p-8') %}
+      <h3>Panel Content</h3>
+      <p>Recessed surface treatment...</p>
+    {% endcall %}
+
+  Parameters:
+    - class: Additional CSS classes (optional)
+    - tag: HTML tag (default: 'div')
+#}
+{% macro panel(class = '', tag = 'div') %}
+  <{{ tag }} class="inset-panel {{ class }}">
+    {{ caller() }}
+  </{{ tag }}>
+{% endmacro %}
+
+{#
+  Object Card - Elevated card with hover state
+
+  Usage:
+    {% call layout.card('group cursor-pointer') %}
+      <img src="..." class="w-full h-48 object-cover" />
+      <div class="p-6">
+        <h3>Card Title</h3>
+      </div>
+    {% endcall %}
+
+  Parameters:
+    - class: Additional CSS classes (optional)
+    - href: If provided, wraps content in <a> tag (optional)
+    - tag: HTML tag when not using href (default: 'div')
+#}
+{% macro card(class = '', href = null, tag = 'div') %}
+  {% if href %}
+    <a href="{{ href }}" class="object-card block {{ class }}">
+      {{ caller() }}
+    </a>
+  {% else %}
+    <{{ tag }} class="object-card {{ class }}">
+      {{ caller() }}
+    </{{ tag }}>
+  {% endif %}
+{% endmacro %}
+
+{#
+  Grid Container - Responsive grid with consistent gaps
+
+  Usage:
+    {% call layout.grid('grid-cols-1 md:grid-cols-2 lg:grid-cols-3') %}
+      {# Grid items... #}
+    {% endcall %}
+
+  Parameters:
+    - columns: Tailwind grid column classes
+    - gap: Gap size (default: 'gap-8')
+    - class: Additional CSS classes (optional)
+#}
+{% macro grid(columns = 'grid-cols-1 md:grid-cols-2', gap = 'gap-8', class = '') %}
+  <div class="grid {{ columns }} {{ gap }} {{ class }}">
+    {{ caller() }}
+  </div>
+{% endmacro %}
+
+{#
+  Section Container - Max-width wrapper with vertical spacing
+
+  Usage:
+    {% call layout.section('py-24') %}
+      <h2>Section Title</h2>
+      {# Section content... #}
+    {% endcall %}
+
+  Parameters:
+    - class: Additional CSS classes (optional)
+    - maxWidth: Max-width class (default: 'max-w-7xl')
+    - padding: Horizontal padding (default: 'px-8')
+#}
+{% macro section(class = '', maxWidth = 'max-w-7xl', padding = 'px-8') %}
+  <section class="{{ maxWidth }} mx-auto {{ padding }} {{ class }}">
+    {{ caller() }}
+  </section>
+{% endmacro %}
+
+{#
+  Accent Line - Subtle decorative element
+
+  Usage:
+    {{ layout.accent_line('mt-8', 'w-24') }}
+    {{ layout.accent_line('my-12', 'w-full', 'bg-stone opacity-20') }}
+
+  Parameters:
+    - class: Additional CSS classes (optional)
+    - width: Width class (default: 'w-24')
+    - color: Color/background class (default: 'bg-accent')
+#}
+{% macro accent_line(class = '', width = 'w-24', color = 'bg-accent') %}
+  <div class="h-px {{ width }} {{ color }} {{ class }}"></div>
+{% endmacro %}
+
+{#
+  Split Layout - Two-column responsive layout
+
+  Usage:
+    {% import 'components/layout.html.twig' as layout %}
+    {{ layout.split_start('gap-12') }}
+      <div>Left column</div>
+      <div>Right column</div>
+    {{ layout.split_end() }}
+
+  Parameters:
+    - class: Additional CSS classes
+    - ratio: Column ratio (default: '1:1', options: '1:1', '2:1', '1:2')
+#}
+{% macro split_start(class = '', ratio = '1:1') %}
+  {% set gridClass = ratio == '2:1' ? 'md:grid-cols-[2fr_1fr]' : (ratio == '1:2' ? 'md:grid-cols-[1fr_2fr]' : 'md:grid-cols-2') %}
+  <div class="grid grid-cols-1 {{ gridClass }} {{ class }}">
+{% endmacro %}
+
+{% macro split_end() %}
+  </div>
+{% endmacro %}
+
+{#
+  Prose Container - Optimized for reading long-form content
+
+  Usage:
+    {% call layout.prose() %}
+      {{ markdown|raw }}
+    {% endcall %}
+
+  Parameters:
+    - class: Additional CSS classes (optional)
+#}
+{% macro prose(class = '') %}
+  <div class="prose prose-lg max-w-3xl {{ class }}">
+    {{ caller() }}
+  </div>
+{% endmacro %}
+
+{#
+  Stack - Vertical spacing utility
+
+  Usage:
+    {% call layout.stack('space-y-8') %}
+      <div>Item 1</div>
+      <div>Item 2</div>
+      <div>Item 3</div>
+    {% endcall %}
+
+  Parameters:
+    - spacing: Tailwind space-y class (default: 'space-y-6')
+    - class: Additional CSS classes (optional)
+#}
+{% macro stack(spacing = 'space-y-6', class = '') %}
+  <div class="{{ spacing }} {{ class }}">
+    {{ caller() }}
+  </div>
+{% endmacro %}
+
+{#
+  Cluster - Horizontal/wrapping layout for tags, chips, metadata
+
+  Usage:
+    {% call layout.cluster('gap-3') %}
+      <span>Tag 1</span>
+      <span>Tag 2</span>
+      <span>Tag 3</span>
+    {% endcall %}
+
+  Parameters:
+    - gap: Gap class (default: 'gap-2')
+    - class: Additional CSS classes (optional)
+#}
+{% macro cluster(gap = 'gap-2', class = '') %}
+  <div class="flex flex-wrap items-center {{ gap }} {{ class }}">
+    {{ caller() }}
+  </div>
+{% endmacro %}

@@ -1,0 +1,131 @@
+{#
+  Typography Components - Museum Quality
+
+  Museum-inspired typography macros for labels, values, and metadata
+  Based on modernist warm minimalism design system
+#}
+
+{#
+  Museum Label - For category names, field labels, metadata keys
+
+  Usage:
+    {% import 'components/typography.html.twig' as type %}
+    {{ type.label('Portfolio 2025') }}
+    {{ type.label('Role', 'text-stone mb-2') }}
+
+  Parameters:
+    - text: Label text
+    - class: Additional CSS classes (optional)
+    - tag: HTML tag (default: 'div')
+#}
+{% macro label(text, class = '', tag = 'div') %}
+  <{{ tag }} class="museum-label {{ class }}">
+    {{ text }}
+  </{{ tag }}>
+{% endmacro %}
+
+{#
+  Museum Value - For data values, metrics, counts
+
+  Usage:
+    {{ type.value('2,847') }}
+    {{ type.value('94.3%', 'text-signal') }}
+
+  Parameters:
+    - text: Value text
+    - class: Additional CSS classes (optional)
+    - tag: HTML tag (default: 'span')
+#}
+{% macro value(text, class = '', tag = 'span') %}
+  <{{ tag }} class="museum-value {{ class }}">
+    {{ text }}
+  </{{ tag }}>
+{% endmacro %}
+
+{#
+  Label-Value Pair - Museum placard style
+
+  Usage:
+    {{ type.pair('Location', 'San Francisco, CA') }}
+    {{ type.pair('Year', '2024', 'mb-4') }}
+
+  Parameters:
+    - label: Label text
+    - value: Value text
+    - class: Additional CSS classes for wrapper (optional)
+    - layout: 'vertical' or 'horizontal' (default: 'vertical')
+#}
+{% macro pair(label, value, class = '', layout = 'vertical') %}
+  {% if layout == 'horizontal' %}
+    <div class="flex items-baseline gap-3 {{ class }}">
+      <div class="museum-label text-stone">{{ label }}</div>
+      <div class="museum-value flex-1">{{ value }}</div>
+    </div>
+  {% else %}
+    <div class="{{ class }}">
+      <div class="museum-label text-stone mb-2">{{ label }}</div>
+      <div class="museum-value text-ink">{{ value }}</div>
+    </div>
+  {% endif %}
+{% endmacro %}
+
+{#
+  Metadata Grid - For displaying multiple label-value pairs
+
+  Usage:
+    {% import 'components/typography.html.twig' as type %}
+    {% call type.metadata_grid('grid-cols-2 gap-6') %}
+      {{ type.pair('Client', 'Acme Corp') }}
+      {{ type.pair('Year', '2024') }}
+      {{ type.pair('Role', 'Lead Developer') }}
+      {{ type.pair('Duration', '6 months') }}
+    {% endcall %}
+
+  Parameters:
+    - class: Additional CSS classes for grid (optional)
+#}
+{% macro metadata_grid(class = 'grid-cols-1 md:grid-cols-2 gap-6') %}
+  <div class="grid {{ class }}">
+    {{ _self.caller() }}
+  </div>
+{% endmacro %}
+
+{#
+  Overline - Small label above headings
+
+  Usage:
+    {{ type.overline('Case Study') }}
+    {{ type.overline('Featured Project', 'text-accent mb-4') }}
+
+  Parameters:
+    - text: Overline text
+    - class: Additional CSS classes (optional)
+#}
+{% macro overline(text, class = '') %}
+  <div class="museum-label text-stone tracking-wider {{ class }}">
+    {{ text }}
+  </div>
+{% endmacro %}
+
+{#
+  Metric Display - Large number with label
+
+  Usage:
+    {{ type.metric('127', 'Projects Shipped') }}
+    {{ type.metric('99.9%', 'Uptime', 'text-accent') }}
+
+  Parameters:
+    - value: Metric value
+    - label: Metric label
+    - class: Additional CSS classes (optional)
+#}
+{% macro metric(value, label, class = '') %}
+  <div class="text-center {{ class }}">
+    <div class="font-mono text-4xl md:text-5xl font-semibold tabular-nums mb-2">
+      {{ value }}
+    </div>
+    <div class="museum-label text-stone">
+      {{ label }}
+    </div>
+  </div>
+{% endmacro %}

@@ -1,0 +1,320 @@
+{% extends 'base.html.twig' %}
+
+{% import 'components/typography.html.twig' as type %}
+{% import 'components/placard.html.twig' as placard %}
+
+{% block title %}Build - Sam Wilkinson{% endblock %}
+
+{% block description %}Portfolio of development projects and case studies.{% endblock %}
+
+{% block body_class %}accent-teal{% endblock %}
+
+{% block body %}
+
+{# Hero Section - Compression/Release Rhythm #}
+<section class="max-w-7xl mx-auto px-8 py-32 md:py-48">
+    <div class="max-w-5xl">
+        {# Overline with restrained spacing #}
+        {{ type.overline('Developer Portfolio', 'mb-8 text-stone') }}
+
+        {# Hero Title - Prairie Horizontal Emphasis #}
+        <h1 class="font-display text-6xl md:text-7xl lg:text-8xl font-normal text-ink mb-12 leading-[0.95] tracking-tighter">
+            Build
+        </h1>
+
+        {# Intro - Generous Line Height #}
+        <p class="text-xl md:text-2xl text-graphite max-w-3xl leading-[1.7] mb-20">
+            Full-stack developer specializing in Symfony, modern PHP, and pragmatic architecture.
+            Building systems that scale with clarity and precision.
+        </p>
+
+        {# Metrics - Museum Label Precision #}
+        <div class="grid grid-cols-3 gap-12 max-w-2xl mb-20">
+            {{ type.metric('12+', 'Years', '') }}
+            {{ type.metric('47', 'Projects', '') }}
+            {{ type.metric('99.8%', 'Uptime', '') }}
+        </div>
+
+        {# Prairie Line - Architectural Separator #}
+        <div class="relative">
+            <div class="h-px bg-stone opacity-30 w-full"></div>
+            <div class="h-px bg-accent w-32 absolute top-0 left-0"></div>
+        </div>
+    </div>
+</section>
+
+{# Release Space - Generous Negative Space #}
+<div class="h-24 md:h-32"></div>
+
+{# Featured Projects - Museum Exhibition Layout #}
+<section class="max-w-7xl mx-auto px-8 pb-32">
+    {# Section Header - Museum Typography #}
+    <div class="mb-16">
+        {{ type.overline('Selected Work', 'mb-4 text-stone') }}
+        <h2 class="font-display text-3xl md:text-4xl text-ink tracking-tight">
+            Case Studies
+        </h2>
+    </div>
+
+    {% set mockProjects = [
+        {
+            title: 'Healthcare Portal Rebuild',
+            role: 'Lead Backend Developer',
+            year: '2024',
+            summary: 'Complete rebuild of patient portal serving 2M+ users with HIPAA compliance and real-time chat.',
+            tech: 'Symfony 7, PostgreSQL, Redis',
+            constraints: '99.99% uptime SLA',
+            slug: 'healthcare-portal'
+        },
+        {
+            title: 'E-Commerce Platform',
+            role: 'Technical Architect',
+            year: '2023',
+            summary: 'High-performance multi-tenant e-commerce platform with headless CMS and API-first architecture.',
+            tech: 'Symfony 6, Elasticsearch, RabbitMQ',
+            constraints: 'Sub-200ms p95 latency',
+            slug: 'ecommerce-platform'
+        },
+        {
+            title: 'Financial Dashboard',
+            role: 'Full-Stack Developer',
+            year: '2024',
+            summary: 'Real-time financial analytics dashboard with custom charting and data export capabilities.',
+            tech: 'Symfony 7, MariaDB, Chart.js',
+            constraints: 'Real-time data sync',
+            slug: 'financial-dashboard'
+        },
+        {
+            title: 'DevOps Automation Suite',
+            role: 'Platform Engineer',
+            year: '2023',
+            summary: 'Internal tooling for CI/CD pipelines, infrastructure provisioning, and deployment automation.',
+            tech: 'Symfony, Docker, Terraform',
+            constraints: 'Multi-cloud deployment',
+            slug: 'devops-suite'
+        }
+    ] %}
+
+    {# Object Grid - Generous Gap for Breathing Room #}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16">
+        {% for project in mockProjects %}
+            {# Museum Object Card #}
+            <article class="object-card group relative bg-bone overflow-hidden transition-all duration-300 ease-out hover:-translate-y-1">
+                {# Visual Header - Restrained Gradient #}
+                <div class="h-56 bg-gradient-to-br from-putty via-bone to-oatmeal relative overflow-hidden border-b border-stone/20">
+                    {# Subtle Texture Overlay #}
+                    <div class="absolute inset-0 opacity-[0.02]" style="background-image: url('data:image/svg+xml,%3Csvg width=\'200\' height=\'200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noise\'%3E%3CfeTurbulence baseFrequency=\'0.9\' /%3E%3C/filter%3E%3Crect width=\'200\' height=\'200\' filter=\'url(%23noise)\' opacity=\'0.3\' /%3E%3C/svg%3E');"></div>
+
+                    {# Year Badge - Architectural Detail #}
+                    <div class="absolute top-6 right-6">
+                        <span class="museum-value bg-paper/90 backdrop-blur-sm px-4 py-2 rounded text-graphite text-sm border border-stone/20">
+                            {{ project.year }}
+                        </span>
+                    </div>
+
+                    {# Minimal Accent Mark - Economy of Motion #}
+                    <div class="absolute bottom-0 left-0 w-24 h-px bg-accent"></div>
+                </div>
+
+                {# Content Area - Museum Label Hierarchy #}
+                <div class="p-8">
+                    {# Overline #}
+                    {{ type.overline('Case Study', 'mb-4 text-stone') }}
+
+                    {# Title - Restrained Hover Color Change #}
+                    <h3 class="font-display text-2xl md:text-3xl text-ink mb-4 leading-tight tracking-tight group-hover:text-graphite transition-colors duration-200">
+                        {{ project.title }}
+                    </h3>
+
+                    {# Role Label #}
+                    <div class="museum-label text-stone mb-6 tracking-wide">
+                        {{ project.role }}
+                    </div>
+
+                    {# Summary - Generous Leading #}
+                    <p class="text-graphite leading-[1.7] mb-8">
+                        {{ project.summary }}
+                    </p>
+                </div>
+
+                {# Inset Caption Rail - Museum Placard Aesthetic #}
+                <div class="border-t border-stone/20 bg-putty/40 px-8 py-6">
+                    {# Tech Stack Row #}
+                    <div class="flex items-baseline justify-between gap-4 mb-3">
+                        <span class="museum-label text-stone text-xs tracking-wider">Stack</span>
+                        <span class="museum-value text-sm text-graphite text-right">{{ project.tech }}</span>
+                    </div>
+
+                    {# Constraints Row - Hairline Separator #}
+                    <div class="flex items-baseline justify-between gap-4 pt-3 border-t border-stone/10">
+                        <span class="museum-label text-stone text-xs tracking-wider">Constraint</span>
+                        <span class="museum-value text-sm text-ink text-right">{{ project.constraints }}</span>
+                    </div>
+                </div>
+
+                {# Interaction Layer #}
+                <a href="{{ path('app_build_show', {slug: project.slug}) }}"
+                   class="absolute inset-0 z-10"
+                   aria-label="View {{ project.title }} case study">
+                </a>
+            </article>
+        {% endfor %}
+    </div>
+</section>
+
+{# Prairie Line Transition - Horizontal Emphasis #}
+<div class="max-w-7xl mx-auto px-8 py-16">
+    <div class="relative">
+        <div class="h-px bg-stone opacity-20 w-full"></div>
+    </div>
+</div>
+
+{# Skills & Expertise - Terraced Layout #}
+<section class="bg-gradient-to-b from-paper via-daylight to-paper">
+    <div class="max-w-7xl mx-auto px-8 py-32">
+        {# Section Header #}
+        <div class="mb-16">
+            {{ type.overline('Technical Foundation', 'mb-4 text-stone') }}
+            <h2 class="font-display text-3xl md:text-4xl text-ink tracking-tight">
+                Skills & Expertise
+            </h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-12">
+            {# Skills Panels - Inset Surface Treatment #}
+            <div class="space-y-8">
+                {# Backend #}
+                <div class="inset-panel p-8 bg-bone border border-stone/10">
+                    {{ type.label('Backend Development', 'mb-6') }}
+                    <div class="flex flex-wrap gap-3">
+                        <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">PHP 8.3</span>
+                        <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">Symfony 7</span>
+                        <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">Doctrine ORM</span>
+                        <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">API Platform</span>
+                        <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">Messenger</span>
+                    </div>
+                </div>
+
+                {# Database #}
+                <div class="inset-panel p-8 bg-bone border border-stone/10">
+                    {{ type.label('Database & Caching', 'mb-6') }}
+                    <div class="flex flex-wrap gap-3">
+                        <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">PostgreSQL</span>
+                        <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">MySQL</span>
+                        <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">Redis</span>
+                        <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">Elasticsearch</span>
+                    </div>
+                </div>
+
+                {# DevOps #}
+                <div class="inset-panel p-8 bg-bone border border-stone/10">
+                    {{ type.label('DevOps & Infrastructure', 'mb-6') }}
+                    <div class="flex flex-wrap gap-3">
+                        <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">Docker</span>
+                        <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">Kubernetes</span>
+                        <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">Terraform</span>
+                        <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">GitHub Actions</span>
+                        <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">AWS</span>
+                    </div>
+                </div>
+
+                {# Frontend #}
+                <div class="inset-panel p-8 bg-bone border border-stone/10">
+                    {{ type.label('Frontend', 'mb-6') }}
+                    <div class="flex flex-wrap gap-3">
+                        <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">JavaScript/TypeScript</span>
+                        <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">Stimulus</span>
+                        <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">Tailwind CSS</span>
+                        <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">Twig</span>
+                    </div>
+                </div>
+            </div>
+
+            {# Now Widget - Architectural Sidebar #}
+            <div>
+                <div class="inset-panel p-8 bg-bone border border-stone/10 sticky top-24">
+                    {{ type.label('Now', 'mb-6') }}
+
+                    {# Status Indicator - Restrained Pulse #}
+                    <div class="flex items-center gap-3 mb-8">
+                        <div class="w-2.5 h-2.5 bg-accent rounded-full animate-pulse"></div>
+                        <span class="text-sm text-graphite">Available for work</span>
+                    </div>
+
+                    {# Hairline Divider #}
+                    <div class="h-px w-full bg-stone opacity-20 mb-8"></div>
+
+                    {# Metadata Pairs - Museum Label Style #}
+                    <div class="space-y-6">
+                        {{ type.pair('Current Focus', 'Symfony 7 & AI Integration', '', 'vertical') }}
+                        {{ type.pair('Location', 'Remote / US-Based', '', 'vertical') }}
+                        {{ type.pair('Rate', 'Contract & Full-Time', '', 'vertical') }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# Prairie Line Transition #}
+<div class="max-w-7xl mx-auto px-8 py-16">
+    <div class="relative">
+        <div class="h-px bg-stone opacity-20 w-full"></div>
+    </div>
+</div>
+
+{# Experience Timeline - Compressed Section #}
+<section class="max-w-7xl mx-auto px-8 pb-32">
+    <div class="mb-16">
+        {{ type.overline('Professional History', 'mb-4 text-stone') }}
+        <h2 class="font-display text-3xl md:text-4xl text-ink tracking-tight">
+            Experience
+        </h2>
+    </div>
+
+    {% set mockExperience = [
+        {date: '2022 – Present', event: 'Senior Backend Developer @ Healthcare Tech Startup'},
+        {date: '2019 – 2022', event: 'Full-Stack Developer @ E-Commerce Platform'},
+        {date: '2017 – 2019', event: 'PHP Developer @ Digital Agency'},
+        {date: '2015 – 2017', event: 'Junior Developer @ SaaS Company'},
+        {date: '2013 – 2015', event: 'Freelance Web Developer'}
+    ] %}
+
+    {{ placard.timeline(mockExperience, 'max-w-4xl') }}
+</section>
+
+{# Release Space Before CTA #}
+<div class="h-24 md:h-32"></div>
+
+{# Call to Action - Centered Moment #}
+<section class="max-w-7xl mx-auto px-8 pb-48">
+    <div class="max-w-2xl mx-auto text-center">
+        {# Prairie Line Above - Centered #}
+        <div class="relative mb-12">
+            <div class="h-px bg-stone opacity-30 w-full"></div>
+            <div class="h-px bg-accent w-32 absolute top-0 left-1/2 -translate-x-1/2"></div>
+        </div>
+
+        <h2 class="font-display text-4xl md:text-5xl text-ink mb-8 tracking-tight leading-tight">
+            Let's Build<br>Something
+        </h2>
+
+        <p class="text-lg text-graphite mb-12 leading-[1.7] max-w-lg mx-auto">
+            Available for contract work, consulting, and full-time opportunities.
+        </p>
+
+        {# CTA Buttons - Restrained Style #}
+        <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <a href="mailto:hello@samwilkinson.com"
+               class="px-10 py-4 bg-accent text-paper rounded-lg font-medium transition-all duration-200 hover:bg-walnut hover:shadow-md hover:-translate-y-0.5">
+                Get in Touch
+            </a>
+            <a href="{{ path('app_studio') }}"
+               class="px-10 py-4 bg-bone text-ink rounded-lg font-medium border border-stone/20 transition-all duration-200 hover:bg-putty hover:border-stone/30">
+                Read the Studio
+            </a>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

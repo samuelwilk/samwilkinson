@@ -1,0 +1,454 @@
+{% extends 'base.html.twig' %}
+
+{% import 'components/typography.html.twig' as type %}
+{% import 'components/placard.html.twig' as placard %}
+
+{% block title %}{{ slug }} - Build - Sam Wilkinson{% endblock %}
+
+{% block description %}Case study for {{ slug }}.{% endblock %}
+
+{% block body_class %}accent-teal{% endblock %}
+
+{% block body %}
+
+{# Mock Project Data - TODO: Replace with real Project entity #}
+{% set project = {
+    title: 'Healthcare Portal Rebuild',
+    role: 'Lead Backend Developer',
+    year: '2024',
+    client: 'MediCare Technologies',
+    duration: '8 months',
+    team: '5 developers',
+    summary: 'Complete rebuild of a patient portal serving 2M+ active users, replacing a legacy PHP 5 monolith with a modern Symfony architecture.',
+    constraints: [
+        '99.99% uptime SLA with zero-downtime deployment',
+        'HIPAA compliance and audit logging',
+        'Support legacy data migration from 10+ years of records',
+        'Maintain API compatibility with 15 third-party integrations'
+    ],
+    outcome: 'Successfully migrated 2.1M patient records with 99.97% data integrity, achieved sub-200ms average response times, and passed SOC 2 Type II audit.',
+    metrics: {
+        'Performance': '+340% faster page loads',
+        'Reliability': '99.99% uptime achieved',
+        'Cost': '-42% infrastructure costs',
+        'Security': 'Zero data breaches'
+    },
+    tech: ['Symfony 7.4', 'PostgreSQL 16', 'Redis', 'Docker', 'AWS ECS', 'Terraform']
+} %}
+
+{# Hero Section - Compression #}
+<section class="max-w-7xl mx-auto px-8 pt-24 pb-16">
+    {# Breadcrumb Navigation #}
+    <nav class="mb-12">
+        <a href="{{ path('app_build') }}" class="text-sm text-stone hover:text-accent transition-colors">
+            ← Back to Portfolio
+        </a>
+    </nav>
+
+    <div class="max-w-5xl">
+        {# Overline #}
+        {{ type.overline('Case Study', 'mb-6 text-stone') }}
+
+        {# Project Title #}
+        <h1 class="font-display text-5xl md:text-6xl lg:text-7xl font-normal text-ink mb-8 leading-[0.95] tracking-tight">
+            {{ project.title }}
+        </h1>
+
+        {# Summary #}
+        <p class="text-xl md:text-2xl text-graphite leading-[1.7] max-w-3xl mb-12">
+            {{ project.summary }}
+        </p>
+
+        {# Metadata Grid #}
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
+            {{ type.pair('Role', project.role, '', 'vertical') }}
+            {{ type.pair('Year', project.year, '', 'vertical') }}
+            {{ type.pair('Client', project.client, '', 'vertical') }}
+            {{ type.pair('Duration', project.duration, '', 'vertical') }}
+        </div>
+
+        {# Prairie Line #}
+        <div class="relative">
+            <div class="h-px bg-stone opacity-30 w-full"></div>
+            <div class="h-px bg-accent w-32 absolute top-0 left-0"></div>
+        </div>
+    </div>
+</section>
+
+{# Release Space #}
+<div class="h-24"></div>
+
+{# Spec Placard - Museum Object Label #}
+<section class="max-w-7xl mx-auto px-8 pb-32">
+    <div class="max-w-5xl">
+        {{ type.overline('Project Specification', 'mb-8 text-stone') }}
+
+        {{ placard.spec({
+            title: project.title,
+            role: project.role,
+            constraints: project.constraints,
+            outcome: project.outcome,
+            metrics: project.metrics
+        }, 'max-w-4xl') }}
+    </div>
+</section>
+
+{# Prairie Line Transition #}
+<div class="max-w-7xl mx-auto px-8 py-16">
+    <div class="relative">
+        <div class="h-px bg-stone opacity-20 w-full"></div>
+    </div>
+</div>
+
+{# Problem & Context Section #}
+<section class="bg-gradient-to-b from-paper via-daylight to-paper">
+    <div class="max-w-7xl mx-auto px-8 py-32">
+        <div class="max-w-4xl">
+            {# Section Header #}
+            <div class="mb-12">
+                {{ type.overline('Background', 'mb-4 text-stone') }}
+                <h2 class="font-display text-3xl md:text-4xl text-ink tracking-tight mb-8">
+                    Problem & Context
+                </h2>
+            </div>
+
+            {# Markdown Content #}
+            <div class="prose prose-lg">
+                {% set problemContent %}
+## The Challenge
+
+MediCare Technologies operated a critical patient portal built on legacy PHP 5.6 infrastructure that had become increasingly difficult to maintain and scale. The system served over 2 million active users across 47 states.
+
+### Key Pain Points
+
+The existing system faced several critical challenges:
+
+- **Performance Degradation**: Average page load times exceeded 4 seconds during peak hours
+- **Security Vulnerabilities**: Running on end-of-life PHP version with known CVEs
+- **Developer Velocity**: Adding new features took 3-4x longer than industry standard
+- **Infrastructure Costs**: Overprovisioned servers to handle peak load inefficiently
+
+### Business Impact
+
+These technical limitations directly impacted business outcomes:
+
+> "Our patient satisfaction scores dropped 18% over two years, with slow portal performance cited as the primary complaint." — Chief Product Officer
+
+The legacy system also prevented integration with modern healthcare APIs and limited the company's ability to expand into new markets.
+                {% endset %}
+
+                {{ problemContent|markdown|raw }}
+            </div>
+        </div>
+    </div>
+</section>
+
+{# Prairie Line Transition #}
+<div class="max-w-7xl mx-auto px-8 py-16">
+    <div class="relative">
+        <div class="h-px bg-stone opacity-20 w-full"></div>
+    </div>
+</div>
+
+{# Technical Decisions Section #}
+<section class="max-w-7xl mx-auto px-8 py-32">
+    <div class="max-w-4xl">
+        {# Section Header #}
+        <div class="mb-12">
+            {{ type.overline('Architecture', 'mb-4 text-stone') }}
+            <h2 class="font-display text-3xl md:text-4xl text-ink tracking-tight mb-8">
+                Technical Decisions
+            </h2>
+        </div>
+
+        {# Markdown Content with Code Examples #}
+        <div class="prose prose-lg mb-16">
+            {% set decisionsContent %}
+## Technology Stack
+
+After evaluating several options, we selected **Symfony 7.4** as our application framework for several strategic reasons:
+
+1. **Mature ecosystem** with proven healthcare implementations
+2. **Strong typing** with PHP 8.3 for improved reliability
+3. **Built-in security** features (CSRF, XSS protection)
+4. **Excellent ORM** (Doctrine) for complex data relationships
+
+### Infrastructure Modernization
+
+We containerized the entire application using Docker and deployed to **AWS ECS Fargate**:
+
+```yaml
+# docker-compose.yml (development)
+services:
+  app:
+    build: .
+    environment:
+      APP_ENV: prod
+      DATABASE_URL: postgresql://user:pass@db:5432/healthcare
+    depends_on:
+      - db
+      - redis
+
+  db:
+    image: postgres:16-alpine
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+```
+
+### API Design
+
+We implemented a RESTful API following JSON:API specification:
+
+```php
+namespace App\Controller\Api;
+
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Routing\Attribute\Route;
+
+#[Route('/api/patients', name: 'api_patients_')]
+class PatientApiController extends AbstractController
+{
+    #[Route('/{id}/appointments', name: 'appointments', methods: ['GET'])]
+    public function getAppointments(
+        string $id,
+        AppointmentRepository $repo
+    ): JsonResponse {
+        $appointments = $repo->findByPatientId($id);
+
+        return $this->json([
+            'data' => $appointments,
+            'meta' => [
+                'count' => count($appointments),
+                'generated_at' => new \DateTimeImmutable()
+            ]
+        ]);
+    }
+}
+```
+            {% endset %}
+
+            {{ decisionsContent|markdown|raw }}
+        </div>
+
+        {# Tech Stack Panel #}
+        <div class="inset-panel p-8 bg-bone border border-stone/10">
+            {{ type.label('Technology Stack', 'mb-6') }}
+            <div class="flex flex-wrap gap-3">
+                {% for tech in project.tech %}
+                    <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">
+                        {{ tech }}
+                    </span>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+
+{# Prairie Line Transition #}
+<div class="max-w-7xl mx-auto px-8 py-16">
+    <div class="relative">
+        <div class="h-px bg-stone opacity-20 w-full"></div>
+    </div>
+</div>
+
+{# Solution Architecture Section #}
+<section class="bg-gradient-to-b from-paper via-daylight to-paper">
+    <div class="max-w-7xl mx-auto px-8 py-32">
+        <div class="max-w-4xl">
+            {# Section Header #}
+            <div class="mb-12">
+                {{ type.overline('Implementation', 'mb-4 text-stone') }}
+                <h2 class="font-display text-3xl md:text-4xl text-ink tracking-tight mb-8">
+                    Solution Architecture
+                </h2>
+            </div>
+
+            {# Markdown Content #}
+            <div class="prose prose-lg">
+                {% set solutionContent %}
+## System Architecture
+
+The new system follows a **modular monolith** pattern, organized into bounded contexts:
+
+### Core Modules
+
+1. **Patient Management** - User accounts, profiles, medical history
+2. **Appointments** - Scheduling, reminders, telehealth integration
+3. **Prescriptions** - Medication tracking, refill requests
+4. **Billing** - Insurance claims, payment processing
+5. **Messaging** - Secure provider-patient communication
+
+### Data Migration Strategy
+
+We developed a zero-downtime migration approach using **dual-write pattern**:
+
+```php
+namespace App\Service;
+
+class DualWritePatientRepository
+{
+    public function __construct(
+        private LegacyPatientRepository $legacy,
+        private PatientRepository $new,
+        private FeatureFlagService $flags
+    ) {}
+
+    public function save(Patient $patient): void
+    {
+        // Always write to legacy system
+        $this->legacy->save($patient);
+
+        // Conditionally write to new system
+        if ($this->flags->isEnabled('new_db_writes')) {
+            $this->new->save($patient);
+        }
+    }
+
+    public function find(string $id): ?Patient
+    {
+        // Read from new system if available
+        if ($this->flags->isEnabled('new_db_reads')) {
+            return $this->new->find($id);
+        }
+
+        return $this->legacy->find($id);
+    }
+}
+```
+
+This approach allowed us to:
+- Migrate data in batches over 6 weeks
+- Validate data integrity before cutover
+- Roll back immediately if issues arose
+- Achieve **zero patient-facing downtime**
+
+### Performance Optimizations
+
+We implemented several key optimizations:
+
+- **Query optimization** with Doctrine second-level cache
+- **HTTP caching** using Symfony HTTP Cache
+- **Background jobs** via Symfony Messenger + Redis
+- **CDN integration** for static assets (CloudFront)
+
+Results: Reduced p95 response time from 4.2s to 180ms.
+                {% endset %}
+
+                {{ solutionContent|markdown|raw }}
+            </div>
+        </div>
+    </div>
+</section>
+
+{# Prairie Line Transition #}
+<div class="max-w-7xl mx-auto px-8 py-16">
+    <div class="relative">
+        <div class="h-px bg-stone opacity-20 w-full"></div>
+    </div>
+</div>
+
+{# Outcomes & Metrics Section #}
+<section class="max-w-7xl mx-auto px-8 py-32">
+    <div class="max-w-5xl">
+        {# Section Header #}
+        <div class="mb-12">
+            {{ type.overline('Results', 'mb-4 text-stone') }}
+            <h2 class="font-display text-3xl md:text-4xl text-ink tracking-tight mb-8">
+                Outcomes & Impact
+            </h2>
+        </div>
+
+        {# Metrics Grid - Hero Numbers #}
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-12 mb-20">
+            {% for label, value in project.metrics %}
+                {{ type.metric(value, label, '') }}
+            {% endfor %}
+        </div>
+
+        {# Additional Outcomes #}
+        <div class="prose prose-lg mb-16">
+            {% set outcomesContent %}
+## Quantifiable Results
+
+The rebuild delivered measurable improvements across all key metrics:
+
+### Technical Performance
+- **Page Load Time**: 4.2s → 0.18s average (96% improvement)
+- **API Response Time**: 850ms → 120ms p95 (86% improvement)
+- **Error Rate**: 2.3% → 0.04% (98% reduction)
+- **Uptime**: 99.2% → 99.99% (SLA exceeded)
+
+### Business Impact
+- **Patient Satisfaction**: +24% increase in NPS score
+- **Support Tickets**: -67% reduction in performance complaints
+- **Feature Velocity**: 3.5x faster time-to-market for new features
+- **Infrastructure Costs**: -42% monthly AWS spend
+
+### Security & Compliance
+- Passed **SOC 2 Type II** audit with zero findings
+- Achieved **HIPAA** compliance certification
+- Zero security incidents post-launch
+- 100% audit trail coverage for protected health information
+
+## Lessons Learned
+
+> "The dual-write migration pattern was crucial. It gave us confidence to move fast while maintaining data integrity." — Lead Engineer
+
+Key takeaways from the project:
+
+1. **Incremental migration** beats big-bang rewrites
+2. **Feature flags** enable safe, gradual rollouts
+3. **Observability** (logging, metrics, tracing) is non-negotiable
+4. **Automated testing** prevents regressions during migration
+            {% endset %}
+
+            {{ outcomesContent|markdown|raw }}
+        </div>
+
+        {# Timeline Panel #}
+        <div class="mb-16">
+            {{ type.overline('Project Timeline', 'mb-6 text-stone') }}
+            {{ placard.timeline([
+                {date: 'Month 1-2', event: 'Discovery, architecture design, infrastructure setup'},
+                {date: 'Month 3-4', event: 'Core module development, API implementation'},
+                {date: 'Month 5-6', event: 'Data migration preparation, dual-write deployment'},
+                {date: 'Month 7', event: 'Gradual traffic migration, monitoring, optimization'},
+                {date: 'Month 8', event: 'Legacy system decommission, final cutover'}
+            ], 'max-w-3xl') }}
+        </div>
+
+        {# Prairie Line - Final Separator #}
+        <div class="relative mb-12">
+            <div class="h-px bg-stone opacity-30 w-full"></div>
+            <div class="h-px bg-accent w-32 absolute top-0 left-0"></div>
+        </div>
+
+        {# Project Info Panel #}
+        <div class="inset-panel p-8 bg-bone border border-stone/10">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                {{ type.pair('Team Size', project.team, '', 'vertical') }}
+                {{ type.pair('Duration', project.duration, '', 'vertical') }}
+                {{ type.pair('Status', 'Launched & Stable', '', 'vertical') }}
+            </div>
+        </div>
+    </div>
+</section>
+
+{# Release Space #}
+<div class="h-32"></div>
+
+{# Navigation Footer #}
+<section class="max-w-7xl mx-auto px-8 pb-48">
+    <div class="text-center">
+        <a href="{{ path('app_build') }}"
+           class="inline-flex items-center gap-2 px-8 py-4 bg-bone text-ink rounded-lg font-medium border border-stone/20 transition-all duration-200 hover:bg-putty hover:border-stone/30">
+            ← Back to Portfolio
+        </a>
+    </div>
+</section>
+
+{% endblock %}
