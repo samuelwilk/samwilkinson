@@ -1,0 +1,50 @@
+/* EasyAdmin Icon Size Fixes */
+
+/* Fix icon wrapper and its contents */
+.icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+/* Fix SVG icons inside icon wrappers */
+.icon svg {
+    width: 1.25rem !important;
+    height: 1.25rem !important;
+    max-width: 1.25rem !important;
+    max-height: 1.25rem !important;
+}
+
+/* Fix Font Awesome icons */
+.icon i {
+    font-size: 1rem;
+    width: 1.25rem;
+    height: 1.25rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Specific fix for menu icons */
+.menu-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+.menu-icon svg {
+    width: 1.25rem !important;
+    height: 1.25rem !important;
+}
+
+/* Fix submenu toggle icons */
+.submenu-toggle-icon {
+    width: 1rem;
+    height: 1rem;
+}
+
+.submenu-toggle-icon svg {
+    width: 1rem !important;
+    height: 1rem !important;
+}

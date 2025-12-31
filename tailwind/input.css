@@ -1,0 +1,129 @@
+@import "tailwindcss";
+
+@theme {
+  /* Custom colors for the design system */
+  --color-paper: #FFFCF6;
+  --color-daylight: #FAF7F0;
+  --color-bone: #F5F1E8;
+  --color-putty: #E8E2D5;
+  --color-oatmeal: #D4CFC0;
+  --color-stone: #9D9786;
+  --color-graphite: #3A3A3A;
+  --color-gunmetal: #2C2C2E;
+  --color-ink: #1A1A1A;
+  --color-walnut: #5C4033;
+  --color-cognac: #9A6324;
+  --color-signal: #D32F2F;
+  --color-teal: #00897B;
+  --color-mustard: #F9A825;
+  --color-persimmon: #E64A19;
+
+  /* Custom font families */
+  --font-family-sans: Inter, system-ui, sans-serif;
+  --font-family-display: Sohne, Inter, sans-serif;
+  --font-family-mono: 'JetBrains Mono', Consolas, monospace;
+
+  /* Custom shadows */
+  --shadow-inset-panel: inset 0 2px 4px rgb(0 0 0 / 0.06);
+  --shadow-elevated-base: 0 1px 3px rgb(0 0 0 / 0.08), 0 1px 2px rgb(0 0 0 / 0.06);
+  --shadow-elevated-hover: 0 4px 6px rgb(0 0 0 / 0.08), 0 2px 4px rgb(0 0 0 / 0.06);
+}
+
+@layer base {
+  /* Set default font features for tabular numerals */
+  .font-mono {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Respect reduced motion preferences */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  /* Object Card component */
+  .object-card {
+    background-color: var(--color-bone);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-elevated-base);
+    transition: all 200ms;
+  }
+
+  .object-card:hover {
+    box-shadow: var(--shadow-elevated-hover);
+    transform: translateY(-2px);
+  }
+
+  /* Museum label typography */
+  .museum-label {
+    font-family: var(--font-family-display);
+    font-size: var(--text-sm);
+    letter-spacing: var(--tracking-tight);
+    text-transform: uppercase;
+  }
+
+  .museum-value {
+    font-family: var(--font-family-mono);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Inset panel */
+  .inset-panel {
+    background-color: var(--color-putty);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-inset-panel);
+  }
+
+  /* Hairline borders */
+  .hairline {
+    border: 1px solid color-mix(in srgb, var(--color-stone) 40%, transparent);
+  }
+
+  .hairline-dark {
+    border: 1px solid color-mix(in srgb, var(--color-graphite) 20%, transparent);
+  }
+}
+
+@layer utilities {
+  /* Accent color utility - set per page */
+  .accent-signal {
+    --accent: var(--color-signal);
+  }
+
+  .accent-teal {
+    --accent: var(--color-teal);
+  }
+
+  .accent-mustard {
+    --accent: var(--color-mustard);
+  }
+
+  .accent-persimmon {
+    --accent: var(--color-persimmon);
+  }
+
+  /* Use the accent color */
+  .text-accent {
+    color: var(--accent);
+  }
+
+  .bg-accent {
+    background-color: var(--accent);
+  }
+
+  .border-accent {
+    border-color: var(--accent);
+  }
+
+  /* Tabular numerals utility */
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+}

@@ -1,0 +1,880 @@
+@import "tailwindcss";
+
+/* Web Fonts */
+/* Inter - Sans Serif (UI and body text) */
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/inter/InterVariable.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/inter/InterVariable-Italic.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Sohne - Serif (headings and emphasis)
+   Note: Sohne is a commercial font. See public/fonts/sohne/README.md */
+/*
+@font-face {
+  font-family: 'Sohne';
+  src: url('/fonts/sohne/Sohne-Buch.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Sohne';
+  src: url('/fonts/sohne/Sohne-Halbfett.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+*/
+
+/* JetBrains Mono - Monospace (code and metrics) */
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('/fonts/jetbrains-mono/JetBrainsMono-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  font-feature-settings: 'tnum' 1; /* Tabular numerals */
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('/fonts/jetbrains-mono/JetBrainsMono-Italic.woff2') format('woff2');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+  font-feature-settings: 'tnum' 1;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('/fonts/jetbrains-mono/JetBrainsMono-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+  font-feature-settings: 'tnum' 1;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('/fonts/jetbrains-mono/JetBrainsMono-SemiBold.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+  font-feature-settings: 'tnum' 1;
+}
+
+@theme {
+  /* Custom colors for the design system */
+  --color-paper: #FFFCF6;
+  --color-daylight: #FAF7F0;
+  --color-bone: #F5F1E8;
+  --color-putty: #E8E2D5;
+  --color-oatmeal: #D4CFC0;
+  --color-stone: #9D9786;
+  --color-graphite: #3A3A3A;
+  --color-gunmetal: #2C2C2E;
+  --color-ink: #1A1A1A;
+  --color-walnut: #5C4033;
+  --color-cognac: #9A6324;
+  --color-signal: #D32F2F;
+  --color-teal: #00897B;
+  --color-mustard: #F9A825;
+  --color-persimmon: #E64A19;
+
+  /* Custom font families */
+  --font-family-sans: Inter, system-ui, sans-serif;
+  --font-family-display: Sohne, Inter, sans-serif;
+  --font-family-mono: 'JetBrains Mono', Consolas, monospace;
+
+  /* Custom shadows */
+  --shadow-inset-panel: inset 0 2px 4px rgb(0 0 0 / 0.06);
+  --shadow-elevated-base: 0 1px 3px rgb(0 0 0 / 0.08), 0 1px 2px rgb(0 0 0 / 0.06);
+  --shadow-elevated-hover: 0 4px 6px rgb(0 0 0 / 0.08), 0 2px 4px rgb(0 0 0 / 0.06);
+}
+
+@layer base {
+  body {
+    background-color: var(--color-paper);
+    font-family: var(--font-family-sans);
+    color: var(--color-ink);
+  }
+
+  /* Set default font features for tabular numerals */
+  .font-mono {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Respect reduced motion preferences */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  /* Object Card component */
+  .object-card {
+    background-color: var(--color-bone);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-elevated-base);
+    transition: all 200ms;
+  }
+
+  .object-card:hover {
+    box-shadow: var(--shadow-elevated-hover);
+    transform: translateY(-2px);
+  }
+
+  /* Museum label typography */
+  .museum-label {
+    font-family: var(--font-family-display);
+    font-size: var(--text-sm);
+    letter-spacing: var(--tracking-tight);
+    text-transform: uppercase;
+  }
+
+  .museum-value {
+    font-family: var(--font-family-mono);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Inset panel */
+  .inset-panel {
+    background-color: var(--color-putty);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-inset-panel);
+  }
+
+  /* Hairline borders */
+  .hairline {
+    border: 1px solid color-mix(in srgb, var(--color-stone) 40%, transparent);
+  }
+
+  .hairline-dark {
+    border: 1px solid color-mix(in srgb, var(--color-graphite) 20%, transparent);
+  }
+
+  /* ========================================
+   * Site Navigation - Modernist Precision
+   * ======================================== */
+
+  /* Navigation Container */
+  .site-nav {
+    position: sticky;
+    top: 0;
+    background-color: var(--color-paper);
+    border-bottom: 1px solid color-mix(in srgb, var(--color-stone) 20%, transparent);
+    z-index: 100;
+    transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Smart hide/show behavior */
+  .site-nav.nav-hidden {
+    transform: translateY(-100%);
+  }
+
+  .site-nav.nav-visible {
+    transform: translateY(0);
+  }
+
+  /* Inner container with max-width */
+  .nav-container {
+    max-width: 90rem;
+    margin: 0 auto;
+    padding: 1.5rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  /* Logo / Site Title */
+  .site-logo {
+    font-family: var(--font-family-display);
+    font-size: 1.125rem;
+    letter-spacing: -0.02em;
+    color: var(--color-ink);
+    text-decoration: none;
+    transition: color 200ms;
+  }
+
+  .site-logo:hover {
+    color: var(--accent, var(--color-signal));
+  }
+
+  /* Desktop Navigation Links */
+  .desktop-nav-links {
+    display: flex;
+    gap: 3rem;
+    align-items: center;
+  }
+
+  .nav-link {
+    font-family: var(--font-family-display);
+    font-size: 0.875rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--color-graphite);
+    text-decoration: none;
+    position: relative;
+    padding: 0.5rem 0;
+    transition: color 200ms;
+  }
+
+  .nav-link:hover {
+    color: var(--accent, var(--color-signal));
+  }
+
+  /* Underline animation - scaleX from right to left */
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--accent, var(--color-signal));
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .nav-link:hover::after,
+  .nav-link.active::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+
+  /* Mobile Hamburger - Hidden on Desktop */
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    background: none;
+    border: none;
+    padding: 12px;
+    cursor: pointer;
+    z-index: 101;
+  }
+
+  .hamburger span {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: var(--color-ink);
+    transition: all 200ms;
+  }
+
+  /* Mobile Menu Panel - Architectural Slide from Right */
+  .mobile-menu-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 80%;
+    max-width: 320px;
+    height: 100vh;
+    background: var(--color-bone);
+    transform: translateX(100%);
+    transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1000;
+    padding: 2rem;
+    box-shadow: -4px 0 24px rgba(0, 0, 0, 0.08);
+    overflow-y: auto;
+  }
+
+  .mobile-menu-panel.open {
+    transform: translateX(0);
+  }
+
+  /* Close Button - Signal Red */
+  .mobile-close-btn {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    line-height: 1;
+    color: var(--accent, var(--color-signal));
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: transform 200ms;
+  }
+
+  .mobile-close-btn:hover {
+    transform: scale(1.1);
+  }
+
+  /* Mobile Navigation Links Container */
+  .mobile-nav-links {
+    margin-top: 5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  /* Individual Mobile Nav Link */
+  .mobile-nav-link {
+    font-family: var(--font-family-display);
+    font-size: 1.25rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--color-ink);
+    text-decoration: none;
+    padding: 1rem 0 1rem 1rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--color-stone) 20%, transparent);
+    position: relative;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    transition: color 200ms;
+  }
+
+  .mobile-nav-link:hover {
+    color: var(--accent, var(--color-signal));
+  }
+
+  /* Active indicator - left border */
+  .mobile-nav-link::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--accent, var(--color-signal));
+    transform: scaleY(0);
+    transform-origin: bottom;
+    transition: transform 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .mobile-nav-link:active::before,
+  .mobile-nav-link.active::before {
+    transform: scaleY(1);
+    transform-origin: top;
+  }
+
+  /* Mobile Menu Overlay - Dim Visible Content */
+  .mobile-menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(26, 26, 26, 0.4);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 300ms;
+    z-index: 999;
+  }
+
+  .mobile-menu-overlay.open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* ========================================
+   * Responsive Breakpoints
+   * ======================================== */
+
+  @media (max-width: 768px) {
+    /* Hide desktop navigation */
+    .desktop-nav-links {
+      display: none;
+    }
+
+    /* Show hamburger */
+    .hamburger {
+      display: flex;
+    }
+
+    /* Reduce nav container padding on mobile */
+    .nav-container {
+      padding: 1.25rem 1.5rem;
+    }
+  }
+
+  /* Tablet adjustments */
+  @media (min-width: 769px) and (max-width: 1024px) {
+    .desktop-nav-links {
+      gap: 2rem;
+    }
+
+    .nav-link {
+      font-size: 0.8125rem;
+    }
+  }
+
+  /* ========================================
+   * Markdown Content Styles
+   * ======================================== */
+
+  /* Prose Container - optimized for long-form reading */
+  .prose {
+    max-width: 42rem;
+    line-height: 1.7;
+    color: var(--color-graphite);
+  }
+
+  .prose-lg {
+    font-size: 1.125rem;
+  }
+
+  /* Headings */
+  .prose h1,
+  .prose h2,
+  .prose h3,
+  .prose h4,
+  .prose h5,
+  .prose h6 {
+    font-family: var(--font-family-display);
+    color: var(--color-ink);
+    font-weight: 500;
+    line-height: 1.25;
+    margin-top: 2em;
+    margin-bottom: 0.75em;
+  }
+
+  .prose h1 {
+    font-size: 2.5rem;
+    margin-top: 0;
+  }
+
+  .prose h2 {
+    font-size: 2rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--color-stone) 20%, transparent);
+  }
+
+  .prose h3 {
+    font-size: 1.5rem;
+  }
+
+  .prose h4 {
+    font-size: 1.25rem;
+  }
+
+  /* Paragraphs and spacing */
+  .prose p {
+    margin-top: 1.25em;
+    margin-bottom: 1.25em;
+  }
+
+  .prose p:first-child {
+    margin-top: 0;
+  }
+
+  /* Links */
+  .prose a {
+    color: var(--accent, var(--color-signal));
+    text-decoration: none;
+    position: relative;
+    transition: color 200ms;
+  }
+
+  .prose a:hover {
+    color: var(--color-ink);
+  }
+
+  .prose a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--accent, var(--color-signal));
+    transform: scaleX(1);
+    transition: transform 200ms;
+  }
+
+  .prose a:hover::after {
+    transform: scaleX(0);
+  }
+
+  /* Lists */
+  .prose ul,
+  .prose ol {
+    margin-top: 1.25em;
+    margin-bottom: 1.25em;
+    padding-left: 1.5em;
+  }
+
+  .prose li {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+  }
+
+  .prose ul > li::marker {
+    color: var(--accent, var(--color-signal));
+  }
+
+  .prose ol > li::marker {
+    color: var(--color-stone);
+    font-family: var(--font-family-mono);
+  }
+
+  /* Blockquotes */
+  .prose blockquote {
+    margin-top: 2em;
+    margin-bottom: 2em;
+    padding-left: 1.5rem;
+    border-left: 3px solid var(--color-signal);
+    font-style: italic;
+    color: var(--color-graphite);
+  }
+
+  .prose blockquote p {
+    margin-top: 0.75em;
+    margin-bottom: 0.75em;
+  }
+
+  /* Inline code */
+  .prose code:not(.hljs code) {
+    background-color: var(--color-bone);
+    color: var(--color-graphite);
+    font-family: var(--font-family-mono);
+    font-size: 0.875em;
+    padding: 0.2em 0.4em;
+    border-radius: 0.25rem;
+    font-weight: 500;
+  }
+
+  /* Code blocks - Warm Dark Theme */
+  .prose .code-block {
+    margin-top: 2em;
+    margin-bottom: 2em;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    background: var(--color-walnut);
+    box-shadow: var(--shadow-elevated-base);
+  }
+
+  .prose .code-block-header {
+    background: color-mix(in srgb, var(--color-walnut) 85%, black);
+    padding: 0.75rem 1.25rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--color-bone) 10%, transparent);
+  }
+
+  .prose .code-block-lang {
+    font-family: var(--font-family-mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-stone);
+  }
+
+  .prose .code-block pre {
+    margin: 0;
+    padding: 1.5rem 1.25rem;
+    overflow-x: auto;
+    background: transparent;
+  }
+
+  .prose .code-block code {
+    font-family: var(--font-family-mono);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: var(--color-bone);
+    background: transparent;
+    padding: 0;
+    border-radius: 0;
+  }
+
+  /* Syntax highlighting - Warm theme */
+  .prose .hljs {
+    background: var(--color-walnut);
+    color: var(--color-bone);
+  }
+
+  .prose .hljs-keyword,
+  .prose .hljs-selector-tag,
+  .prose .hljs-built_in {
+    color: var(--color-signal);
+  }
+
+  .prose .hljs-string,
+  .prose .hljs-attr,
+  .prose .hljs-attribute {
+    color: var(--color-mustard);
+  }
+
+  .prose .hljs-comment,
+  .prose .hljs-quote {
+    color: var(--color-stone);
+    font-style: italic;
+  }
+
+  .prose .hljs-function,
+  .prose .hljs-title,
+  .prose .hljs-class {
+    color: var(--color-teal);
+  }
+
+  .prose .hljs-number,
+  .prose .hljs-literal {
+    color: var(--color-persimmon);
+  }
+
+  .prose .hljs-variable,
+  .prose .hljs-params {
+    color: var(--color-bone);
+  }
+
+  /* Horizontal rules */
+  .prose hr {
+    margin-top: 3em;
+    margin-bottom: 3em;
+    border: 0;
+    border-top: 1px solid color-mix(in srgb, var(--color-stone) 30%, transparent);
+  }
+
+  /* Tables */
+  .prose table {
+    width: 100%;
+    margin-top: 2em;
+    margin-bottom: 2em;
+    border-collapse: collapse;
+  }
+
+  .prose thead {
+    border-bottom: 2px solid var(--color-stone);
+  }
+
+  .prose thead th {
+    font-family: var(--font-family-display);
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-stone);
+    padding: 0.75rem 1rem;
+    text-align: left;
+    font-weight: 500;
+  }
+
+  .prose tbody tr {
+    border-bottom: 1px solid color-mix(in srgb, var(--color-stone) 20%, transparent);
+  }
+
+  .prose tbody td {
+    padding: 0.75rem 1rem;
+    font-family: var(--font-family-mono);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Images */
+  .prose img {
+    max-width: 100%;
+    height: auto;
+    margin-top: 2em;
+    margin-bottom: 2em;
+    border-radius: 0.5rem;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .prose {
+      font-size: 1rem;
+    }
+
+    .prose h1 {
+      font-size: 2rem;
+    }
+
+    .prose h2 {
+      font-size: 1.75rem;
+    }
+
+    .prose h3 {
+      font-size: 1.5rem;
+    }
+
+    .prose .code-block code {
+      font-size: 0.875rem;
+    }
+  }
+
+  /* ========================================
+   * Studio Prose Variant - Workspace Journal Aesthetic
+   * ======================================== */
+
+  /* Studio: Warmer, more personal than museum prose */
+  .prose-studio {
+    line-height: 1.8; /* More generous than default */
+  }
+
+  /* Studio headings - less formal, warmer */
+  .prose-studio h2 {
+    border-bottom: 2px solid color-mix(in srgb, var(--color-mustard) 30%, transparent);
+    padding-bottom: 0.75rem;
+  }
+
+  .prose-studio h3 {
+    color: var(--color-graphite);
+    font-weight: 500;
+  }
+
+  /* Studio links - mustard accent with ink-like underline */
+  .prose-studio a {
+    color: var(--color-walnut);
+    text-decoration: none;
+    position: relative;
+    border-bottom: 1px solid color-mix(in srgb, var(--color-mustard) 40%, transparent);
+    transition: all 200ms;
+  }
+
+  .prose-studio a:hover {
+    color: var(--color-ink);
+    border-bottom-color: var(--color-mustard);
+  }
+
+  .prose-studio a::after {
+    display: none; /* Remove animated underline for simpler ink-like border */
+  }
+
+  /* Studio lists - mustard bullets and numerals */
+  .prose-studio ul > li::marker {
+    color: var(--color-mustard);
+    font-size: 1.2em;
+  }
+
+  .prose-studio ol > li::marker {
+    color: var(--color-cognac);
+    font-family: var(--font-family-mono);
+    font-weight: 500;
+  }
+
+  /* Studio blockquotes - ink-bleed left border */
+  .prose-studio blockquote {
+    border-left: 3px solid var(--color-mustard);
+    padding-left: 2rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    background: linear-gradient(
+      to right,
+      color-mix(in srgb, var(--color-mustard) 5%, transparent),
+      transparent 3rem
+    );
+    font-style: italic;
+    color: var(--color-graphite);
+    margin-left: -0.5rem;
+  }
+
+  .prose-studio blockquote p:first-child {
+    margin-top: 0;
+  }
+
+  .prose-studio blockquote p:last-child {
+    margin-bottom: 0;
+  }
+
+  /* Studio inline code - warm highlight */
+  .prose-studio code:not(.hljs code) {
+    background-color: color-mix(in srgb, var(--color-mustard) 15%, var(--color-bone));
+    color: var(--color-walnut);
+    border: 1px solid color-mix(in srgb, var(--color-mustard) 20%, transparent);
+  }
+
+  /* Studio code blocks - keep warm dark theme but add mustard accent */
+  .prose-studio .code-block {
+    border: 1px solid color-mix(in srgb, var(--color-mustard) 20%, transparent);
+  }
+
+  .prose-studio .code-block-header {
+    background: color-mix(in srgb, var(--color-walnut) 90%, black);
+    border-bottom: 1px solid color-mix(in srgb, var(--color-mustard) 15%, transparent);
+  }
+
+  .prose-studio .code-block-lang {
+    color: var(--color-mustard);
+    letter-spacing: 0.1em;
+  }
+
+  /* Studio horizontal rules - softer, ink-like */
+  .prose-studio hr {
+    border-top: 1px solid color-mix(in srgb, var(--color-stone) 30%, transparent);
+    margin-top: 3em;
+    margin-bottom: 3em;
+  }
+
+  /* Studio strong/bold - cognac instead of pure ink */
+  .prose-studio strong {
+    color: var(--color-walnut);
+    font-weight: 600;
+  }
+
+  /* Studio emphasis - warmer italic */
+  .prose-studio em {
+    color: var(--color-graphite);
+  }
+
+  /* Studio tables - mustard accents */
+  .prose-studio thead {
+    border-bottom: 2px solid var(--color-mustard);
+  }
+
+  .prose-studio thead th {
+    color: var(--color-walnut);
+  }
+
+  .prose-studio tbody tr:hover {
+    background: color-mix(in srgb, var(--color-mustard) 5%, transparent);
+  }
+}
+
+@layer utilities {
+  /* Accent color utility - set per page */
+  .accent-signal {
+    --accent: var(--color-signal);
+  }
+
+  .accent-teal {
+    --accent: var(--color-teal);
+  }
+
+  .accent-mustard {
+    --accent: var(--color-mustard);
+  }
+
+  .accent-persimmon {
+    --accent: var(--color-persimmon);
+  }
+
+  /* Use the accent color */
+  .text-accent {
+    color: var(--accent);
+  }
+
+  .bg-accent {
+    background-color: var(--accent);
+  }
+
+  .border-accent {
+    border-color: var(--accent);
+  }
+
+  /* Tabular numerals utility */
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+}
