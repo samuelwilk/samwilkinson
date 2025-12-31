@@ -1,0 +1,112 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Studio - Sam Wilkinson{% endblock %}
+
+{% block description %}Writing about development, photography, and creative process.{% endblock %}
+
+{% block body_class %}accent-mustard{% endblock %}
+
+{% block body %}
+
+{# Hero Section with Papers Scene - Workspace Journal #}
+<section class="relative w-full overflow-hidden">
+    {# Subtle paper grain overlay #}
+    <div class="fixed inset-0 opacity-[0.015] mix-blend-multiply pointer-events-none" style="background-image: url('data:image/svg+xml,%3Csvg width=\\'400\\' height=\\'400\\' xmlns=\\'http://www.w3.org/2000/svg\\'%3E%3Cfilter id=\\'grain\\'%3E%3CfeTurbulence baseFrequency=\\'1.2\\' numOctaves=\\'2\\' /%3E%3C/filter%3E%3Crect width=\\'400\\' height=\\'400\\' filter=\\'url(%23grain)\\' opacity=\\'0.4\\' /%3E%3C/svg%3E');"></div>
+
+    {# Title Section - Refined Typography #}
+    <div class="relative z-20 max-w-7xl mx-auto px-8 pt-32 pb-16">
+        <div class="max-w-5xl relative">
+            {# Decorative corner bracket - top left #}
+            <div class="absolute -left-4 -top-2 w-12 h-12 opacity-20">
+                <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M0 12 L0 0 L12 0" stroke="currentColor" stroke-width="1.5" class="text-mustard"/>
+                    <path d="M0 0 L48 48" stroke="currentColor" stroke-width="0.5" stroke-dasharray="2,3" class="text-stone" opacity="0.4"/>
+                </svg>
+            </div>
+
+            {# Title with refined spacing #}
+            <h1 class="font-display text-6xl md:text-7xl lg:text-8xl font-normal text-ink mb-8 leading-[0.92]" style="letter-spacing: -0.03em;">
+                Studio
+            </h1>
+
+            {# Subtitle with margin notation style #}
+            <div class="relative max-w-3xl mb-10">
+                {# Ruled line detail #}
+                <div class="absolute -left-8 top-3 w-4 h-px bg-mustard/30"></div>
+                <p class="text-xl md:text-2xl text-graphite leading-[1.75] font-light">
+                    Writing about development, design, and the creative process.
+                </p>
+            </div>
+
+            {# Interaction hints - Enhanced visual design #}
+            <div class="flex items-center gap-6 text-sm">
+                {# Hover hint #}
+                <div class="flex items-center gap-2 group">
+                    <div class="w-5 h-5 rounded-full border border-stone/40 flex items-center justify-center transition-colors group-hover:border-mustard/60">
+                        <svg class="w-3 h-3 text-stone transition-colors group-hover:text-mustard" fill="none" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M6 2 L6 10 M2 6 L10 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <span class="text-stone font-mono text-xs tracking-wide uppercase" style="letter-spacing: 0.1em;">Hover to preview</span>
+                </div>
+
+                {# Divider #}
+                <div class="w-px h-4 bg-stone/20"></div>
+
+                {# Click hint #}
+                <div class="flex items-center gap-2 group">
+                    <div class="w-5 h-5 rounded-full border border-stone/40 flex items-center justify-center transition-colors group-hover:border-mustard/60">
+                        <div class="w-1.5 h-1.5 rounded-full bg-stone transition-colors group-hover:bg-mustard"></div>
+                    </div>
+                    <span class="text-stone font-mono text-xs tracking-wide uppercase" style="letter-spacing: 0.1em;">Click to read</span>
+                </div>
+            </div>
+
+            {# Decorative corner bracket - bottom right #}
+            <div class="absolute -right-4 bottom-0 w-12 h-12 opacity-20 rotate-180">
+                <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M0 12 L0 0 L12 0" stroke="currentColor" stroke-width="1.5" class="text-mustard"/>
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    {# Three.js Scene - Full Width, Seamless #}
+    <div
+        data-controller="studio-papers"
+        data-studio-papers-posts-value="{{ posts|default([])|json_encode|e('html_attr') }}"
+        class="relative w-full"
+        style="height: 75vh; min-height: 600px;"
+    >
+        <canvas
+            data-studio-papers-target="canvas"
+            class="w-full h-full"
+        ></canvas>
+
+        {# Enhanced loading state - Workspace metaphor #}
+        <div class="absolute inset-0 flex items-center justify-center pointer-events-none bg-paper transition-opacity duration-300">
+            <div class="flex flex-col items-center gap-4" data-studio-papers-loading>
+                {# Animated paper stack #}
+                <div class="relative w-16 h-16">
+                    {# Paper sheets stacking animation #}
+                    <div class="absolute inset-0 border-2 border-mustard/20 bg-bone/40 rounded-sm transform translate-x-1 translate-y-1"></div>
+                    <div class="absolute inset-0 border-2 border-mustard/30 bg-bone/60 rounded-sm transform translate-x-0.5 translate-y-0.5"></div>
+                    <div class="absolute inset-0 border-2 border-mustard bg-paper rounded-sm shadow-sm animate-pulse"></div>
+                    {# Spinning indicator #}
+                    <div class="absolute -right-1 -top-1 w-6 h-6">
+                        <div class="w-full h-full border-2 border-mustard/30 border-t-mustard rounded-full animate-spin"></div>
+                    </div>
+                </div>
+                <div class="flex flex-col items-center gap-1">
+                    <div class="text-ink text-sm font-medium tracking-tight">Preparing workspace</div>
+                    <div class="text-stone text-xs font-mono">Arranging papers...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# Refined spacer with fade transition #}
+<div class="h-24 bg-gradient-to-b from-transparent to-paper/50"></div>
+
+{% endblock %}

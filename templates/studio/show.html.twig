@@ -1,0 +1,295 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ post.title }} - Studio - Sam Wilkinson{% endblock %}
+
+{% block description %}{{ post.excerpt ? post.excerpt : 'Article about ' ~ post.title }}.{% endblock %}
+
+{% block body_class %}accent-mustard{% endblock %}
+
+{% block body %}
+
+{# Mock markdown content demonstrating technical writing #}
+{% set mockContent %}
+Over the past year working on a healthcare platform rebuild, I've been questioning some of Symfony's "best practices" around service configuration. Specifically: **autoconfigure** and **autowire** are brilliant—until they're not.
+
+## The Seductive Simplicity
+
+When you first discover Symfony's autoconfiguration, it feels like magic:
+
+```yaml
+# config/services.yaml
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    App\\:
+        resource: '../src/'
+```
+
+Three lines and suddenly your entire application "just works." Controllers get their dependencies, event subscribers register themselves, commands appear in the CLI. It's beautiful.
+
+### What We Gain
+
+The benefits are real:
+- **Less boilerplate** - No manual service definitions for every class
+- **Convention over configuration** - Framework does the obvious thing
+- **Faster onboarding** - New developers don't need to understand the DI container immediately
+
+This is genuinely good design for 80% of applications.
+
+## The Hidden Cost
+
+But here's what I've learned: **autoconfiguration hides architectural decisions.**
+
+When everything autowires, you lose visibility into:
+
+1. **Service boundaries** - Which classes are actually services vs. DTOs/entities?
+2. **Dependency graphs** - What actually depends on what?
+3. **Interface contracts** - Are you depending on concrete classes or abstractions?
+
+> "Explicitness is better than implicitness—even when it's more verbose."
+
+### A Real Example
+
+We had a `PatientRepository` that was autowired into 47 different services. We only discovered this when trying to add caching—suddenly we needed to understand every usage pattern.
+
+```php
+// What we thought we had: simple data access
+class AppointmentService
+{
+    public function __construct(
+        private PatientRepository $patients
+    ) {}
+}
+
+// What we actually built: tight coupling to implementation
+class AppointmentService
+{
+    public function __construct(
+        private PatientRepository $patients // Concrete class, not interface
+    ) {}
+}
+```
+
+The autowiring made it *too easy* to inject the repository everywhere. We should have been injecting a `PatientProviderInterface` and questioning whether each service really needed direct database access.
+
+## A More Explicit Approach
+
+Here's what I'm experimenting with now:
+
+### 1. Explicit Service Definitions for Boundaries
+
+```yaml
+services:
+    # Core domain services - defined explicitly
+    App\\Domain\\Patient\\PatientService:
+        arguments:
+            $repository: '@App\\Domain\\Patient\\PatientRepositoryInterface'
+            $validator: '@App\\Domain\\Patient\\PatientValidator'
+            $eventDispatcher: '@Symfony\\Component\\EventDispatcher\\EventDispatcherInterface'
+
+    # Infrastructure - autoconfigured
+    App\\Infrastructure\\:
+        resource: '../src/Infrastructure/'
+        autowire: true
+        autoconfigure: true
+```
+
+This forces me to:
+- Think about what's a "core service" vs. infrastructure
+- Use interfaces at boundaries
+- Document dependencies explicitly
+
+### 2. Tagged Services for Strategies
+
+Instead of letting the framework auto-tag everything, explicitly tag strategic extension points:
+
+```yaml
+App\\Domain\\Billing\\Strategy\\InsuranceClaimStrategy:
+    tags:
+        - { name: 'app.billing_strategy', provider: 'insurance' }
+
+App\\Domain\\Billing\\Strategy\\CashPaymentStrategy:
+    tags:
+        - { name: 'app.billing_strategy', provider: 'cash' }
+```
+
+Then consume via iterator:
+
+```php
+class BillingService
+{
+    public function __construct(
+        /** @var iterable<BillingStrategyInterface> */
+        private iterable $strategies
+    ) {}
+}
+```
+
+### 3. Compiler Passes for Validation
+
+Write compiler passes that enforce architectural rules:
+
+```php
+class RepositoryUsagePass implements CompilerPassInterface
+{
+    public function process(ContainerBuilder $container): void
+    {
+        foreach ($container->getDefinitions() as $id => $definition) {
+            $class = $definition->getClass();
+
+            // Enforce: only services in Domain\\ can use repositories
+            if ($this->usesRepository($definition) && !str_starts_with($class, 'App\\Domain\\')) {
+                throw new \RuntimeException(
+                    "Service {$class} cannot directly use repositories. Use a domain service."
+                );
+            }
+        }
+    }
+}
+```
+
+## The Middle Ground
+
+I'm not saying abandon autoconfiguration entirely. But consider:
+
+**Autoconfigure**: Infrastructure, adapters, framework integration
+**Explicit**: Domain services, core business logic, architectural boundaries
+
+The extra verbosity in `services.yaml` becomes *documentation* of your architecture.
+
+## Lessons Learned
+
+After 8 months on this project:
+
+- **Explicitness at boundaries** prevents architectural erosion
+- **Autoconfiguration for infrastructure** reduces boilerplate without hiding domain decisions
+- **Compiler passes** can enforce rules that code review might miss
+- **Service configuration** is a communication tool, not just DI plumbing
+
+Would I use autoconfiguration on a greenfield project? Absolutely. But I'd start with explicit definitions for core domain services and only autoconfigure infrastructure.
+
+The framework should make easy things easy—but it shouldn't hide the hard things you need to think about.
+
+---
+
+**Further Reading:**
+- Symfony Service Container Documentation
+- Clean Architecture by Robert C. Martin
+- Domain-Driven Design patterns in Symfony
+
+{% endset %}
+
+{# Prepare post data for display #}
+{% set postData = {
+    title: post.title,
+    subtitle: post.subtitle ?? null,
+    date: post.publishedAt ? post.publishedAt|date('Y-m-d') : 'Draft',
+    readingTime: post.readingTimeMinutes ~ ' min read',
+    tags: post.tags ?? [],
+    content: post.content ?? ''
+} %}
+
+{# Studio Article - Workspace Journal Aesthetic #}
+<article class="min-h-screen relative bg-gradient-to-br from-paper via-bone to-daylight">
+    {# Subtle paper grain #}
+    <div class="fixed inset-0 opacity-[0.025] mix-blend-multiply pointer-events-none" style="z-index: 0; background-image: url('data:image/svg+xml,%3Csvg width=\'600\' height=\'600\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'grain\'%3E%3CfeTurbulence baseFrequency=\'1.5\' numOctaves=\'3\' /%3E%3C/filter%3E%3Crect width=\'600\' height=\'600\' filter=\'url(%23grain)\' opacity=\'0.5\' /%3E%3C/svg%3E');"></div>
+
+    {# Article header - editorial layout #}
+    <header class="relative max-w-4xl mx-auto px-6 md:px-8 pb-16 pt-40 z-10">
+        {# Title #}
+        <div class="mb-8">
+            <h1 class="font-display text-5xl md:text-6xl lg:text-7xl text-ink leading-[1.05] font-medium">
+                {{ postData.title }}
+            </h1>
+        </div>
+
+        {# Subtitle with highlight effect #}
+        {% if postData.subtitle %}
+            <div class="relative mb-12 max-w-3xl">
+                <p class="text-2xl md:text-3xl text-graphite leading-relaxed">
+                    {{ postData.subtitle }}
+                </p>
+            </div>
+        {% endif %}
+
+        {# Metadata row - 3 columns horizontal #}
+        <div class="mb-16 pb-12 border-b border-stone/20">
+            <div class="grid grid-cols-3 gap-8 md:gap-16">
+                {# Published - highlighter mark #}
+                <div class="relative">
+                    {# Hand-drawn highlighter effect #}
+                    <div class="absolute -left-3 -right-3 top-0 bottom-0 bg-mustard/8 rounded-sm -rotate-1"></div>
+                    <div class="absolute -left-2.5 -right-2.5 top-0.5 bottom-0.5 bg-mustard/5 rounded-sm rotate-0.5"></div>
+                    <div class="relative py-3">
+                        <div class="text-cognac text-xs font-medium mb-2.5 tracking-wide uppercase" style="letter-spacing: 0.12em; font-variant: small-caps;">Published</div>
+                        <div class="text-ink font-semibold text-base">{{ postData.date }}</div>
+                    </div>
+                </div>
+
+                {# Reading time - ink notation with aligned dot #}
+                <div class="relative">
+                    <div class="py-3">
+                        {# Label with aligned dot #}
+                        <div class="flex items-center gap-2.5 mb-2.5">
+                            {# Pulsing ink dot - aligned with text baseline #}
+                            <div class="relative flex-shrink-0">
+                                <div class="w-2 h-2 bg-mustard rounded-full"></div>
+                                <div class="absolute inset-0 w-2 h-2 bg-mustard rounded-full animate-ping opacity-30"></div>
+                            </div>
+                            <div class="text-stone text-xs font-medium tracking-wide uppercase" style="letter-spacing: 0.12em; font-variant: small-caps;">Reading</div>
+                        </div>
+                        {# Reading time value with subtle pencil underline #}
+                        <div class="relative inline-block">
+                            <div class="text-graphite font-semibold text-base">{{ postData.readingTime }}</div>
+                            <div class="absolute -bottom-0.5 left-0 right-0 h-px bg-gradient-to-r from-mustard/40 via-mustard/20 to-transparent"></div>
+                        </div>
+                    </div>
+                </div>
+
+                {# Tags - sticky notes with enhanced depth #}
+                {% if postData.tags and postData.tags|length > 0 %}
+                    <div class="relative">
+                        <div class="py-3">
+                            <div class="text-cognac text-xs font-medium mb-3 tracking-wide uppercase" style="letter-spacing: 0.12em; font-variant: small-caps;">Filed under</div>
+                            <div class="flex flex-wrap gap-2.5">
+                                {% for tag in postData.tags %}
+                                    <div class="relative group">
+                                        {# Multi-layer shadow for depth #}
+                                        <div class="absolute inset-0 bg-mustard/12 rounded translate-x-1 translate-y-1 blur-[1px]"></div>
+                                        <div class="absolute inset-0 bg-mustard/15 rounded translate-x-0.5 translate-y-0.5"></div>
+                                        {# Sticky note with texture #}
+                                        <div class="relative inline-block px-4 py-2 text-xs font-semibold text-walnut bg-gradient-to-br from-mustard/20 via-mustard/15 to-mustard/10 border border-mustard/30 rounded shadow-sm transition-all duration-200 group-hover:-translate-y-1 group-hover:shadow-md group-hover:border-mustard/40">
+                                            {{ tag }}
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    {# Article body - comfortable reading #}
+    <main class="relative max-w-4xl mx-auto px-6 md:px-8 pb-16 z-10">
+        {# Article content - warm, inviting prose #}
+        <div class="prose prose-lg prose-studio max-w-none">
+            {% if postData.content %}
+                {{ postData.content|markdown|raw }}
+            {% else %}
+                <p class="text-graphite italic">Post content coming soon...</p>
+            {% endif %}
+        </div>
+    </main>
+
+    {# Article footer - casual close #}
+    <footer class="relative max-w-4xl mx-auto px-6 md:px-8 pb-32 pt-16 z-10">
+        <div class="border-t border-stone/20 pt-12">
+        </div>
+    </footer>
+</article>
+
+{% endblock %}
