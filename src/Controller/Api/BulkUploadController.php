@@ -49,7 +49,7 @@ class BulkUploadController extends AbstractController
      *   - collection_name: Name for new collection (optional, used if collection_id not provided)
      *   - publish_status: "draft" or "published" (optional)
      *     - Defaults to "draft" for new collections
-     *     - Defaults to "published" when adding to existing collections
+     *     - Inherits collection's status when adding to existing collections (if empty/null)
      *
      * Response:
      * {
@@ -107,6 +107,11 @@ class BulkUploadController extends AbstractController
         $collectionId = $request->request->get('collection_id');
         $collectionName = $request->request->get('collection_name');
         $publishStatusString = $request->request->get('publish_status');
+
+        // Treat empty string as null for publish_status
+        if ($publishStatusString === '' || $publishStatusString === null) {
+            $publishStatusString = null;
+        }
 
         // Validate publish status (optional - defaults based on new vs existing collection)
         if ($publishStatusString !== null) {
@@ -209,9 +214,9 @@ class BulkUploadController extends AbstractController
             }
             $collectionName = $collection->getName();
 
-            // Default to 'published' when adding to existing collection if not specified
+            // Inherit collection's publish status if not explicitly specified
             if ($publishStatus === null) {
-                $publishStatus = PublishStatus::published;
+                $publishStatus = $collection->isPublished() ? PublishStatus::published : PublishStatus::draft;
             }
         }
 

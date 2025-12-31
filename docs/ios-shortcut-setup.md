@@ -115,10 +115,10 @@ The shortcut now supports two workflows:
 - **Variable Name:** `collectionName`
 - **Value:** [Collection Name from step 9b]
 
-### 11b. Set Publish Status (empty for existing)
+### 11b. Set Publish Status (empty to inherit from collection)
 - **Action:** "Set Variable"
 - **Variable Name:** `publishStatus`
-- **Value:** `` (empty text - will default to "published")
+- **Value:** `` (empty text - photos will inherit collection's publish status)
 
 ---
 
@@ -146,7 +146,7 @@ The shortcut now supports two workflows:
   - `photos[]` = [Repeat Item] (the current photo in the loop)
   - `collection_id` = [collectionId variable]
   - `collection_name` = [collectionName variable]
-  - `publish_status` = [publishStatus variable] (empty for existing collections)
+  - `publish_status` = [publishStatus variable] (empty to inherit from existing collection)
 
 ### 12. Get Dictionary from Input - INSIDE REPEAT
 - **Action:** "Get Dictionary from Input"
