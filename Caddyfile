@@ -1,0 +1,30 @@
+:80 {
+    root * /var/www/html/public
+
+    # Enable PHP-FPM
+    php_fastcgi app:9000
+
+    # Enable file server for static assets
+    file_server
+
+    # Serve index.php for all non-file requests (Symfony routing)
+    try_files {path} /index.php?{query}
+
+    # Security headers
+    header {
+        # Prevent clickjacking
+        X-Frame-Options "SAMEORIGIN"
+        # Prevent MIME type sniffing
+        X-Content-Type-Options "nosniff"
+        # Enable XSS protection
+        X-XSS-Protection "1; mode=block"
+        # Remove server signature
+        -Server
+    }
+
+    # Logging
+    log {
+        output stdout
+        format console
+    }
+}
