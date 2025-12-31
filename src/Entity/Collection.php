@@ -67,6 +67,9 @@ class Collection
     #[ORM\Column(nullable: true)]
     private ?int $sortOrder = null;
 
+    #[ORM\Column]
+    private ?bool $isPublished = false;
+
     public function __construct()
     {
         $this->photos = new ArrayCollection();
@@ -74,6 +77,7 @@ class Collection
         $this->updatedAt = new \DateTime();
         $this->isRestricted = false;
         $this->allowDownloads = false;
+        $this->isPublished = false;
     }
 
     #[ORM\PreUpdate]
@@ -336,6 +340,18 @@ class Collection
     public function setSortOrder(?int $sortOrder): static
     {
         $this->sortOrder = $sortOrder;
+
+        return $this;
+    }
+
+    public function isPublished(): ?bool
+    {
+        return $this->isPublished;
+    }
+
+    public function setIsPublished(bool $isPublished): static
+    {
+        $this->isPublished = $isPublished;
 
         return $this;
     }

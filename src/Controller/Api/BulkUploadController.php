@@ -202,7 +202,7 @@ class BulkUploadController extends AbstractController
 
             // Default to 'draft' for new collections if not specified
             if ($publishStatus === null) {
-                $publishStatus = PublishStatus::draft;
+                $publishStatus = PublishStatus::Draft;
             }
         } else {
             // Verify existing collection exists
@@ -216,7 +216,7 @@ class BulkUploadController extends AbstractController
 
             // Inherit collection's publish status if not explicitly specified
             if ($publishStatus === null) {
-                $publishStatus = $collection->isPublished() ? PublishStatus::published : PublishStatus::draft;
+                $publishStatus = $collection->isPublished() ? PublishStatus::Published : PublishStatus::Draft;
             }
         }
 
