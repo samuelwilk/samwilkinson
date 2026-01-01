@@ -56,6 +56,7 @@ export default class extends Controller {
         this.setupLazyLoading();
         this.setupKeyboardNavigation();
         this.setupHorizontalScroll();
+        this.setupTouchScroll(); // Add touch handling for mobile
 
         // Set up live region for screen readers
         this.setupLiveRegion();
@@ -73,6 +74,15 @@ export default class extends Controller {
         }
         if (this.handleKeydown) {
             document.removeEventListener('keydown', this.handleKeydown);
+        }
+        if (this.handleTouchStart) {
+            this.element.removeEventListener('touchstart', this.handleTouchStart);
+        }
+        if (this.handleTouchMove) {
+            this.element.removeEventListener('touchmove', this.handleTouchMove);
+        }
+        if (this.handleTouchEnd) {
+            this.element.removeEventListener('touchend', this.handleTouchEnd);
         }
     }
 
@@ -428,6 +438,120 @@ export default class extends Controller {
         };
 
         window.addEventListener('wheel', this.handleWheel, { passive: false });
+    }
+
+    setupTouchScroll() {
+        // Touch state
+        this.touchState = {
+            startX: 0,
+            startY: 0,
+            startScrollLeft: 0,
+            lastX: 0,
+            lastY: 0,
+            lastTime: 0,
+            velocityX: 0,
+            isScrolling: false,
+            scrollingHorizontally: null // null = not determined yet, true/false = determined
+        };
+
+        this.handleTouchStart = (event) => {
+            const touch = event.touches[0];
+            this.touchState.startX = touch.clientX;
+            this.touchState.startY = touch.clientY;
+            this.touchState.startScrollLeft = this.element.scrollLeft;
+            this.touchState.lastX = touch.clientX;
+            this.touchState.lastY = touch.clientY;
+            this.touchState.lastTime = Date.now();
+            this.touchState.velocityX = 0;
+            this.touchState.isScrolling = false;
+            this.touchState.scrollingHorizontally = null;
+        };
+
+        this.handleTouchMove = (event) => {
+            if (!event.touches.length) return;
+
+            const touch = event.touches[0];
+            const deltaX = touch.clientX - this.touchState.startX;
+            const deltaY = touch.clientY - this.touchState.startY;
+            const absDeltaX = Math.abs(deltaX);
+            const absDeltaY = Math.abs(deltaY);
+
+            // Determine scroll direction on first significant movement
+            if (this.touchState.scrollingHorizontally === null && (absDeltaX > 10 || absDeltaY > 10)) {
+                this.touchState.scrollingHorizontally = absDeltaX > absDeltaY;
+            }
+
+            // If we've determined this is a horizontal scroll
+            if (this.touchState.scrollingHorizontally) {
+                event.preventDefault(); // Prevent vertical scroll
+
+                const scrollLeft = this.element.scrollLeft;
+                const maxScrollLeft = this.element.scrollWidth - this.element.clientWidth;
+                const atStart = scrollLeft <= 1;
+                const atEnd = scrollLeft >= maxScrollLeft - 1;
+
+                // Check if showcase is at top of viewport
+                const rect = this.element.getBoundingClientRect();
+                const showcaseAtTop = rect.top <= 0;
+
+                // Activate gallery when scrolled to it
+                if (showcaseAtTop && !this.isGalleryActive) {
+                    this.isGalleryActive = true;
+                }
+
+                // Only handle horizontal scrolling if gallery is active
+                if (this.isGalleryActive) {
+                    // Calculate velocity for momentum
+                    const currentTime = Date.now();
+                    const timeDelta = currentTime - this.touchState.lastTime;
+                    if (timeDelta > 0) {
+                        const moveDelta = touch.clientX - this.touchState.lastX;
+                        this.touchState.velocityX = moveDelta / timeDelta;
+                    }
+
+                    // Apply horizontal scroll (inverted because dragging right should scroll left)
+                    const newScrollLeft = this.touchState.startScrollLeft - deltaX;
+
+                    // Allow scrolling but let browser handle edge behavior
+                    this.element.scrollLeft = newScrollLeft;
+
+                    this.touchState.isScrolling = true;
+                }
+
+                this.touchState.lastX = touch.clientX;
+                this.touchState.lastY = touch.clientY;
+                this.touchState.lastTime = Date.now();
+            }
+            // If vertical scroll, allow default behavior
+        };
+
+        this.handleTouchEnd = (event) => {
+            // Apply momentum scrolling if there was horizontal movement
+            if (this.touchState.scrollingHorizontally && this.touchState.isScrolling) {
+                const momentumVelocity = this.touchState.velocityX * 200; // Scale velocity
+
+                // Apply momentum with easing
+                if (Math.abs(momentumVelocity) > 10) {
+                    const targetScrollLeft = this.element.scrollLeft - momentumVelocity;
+                    const maxScrollLeft = this.element.scrollWidth - this.element.clientWidth;
+                    const clampedTargetScrollLeft = Math.max(0, Math.min(targetScrollLeft, maxScrollLeft));
+
+                    this.element.scrollTo({
+                        left: clampedTargetScrollLeft,
+                        behavior: 'smooth'
+                    });
+                }
+            }
+
+            // Reset touch state
+            this.touchState.isScrolling = false;
+            this.touchState.scrollingHorizontally = null;
+        };
+
+        // Add touch event listeners
+        this.element.addEventListener('touchstart', this.handleTouchStart, { passive: true });
+        this.element.addEventListener('touchmove', this.handleTouchMove, { passive: false });
+        this.element.addEventListener('touchend', this.handleTouchEnd, { passive: true });
     }
 
     setupLiveRegion() {
