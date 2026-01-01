@@ -24,18 +24,23 @@ export default class extends Controller {
         // Get collection slug from URL for sessionStorage key
         this.collectionSlug = this.getCollectionSlug();
 
-        // Restore saved preference or use default (only on desktop)
-        if (!this.isMobile) {
+        // Handle view initialization
+        if (this.isMobile) {
+            // On mobile: Force grid visible, hide showcase
+            this.showcaseTarget.classList.add('hidden');
+            this.gridTarget.classList.remove('hidden');
+            if (this.hasHeaderTarget) {
+                this.headerTarget.classList.remove('hidden');
+            }
+        } else {
+            // On desktop: Restore saved preference or default
             this.restorePreference();
+            // Set up keyboard shortcuts
+            this.setupKeyboardShortcuts();
         }
 
         // Listen for browser back/forward
         window.addEventListener('popstate', this.handlePopState.bind(this));
-
-        // Set up keyboard shortcuts (desktop only)
-        if (!this.isMobile) {
-            this.setupKeyboardShortcuts();
-        }
     }
 
     disconnect() {
@@ -83,12 +88,12 @@ export default class extends Controller {
         this.gridButtonTarget.classList.add('bg-bone', 'text-graphite', 'hover:bg-stone/10');
         this.gridButtonTarget.setAttribute('aria-pressed', 'false');
 
-        // Hide header and grid, show showcase (using !important to override responsive classes)
+        // Hide header and grid, show showcase
         if (this.hasHeaderTarget) {
-            this.headerTarget.classList.add('!hidden');
+            this.headerTarget.classList.add('hidden');
         }
-        this.gridTarget.classList.add('!hidden');
-        this.showcaseTarget.classList.remove('!hidden');
+        this.gridTarget.classList.add('hidden');
+        this.showcaseTarget.classList.remove('hidden');
 
         // Save preference
         sessionStorage.setItem(`stills-view-${this.collectionSlug}`, 'showcase');
@@ -113,12 +118,12 @@ export default class extends Controller {
         this.showcaseButtonTarget.classList.add('bg-bone', 'text-graphite', 'hover:bg-stone/10');
         this.showcaseButtonTarget.setAttribute('aria-pressed', 'false');
 
-        // Show header and grid, hide showcase (using !important to override responsive classes)
+        // Show header and grid, hide showcase
         if (this.hasHeaderTarget) {
-            this.headerTarget.classList.remove('!hidden');
+            this.headerTarget.classList.remove('hidden');
         }
-        this.showcaseTarget.classList.add('!hidden');
-        this.gridTarget.classList.remove('!hidden');
+        this.showcaseTarget.classList.add('hidden');
+        this.gridTarget.classList.remove('hidden');
 
         // Save preference
         sessionStorage.setItem(`stills-view-${this.collectionSlug}`, 'grid');
