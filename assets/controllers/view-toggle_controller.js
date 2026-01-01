@@ -10,17 +10,32 @@ export default class extends Controller {
     connect() {
         this.prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+        // Track if we're on mobile (< 768px)
+        this.isMobile = window.matchMedia('(max-width: 767px)').matches;
+        this.mediaQuery = window.matchMedia('(max-width: 767px)');
+        this.mediaQuery.addEventListener('change', (e) => {
+            this.isMobile = e.matches;
+            if (!this.isMobile) {
+                // Switched to desktop, restore preference
+                this.restorePreference();
+            }
+        });
+
         // Get collection slug from URL for sessionStorage key
         this.collectionSlug = this.getCollectionSlug();
 
-        // Restore saved preference or use default (showcase)
-        this.restorePreference();
+        // Restore saved preference or use default (only on desktop)
+        if (!this.isMobile) {
+            this.restorePreference();
+        }
 
         // Listen for browser back/forward
         window.addEventListener('popstate', this.handlePopState.bind(this));
 
-        // Set up keyboard shortcuts
-        this.setupKeyboardShortcuts();
+        // Set up keyboard shortcuts (desktop only)
+        if (!this.isMobile) {
+            this.setupKeyboardShortcuts();
+        }
     }
 
     disconnect() {
@@ -56,6 +71,9 @@ export default class extends Controller {
     }
 
     showShowcase() {
+        // Only allow on desktop
+        if (this.isMobile) return;
+
         // Update button states
         this.showcaseButtonTarget.classList.remove('bg-bone', 'text-graphite', 'hover:bg-stone/10');
         this.showcaseButtonTarget.classList.add('bg-persimmon', 'text-bone');
@@ -65,12 +83,12 @@ export default class extends Controller {
         this.gridButtonTarget.classList.add('bg-bone', 'text-graphite', 'hover:bg-stone/10');
         this.gridButtonTarget.setAttribute('aria-pressed', 'false');
 
-        // Hide header and grid, show showcase
+        // Hide header and grid, show showcase (using !important to override responsive classes)
         if (this.hasHeaderTarget) {
-            this.headerTarget.classList.add('hidden');
+            this.headerTarget.classList.add('!hidden');
         }
-        this.gridTarget.classList.add('hidden');
-        this.showcaseTarget.classList.remove('hidden');
+        this.gridTarget.classList.add('!hidden');
+        this.showcaseTarget.classList.remove('!hidden');
 
         // Save preference
         sessionStorage.setItem(`stills-view-${this.collectionSlug}`, 'showcase');
@@ -83,6 +101,9 @@ export default class extends Controller {
     }
 
     showGrid() {
+        // Only allow on desktop
+        if (this.isMobile) return;
+
         // Update button states
         this.gridButtonTarget.classList.remove('bg-bone', 'text-graphite', 'hover:bg-stone/10');
         this.gridButtonTarget.classList.add('bg-persimmon', 'text-bone');
@@ -92,12 +113,12 @@ export default class extends Controller {
         this.showcaseButtonTarget.classList.add('bg-bone', 'text-graphite', 'hover:bg-stone/10');
         this.showcaseButtonTarget.setAttribute('aria-pressed', 'false');
 
-        // Show header and grid, hide showcase
+        // Show header and grid, hide showcase (using !important to override responsive classes)
         if (this.hasHeaderTarget) {
-            this.headerTarget.classList.remove('hidden');
+            this.headerTarget.classList.remove('!hidden');
         }
-        this.showcaseTarget.classList.add('hidden');
-        this.gridTarget.classList.remove('hidden');
+        this.showcaseTarget.classList.add('!hidden');
+        this.gridTarget.classList.remove('!hidden');
 
         // Save preference
         sessionStorage.setItem(`stills-view-${this.collectionSlug}`, 'grid');
