@@ -38,8 +38,8 @@
                 </p>
             </div>
 
-            {# Interaction hints - Enhanced visual design #}
-            <div class="flex items-center gap-6 text-sm">
+            {# Interaction hints - Desktop only (hidden on mobile) #}
+            <div class="hidden md:flex items-center gap-6 text-sm">
                 {# Hover hint #}
                 <div class="flex items-center gap-2 group">
                     <div class="w-5 h-5 rounded-full border border-stone/40 flex items-center justify-center transition-colors group-hover:border-mustard/60">
@@ -71,12 +71,12 @@
         </div>
     </div>
 
-    {# Three.js Scene - Full Width, Seamless (Responsive height) #}
+    {# Three.js Scene - Desktop/Tablet Only (>= 768px) #}
     <div
         data-controller="studio-papers"
         data-studio-papers-posts-value="{{ posts|default([])|json_encode|e('html_attr') }}"
-        class="relative w-full"
-        style="height: 50vh; min-height: 400px;"
+        class="relative w-full hidden md:block"
+        style="height: 60vh; min-height: 500px;"
     >
         <canvas
             data-studio-papers-target="canvas"
@@ -103,6 +103,62 @@
                     <div class="text-stone text-xs font-mono">Arranging papers...</div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    {# Post Card Grid - Mobile Only (< 768px) #}
+    <div class="block md:hidden px-4 pb-12">
+        <div class="grid grid-cols-1 gap-4 max-w-md mx-auto">
+            {% for post in posts|default([]) %}
+                <a href="{{ post.url }}" class="block group">
+                    <article class="post-card">
+                        {# Mustard accent bar - top edge #}
+                        <div class="h-1 bg-mustard/60 rounded-t-md"></div>
+
+                        {# Card content with warm paper background #}
+                        <div class="bg-gradient-to-br from-bone to-putty p-5 rounded-b-md border border-t-0 border-stone/20 shadow-sm transition-all duration-300 group-hover:shadow-md group-hover:-translate-y-0.5">
+                            {# Title - Compact Display Typography #}
+                            <h3 class="font-display text-lg font-semibold text-ink mb-2 leading-tight tracking-tight line-clamp-2">
+                                {{ post.title }}
+                            </h3>
+
+                            {# Metadata Row - Museum Label Style #}
+                            <div class="flex items-center gap-3 text-xs mb-3">
+                                <time class="font-mono text-walnut tabular-nums tracking-wide">
+                                    {{ post.date }}
+                                </time>
+                                <span class="w-1 h-1 rounded-full bg-stone/40"></span>
+                                <span class="font-mono text-stone tabular-nums">
+                                    {{ post.readingTime }}
+                                </span>
+                            </div>
+
+                            {# Excerpt - Compact but Readable #}
+                            {% if post.excerpt %}
+                                <p class="text-sm text-graphite leading-relaxed line-clamp-2 mb-3">
+                                    {{ post.excerpt }}
+                                </p>
+                            {% endif %}
+
+                            {# Tags - Minimal Pills #}
+                            {% if post.tags and post.tags|length > 0 %}
+                                <div class="flex flex-wrap gap-1.5">
+                                    {% for tag in post.tags|slice(0, 3) %}
+                                        <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium bg-mustard/10 text-walnut rounded">
+                                            {{ tag }}
+                                        </span>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+
+                            {# Folded corner decoration - bottom right #}
+                            <div class="absolute bottom-0 right-0 w-6 h-6 overflow-hidden">
+                                <div class="absolute bottom-0 right-0 w-0 h-0 border-b-8 border-r-8 border-b-stone/10 border-r-transparent transform rotate-0"></div>
+                            </div>
+                        </div>
+                    </article>
+                </a>
+            {% endfor %}
         </div>
     </div>
 </section>
