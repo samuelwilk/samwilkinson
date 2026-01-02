@@ -171,6 +171,16 @@
     border: 1px solid color-mix(in srgb, var(--color-graphite) 20%, transparent);
   }
 
+  /* Full-bleed section (edge-to-edge) */
+  .full-bleed {
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+  }
+
   /* ========================================
    * Site Navigation - Modernist Precision
    * ======================================== */
@@ -391,6 +401,14 @@
   .mobile-menu-overlay.open {
     opacity: 1;
     pointer-events: auto;
+  }
+
+  /* Hide mobile menu completely on desktop to prevent accidental opening */
+  @media (min-width: 769px) {
+    .mobile-menu-panel,
+    .mobile-menu-overlay {
+      display: none !important;
+    }
   }
 
   /* ========================================
