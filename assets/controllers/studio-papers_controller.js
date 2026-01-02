@@ -192,9 +192,10 @@ export default class extends Controller {
         this.clickHandler = this.onClick.bind(this);
         this.canvasTarget.addEventListener('click', this.clickHandler);
 
-        // Touch handlers for mobile/tablet support
+        // Touch handlers for mobile/tablet support (passive false to allow conditional preventDefault)
         this.touchStartHandler = this.onTouchStart.bind(this);
         this.touchEndHandler = this.onTouchEnd.bind(this);
+        this.touchingPaper = false; // Track if touching a paper
         this.canvasTarget.addEventListener('touchstart', this.touchStartHandler, { passive: false });
         this.canvasTarget.addEventListener('touchend', this.touchEndHandler, { passive: false });
 
@@ -793,9 +794,6 @@ export default class extends Controller {
     onTouchStart(event) {
         if (!this.canvasTarget || event.touches.length !== 1) return;
 
-        // Prevent default to avoid scrolling
-        event.preventDefault();
-
         const touch = event.touches[0];
         const rect = this.canvasTarget.getBoundingClientRect();
         this.mouse.x = ((touch.clientX - rect.left) / rect.width) * 2 - 1;
@@ -803,15 +801,25 @@ export default class extends Controller {
 
         // Update hover state immediately for touch
         this.checkHover();
+
+        // Store if we're touching a paper (for touchEnd)
+        this.touchingPaper = !!this.hoveredPaper;
+
+        // Only prevent default if touching a paper (allow normal scrolling otherwise)
+        if (this.touchingPaper) {
+            event.preventDefault();
+        }
     }
 
     onTouchEnd(event) {
-        event.preventDefault();
-
-        // Tap to navigate
-        if (this.hoveredPaper && this.hoveredPaper.userData.url) {
+        // Only handle tap if we started on a paper
+        if (this.touchingPaper && this.hoveredPaper && this.hoveredPaper.userData.url) {
+            event.preventDefault();
             window.location.href = this.hoveredPaper.userData.url;
         }
+
+        // Reset touch state
+        this.touchingPaper = false;
     }
 
     onClick(event) {

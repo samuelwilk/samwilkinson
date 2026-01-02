@@ -71,16 +71,17 @@
         </div>
     </div>
 
-    {# Three.js Scene - Full Width, Seamless #}
+    {# Three.js Scene - Full Width, Seamless (Responsive height) #}
     <div
         data-controller="studio-papers"
         data-studio-papers-posts-value="{{ posts|default([])|json_encode|e('html_attr') }}"
         class="relative w-full"
-        style="height: 75vh; min-height: 600px;"
+        style="height: 50vh; min-height: 400px;"
     >
         <canvas
             data-studio-papers-target="canvas"
             class="w-full h-full"
+            style="touch-action: pan-y;"
         ></canvas>
 
         {# Enhanced loading state - Workspace metaphor #}
