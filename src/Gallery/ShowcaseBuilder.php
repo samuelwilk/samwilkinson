@@ -167,8 +167,8 @@ final class ShowcaseBuilder
             // Apply subtle jitter (±2% position, ±2.5% size, ±1.5deg rotation)
             $x = $this->clamp($rng->jitter($def->x, 2.0), 65.0, 92.0);
             $y = $this->clamp($rng->jitter($def->y, 2.0), 18.0, 82.0);
-            $w = $this->clamp($rng->jitter($def->w, 2.5), 8.0, 36.0);
-            $h = $this->clamp($rng->jitter($def->h, 2.5), 12.0, 60.0);
+            $w = $this->clamp($rng->jitter($def->w, 2.5), 10.0, 50.0);
+            $h = $this->clamp($rng->jitter($def->h, 2.5), 15.0, 80.0);
             $rot = $rng->jitter($def->rot, 1.5);
 
             // Ensure doesn't go off right edge
@@ -199,39 +199,53 @@ final class ShowcaseBuilder
     }
 
     /**
-     * Create a text card panel with random title and body text.
+     * Create a text card panel with random color and size variation.
      *
      * Text cards provide visual breaks between photo panels in the showcase.
+     * Each card is a solid-color rectangle with varied dimensions and positioning.
      *
      * @param XorShift32 $rng Seeded random number generator
      * @param string $seedKey Seed key (unused but kept for consistency)
-     * @return array{layout:string, title:string, body:string} Text card panel data
+     * @return array{layout:string, color:string, width:int, height:int, x:int, y:int} Text card panel data
      */
     private function createTextCard(XorShift32 $rng, string $seedKey): array
     {
-        $titles = [
-            'A MOMENT CAPTURED',
-            'THROUGH THE LENS',
-            'LIGHT & SHADOW',
-            'COMPOSITIONS',
-            'VISUAL STORIES',
+        // Project colors from design system
+        $colors = [
+            '#1A1A1A', // ink (black)
+            '#3A3A3A', // graphite
+            '#2C2C2E', // gunmetal
+            '#5C4033', // walnut
+            '#9A6324', // cognac
+            '#D32F2F', // signal
+            '#00897B', // teal
+            '#F9A825', // mustard
+            '#E64A19', // persimmon
         ];
 
-        $bodies = [
-            'Each frame tells a story, frozen in time.',
-            'Finding beauty in the everyday.',
-            'Exploring the interplay of form and light.',
-            'Documenting moments that matter.',
-            'A curated selection of visual narratives.',
-        ];
+        // Varied rectangle dimensions (percentage of viewport)
+        $widthOptions = [25, 30, 35, 40, 45];  // 25-45% of viewport width
+        $heightOptions = [30, 40, 50, 60, 70]; // 30-70% of viewport height
 
-        $titleIndex = $rng->int(0, count($titles) - 1);
-        $bodyIndex = $rng->int(0, count($bodies) - 1);
+        // Horizontal positioning (favor right side to match current design)
+        $xOptions = [55, 60, 65, 70]; // Right-aligned positioning
+
+        // Vertical positioning (varied placement)
+        $yOptions = [25, 35, 45]; // Top, middle, bottom thirds
+
+        $colorIndex = $rng->int(0, count($colors) - 1);
+        $widthIndex = $rng->int(0, count($widthOptions) - 1);
+        $heightIndex = $rng->int(0, count($heightOptions) - 1);
+        $xIndex = $rng->int(0, count($xOptions) - 1);
+        $yIndex = $rng->int(0, count($yOptions) - 1);
 
         return [
             'layout' => 'text_card',
-            'title' => $titles[$titleIndex],
-            'body' => $bodies[$bodyIndex],
+            'color' => $colors[$colorIndex],
+            'width' => $widthOptions[$widthIndex],
+            'height' => $heightOptions[$heightIndex],
+            'x' => $xOptions[$xIndex],
+            'y' => $yOptions[$yIndex],
         ];
     }
 
