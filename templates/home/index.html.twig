@@ -32,7 +32,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
 
             {# Build Card - Signal Red accent #}
-            <article class="group object-card p-10 accent-signal relative overflow-hidden">
+            <a href="{{ path('app_build') }}" class="group object-card p-10 accent-signal relative overflow-hidden block no-underline">
                 {# Subtle accent indicator #}
                 <div class="absolute top-0 right-0 w-1 h-16 bg-accent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
@@ -48,13 +48,13 @@
                 <div class="inset-panel px-5 py-4 mt-auto">
                     <div class="flex justify-between items-baseline">
                         <span class="museum-label text-stone text-xs">Status</span>
-                        <span class="museum-value text-graphite text-sm">Q1 2025</span>
+                        <span class="museum-value text-graphite text-sm">{{ buildStatus }}</span>
                     </div>
                 </div>
-            </article>
+            </a>
 
             {# Stills Card - Teal accent #}
-            <article class="group object-card p-10 accent-teal relative overflow-hidden">
+            <a href="{{ path('app_stills') }}" class="group object-card p-10 accent-teal relative overflow-hidden block no-underline">
                 <div class="absolute top-0 right-0 w-1 h-16 bg-accent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
                 <div class="flex items-center justify-between mb-6 pb-5 border-b border-stone/20">
@@ -69,13 +69,13 @@
                 <div class="inset-panel px-5 py-4 mt-auto">
                     <div class="flex justify-between items-baseline">
                         <span class="museum-label text-stone text-xs">Status</span>
-                        <span class="museum-value text-graphite text-sm">Q1 2025</span>
+                        <span class="museum-value text-graphite text-sm">{{ stillsStatus }}</span>
                     </div>
                 </div>
-            </article>
+            </a>
 
             {# Studio Card - Mustard accent #}
-            <article class="group object-card p-10 accent-mustard relative overflow-hidden">
+            <a href="{{ path('app_studio') }}" class="group object-card p-10 accent-mustard relative overflow-hidden block no-underline">
                 <div class="absolute top-0 right-0 w-1 h-16 bg-accent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
                 <div class="flex items-center justify-between mb-6 pb-5 border-b border-stone/20">
@@ -90,10 +90,10 @@
                 <div class="inset-panel px-5 py-4 mt-auto">
                     <div class="flex justify-between items-baseline">
                         <span class="museum-label text-stone text-xs">Status</span>
-                        <span class="museum-value text-graphite text-sm">Q1 2025</span>
+                        <span class="museum-value text-graphite text-sm">{{ studioStatus }}</span>
                     </div>
                 </div>
-            </article>
+            </a>
 
         </div>
     </section>
