@@ -17,6 +17,17 @@ export default class extends Controller {
     this.focusableElements = [];
     this.previouslyFocusedElement = null;
 
+    // Track screen size to prevent desktop activation
+    this.isDesktop = window.matchMedia('(min-width: 769px)').matches;
+    this.mediaQuery = window.matchMedia('(min-width: 769px)');
+    this.mediaQuery.addEventListener('change', (e) => {
+      this.isDesktop = e.matches;
+      // Close menu if switching to desktop
+      if (this.isDesktop && this.isOpen()) {
+        this.close();
+      }
+    });
+
     // Bind methods for event listeners
     this.handleKeydown = this.handleKeydown.bind(this);
   }
@@ -44,6 +55,11 @@ export default class extends Controller {
    * Open mobile menu with architectural slide animation
    */
   open() {
+    // Prevent opening on desktop screens
+    if (this.isDesktop) {
+      return;
+    }
+
     // Store currently focused element
     this.previouslyFocusedElement = document.activeElement;
 
