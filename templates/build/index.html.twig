@@ -23,7 +23,7 @@
         </h1>
 
         {# Metadata - Museum Label Precision #}
-        <div class="grid grid-cols-2 gap-12 max-w-2xl mb-20">
+        <div class="grid grid-cols-2 gap-16 max-w-2xl mb-20">
             {{ type.pair('Location', 'Canada', '', 'vertical') }}
             {{ type.pair('Current Focus', 'Symfony 7 & AI Integration', '', 'vertical') }}
         </div>
@@ -54,23 +54,23 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16">
         {% for project in projects %}
             {# Museum Object Card #}
-            <article class="object-card group relative bg-bone overflow-hidden transition-all duration-300 ease-out hover:-translate-y-1">
+            <article class="object-card group relative bg-bone overflow-hidden rounded-xl border border-stone/10 transition-all duration-300 ease-out hover:-translate-y-1 shadow-[0_1px_3px_rgba(0,0,0,0.08),0_1px_2px_rgba(0,0,0,0.06)] hover:shadow-[0_4px_6px_rgba(0,0,0,0.08),0_2px_4px_rgba(0,0,0,0.06)]">
                 {# Visual Header - Restrained Gradient #}
-                <div class="h-56 bg-gradient-to-br from-putty via-bone to-oatmeal relative overflow-hidden border-b border-stone/20">
+                <div class="h-56 bg-gradient-to-br from-putty via-bone to-oatmeal relative overflow-hidden border-b border-stone/15">
                     {# Subtle Texture Overlay #}
                     <div class="absolute inset-0 opacity-[0.02]" style="background-image: url('data:image/svg+xml,%3Csvg width=\'200\' height=\'200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noise\'%3E%3CfeTurbulence baseFrequency=\'0.9\' /%3E%3C/filter%3E%3Crect width=\'200\' height=\'200\' filter=\'url(%23noise)\' opacity=\'0.3\' /%3E%3C/svg%3E');"></div>
 
                     {# Year Badge - Architectural Detail #}
                     {% if project.publishedAt %}
                     <div class="absolute top-6 right-6">
-                        <span class="museum-value bg-paper/90 backdrop-blur-sm px-4 py-2 rounded text-graphite text-sm border border-stone/20">
+                        <span class="museum-value bg-paper/95 backdrop-blur-sm px-4 py-2 rounded-md text-graphite text-sm border border-stone/25 shadow-sm">
                             {{ project.publishedAt|date('Y') }}
                         </span>
                     </div>
                     {% endif %}
 
                     {# Minimal Accent Mark - Economy of Motion #}
-                    <div class="absolute bottom-0 left-0 w-24 h-px bg-accent"></div>
+                    <div class="absolute bottom-0 left-0 w-24 h-px bg-accent transition-all duration-500 group-hover:w-32"></div>
                 </div>
 
                 {# Content Area - Museum Label Hierarchy #}
@@ -147,50 +147,50 @@
         {# Skills Panels - Inset Surface Treatment #}
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl">
             {# Backend #}
-            <div class="inset-panel p-8 bg-bone border border-stone/10">
+            <div class="inset-panel p-8 bg-bone border border-stone/10 rounded-lg shadow-[inset_0_2px_4px_rgba(0,0,0,0.04)]">
                 {{ type.label('Backend Development', 'mb-6') }}
-                <div class="flex flex-wrap gap-3">
-                    <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">PHP 8.3</span>
-                    <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">Symfony 7</span>
-                    <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">Doctrine ORM</span>
-                    <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">API Platform</span>
-                    <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">Messenger</span>
+                <div class="flex flex-wrap gap-2.5">
+                    <span class="px-3.5 py-1.5 bg-paper rounded-md text-sm text-graphite border border-stone/20 transition-colors duration-200 hover:border-stone/30 hover:bg-daylight">PHP 8.3</span>
+                    <span class="px-3.5 py-1.5 bg-paper rounded-md text-sm text-graphite border border-stone/20 transition-colors duration-200 hover:border-stone/30 hover:bg-daylight">Symfony 7</span>
+                    <span class="px-3.5 py-1.5 bg-paper rounded-md text-sm text-graphite border border-stone/20 transition-colors duration-200 hover:border-stone/30 hover:bg-daylight">Doctrine ORM</span>
+                    <span class="px-3.5 py-1.5 bg-paper rounded-md text-sm text-graphite border border-stone/20 transition-colors duration-200 hover:border-stone/30 hover:bg-daylight">API Platform</span>
+                    <span class="px-3.5 py-1.5 bg-paper rounded-md text-sm text-graphite border border-stone/20 transition-colors duration-200 hover:border-stone/30 hover:bg-daylight">Messenger</span>
                 </div>
             </div>
 
             {# Database #}
-            <div class="inset-panel p-8 bg-bone border border-stone/10">
+            <div class="inset-panel p-8 bg-bone border border-stone/10 rounded-lg shadow-[inset_0_2px_4px_rgba(0,0,0,0.04)]">
                 {{ type.label('Database & Caching', 'mb-6') }}
-                <div class="flex flex-wrap gap-3">
-                    <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">PostgreSQL</span>
-                    <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">MySQL</span>
-                    <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">Redis</span>
-                    <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">Elasticsearch</span>
+                <div class="flex flex-wrap gap-2.5">
+                    <span class="px-3.5 py-1.5 bg-paper rounded-md text-sm text-graphite border border-stone/20 transition-colors duration-200 hover:border-stone/30 hover:bg-daylight">PostgreSQL</span>
+                    <span class="px-3.5 py-1.5 bg-paper rounded-md text-sm text-graphite border border-stone/20 transition-colors duration-200 hover:border-stone/30 hover:bg-daylight">MySQL</span>
+                    <span class="px-3.5 py-1.5 bg-paper rounded-md text-sm text-graphite border border-stone/20 transition-colors duration-200 hover:border-stone/30 hover:bg-daylight">Redis</span>
+                    <span class="px-3.5 py-1.5 bg-paper rounded-md text-sm text-graphite border border-stone/20 transition-colors duration-200 hover:border-stone/30 hover:bg-daylight">Elasticsearch</span>
                 </div>
             </div>
 
             {# DevOps #}
-            <div class="inset-panel p-8 bg-bone border border-stone/10">
+            <div class="inset-panel p-8 bg-bone border border-stone/10 rounded-lg shadow-[inset_0_2px_4px_rgba(0,0,0,0.04)]">
                 {{ type.label('DevOps & Infrastructure', 'mb-6') }}
-                <div class="flex flex-wrap gap-3">
-                    <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">Docker</span>
-                    <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">Kubernetes</span>
-                    <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">Terraform</span>
-                    <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">GitHub Actions</span>
-                    <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">AWS</span>
+                <div class="flex flex-wrap gap-2.5">
+                    <span class="px-3.5 py-1.5 bg-paper rounded-md text-sm text-graphite border border-stone/20 transition-colors duration-200 hover:border-stone/30 hover:bg-daylight">Docker</span>
+                    <span class="px-3.5 py-1.5 bg-paper rounded-md text-sm text-graphite border border-stone/20 transition-colors duration-200 hover:border-stone/30 hover:bg-daylight">Kubernetes</span>
+                    <span class="px-3.5 py-1.5 bg-paper rounded-md text-sm text-graphite border border-stone/20 transition-colors duration-200 hover:border-stone/30 hover:bg-daylight">Terraform</span>
+                    <span class="px-3.5 py-1.5 bg-paper rounded-md text-sm text-graphite border border-stone/20 transition-colors duration-200 hover:border-stone/30 hover:bg-daylight">GitHub Actions</span>
+                    <span class="px-3.5 py-1.5 bg-paper rounded-md text-sm text-graphite border border-stone/20 transition-colors duration-200 hover:border-stone/30 hover:bg-daylight">AWS</span>
                 </div>
             </div>
 
             {# Frontend #}
-            <div class="inset-panel p-8 bg-bone border border-stone/10">
+            <div class="inset-panel p-8 bg-bone border border-stone/10 rounded-lg shadow-[inset_0_2px_4px_rgba(0,0,0,0.04)]">
                 {{ type.label('Frontend', 'mb-6') }}
-                <div class="flex flex-wrap gap-3">
-                    <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">JavaScript/TypeScript</span>
-                    <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">Vue</span>
-                    <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">React</span>
-                    <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">Stimulus</span>
-                    <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">Tailwind CSS</span>
-                    <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">Twig</span>
+                <div class="flex flex-wrap gap-2.5">
+                    <span class="px-3.5 py-1.5 bg-paper rounded-md text-sm text-graphite border border-stone/20 transition-colors duration-200 hover:border-stone/30 hover:bg-daylight">JavaScript/TypeScript</span>
+                    <span class="px-3.5 py-1.5 bg-paper rounded-md text-sm text-graphite border border-stone/20 transition-colors duration-200 hover:border-stone/30 hover:bg-daylight">Vue</span>
+                    <span class="px-3.5 py-1.5 bg-paper rounded-md text-sm text-graphite border border-stone/20 transition-colors duration-200 hover:border-stone/30 hover:bg-daylight">React</span>
+                    <span class="px-3.5 py-1.5 bg-paper rounded-md text-sm text-graphite border border-stone/20 transition-colors duration-200 hover:border-stone/30 hover:bg-daylight">Stimulus</span>
+                    <span class="px-3.5 py-1.5 bg-paper rounded-md text-sm text-graphite border border-stone/20 transition-colors duration-200 hover:border-stone/30 hover:bg-daylight">Tailwind CSS</span>
+                    <span class="px-3.5 py-1.5 bg-paper rounded-md text-sm text-graphite border border-stone/20 transition-colors duration-200 hover:border-stone/30 hover:bg-daylight">Twig</span>
                 </div>
             </div>
         </div>
