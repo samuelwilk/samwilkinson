@@ -180,76 +180,51 @@
             </h2>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-12">
-            {# Skills Panels - Inset Surface Treatment #}
-            <div class="space-y-8">
-                {# Backend #}
-                <div class="inset-panel p-8 bg-bone border border-stone/10">
-                    {{ type.label('Backend Development', 'mb-6') }}
-                    <div class="flex flex-wrap gap-3">
-                        <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">PHP 8.3</span>
-                        <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">Symfony 7</span>
-                        <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">Doctrine ORM</span>
-                        <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">API Platform</span>
-                        <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">Messenger</span>
-                    </div>
-                </div>
-
-                {# Database #}
-                <div class="inset-panel p-8 bg-bone border border-stone/10">
-                    {{ type.label('Database & Caching', 'mb-6') }}
-                    <div class="flex flex-wrap gap-3">
-                        <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">PostgreSQL</span>
-                        <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">MySQL</span>
-                        <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">Redis</span>
-                        <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">Elasticsearch</span>
-                    </div>
-                </div>
-
-                {# DevOps #}
-                <div class="inset-panel p-8 bg-bone border border-stone/10">
-                    {{ type.label('DevOps & Infrastructure', 'mb-6') }}
-                    <div class="flex flex-wrap gap-3">
-                        <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">Docker</span>
-                        <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">Kubernetes</span>
-                        <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">Terraform</span>
-                        <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">GitHub Actions</span>
-                        <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">AWS</span>
-                    </div>
-                </div>
-
-                {# Frontend #}
-                <div class="inset-panel p-8 bg-bone border border-stone/10">
-                    {{ type.label('Frontend', 'mb-6') }}
-                    <div class="flex flex-wrap gap-3">
-                        <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">JavaScript/TypeScript</span>
-                        <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">Stimulus</span>
-                        <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">Tailwind CSS</span>
-                        <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">Twig</span>
-                    </div>
+        {# Skills Panels - Inset Surface Treatment #}
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl">
+            {# Backend #}
+            <div class="inset-panel p-8 bg-bone border border-stone/10">
+                {{ type.label('Backend Development', 'mb-6') }}
+                <div class="flex flex-wrap gap-3">
+                    <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">PHP 8.3</span>
+                    <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">Symfony 7</span>
+                    <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">Doctrine ORM</span>
+                    <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">API Platform</span>
+                    <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">Messenger</span>
                 </div>
             </div>
 
-            {# Now Widget - Architectural Sidebar #}
-            <div>
-                <div class="inset-panel p-8 bg-bone border border-stone/10 sticky top-24">
-                    {{ type.label('Now', 'mb-6') }}
+            {# Database #}
+            <div class="inset-panel p-8 bg-bone border border-stone/10">
+                {{ type.label('Database & Caching', 'mb-6') }}
+                <div class="flex flex-wrap gap-3">
+                    <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">PostgreSQL</span>
+                    <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">MySQL</span>
+                    <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">Redis</span>
+                    <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">Elasticsearch</span>
+                </div>
+            </div>
 
-                    {# Status Indicator - Restrained Pulse #}
-                    <div class="flex items-center gap-3 mb-8">
-                        <div class="w-2.5 h-2.5 bg-accent rounded-full animate-pulse"></div>
-                        <span class="text-sm text-graphite">Available for work</span>
-                    </div>
+            {# DevOps #}
+            <div class="inset-panel p-8 bg-bone border border-stone/10">
+                {{ type.label('DevOps & Infrastructure', 'mb-6') }}
+                <div class="flex flex-wrap gap-3">
+                    <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">Docker</span>
+                    <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">Kubernetes</span>
+                    <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">Terraform</span>
+                    <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">GitHub Actions</span>
+                    <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">AWS</span>
+                </div>
+            </div>
 
-                    {# Hairline Divider #}
-                    <div class="h-px w-full bg-stone opacity-20 mb-8"></div>
-
-                    {# Metadata Pairs - Museum Label Style #}
-                    <div class="space-y-6">
-                        {{ type.pair('Current Focus', 'Symfony 7 & AI Integration', '', 'vertical') }}
-                        {{ type.pair('Location', 'Remote / US-Based', '', 'vertical') }}
-                        {{ type.pair('Rate', 'Contract & Full-Time', '', 'vertical') }}
-                    </div>
+            {# Frontend #}
+            <div class="inset-panel p-8 bg-bone border border-stone/10">
+                {{ type.label('Frontend', 'mb-6') }}
+                <div class="flex flex-wrap gap-3">
+                    <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">JavaScript/TypeScript</span>
+                    <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">Stimulus</span>
+                    <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">Tailwind CSS</span>
+                    <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">Twig</span>
                 </div>
             </div>
         </div>
@@ -283,38 +258,7 @@
     {{ placard.timeline(mockExperience, 'max-w-4xl') }}
 </section>
 
-{# Release Space Before CTA #}
+{# Release Space #}
 <div class="h-24 md:h-32"></div>
-
-{# Call to Action - Centered Moment #}
-<section class="max-w-7xl mx-auto px-8 pb-48">
-    <div class="max-w-2xl mx-auto text-center">
-        {# Prairie Line Above - Centered #}
-        <div class="relative mb-12">
-            <div class="h-px bg-stone opacity-30 w-full"></div>
-            <div class="h-px bg-accent w-32 absolute top-0 left-1/2 -translate-x-1/2"></div>
-        </div>
-
-        <h2 class="font-display text-4xl md:text-5xl text-ink mb-8 tracking-tight leading-tight">
-            Let's Build<br>Something
-        </h2>
-
-        <p class="text-lg text-graphite mb-12 leading-[1.7] max-w-lg mx-auto">
-            Available for contract work, consulting, and full-time opportunities.
-        </p>
-
-        {# CTA Buttons - Restrained Style #}
-        <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <a href="mailto:hello@samwilkinson.com"
-               class="px-10 py-4 bg-accent text-paper rounded-lg font-medium transition-all duration-200 hover:bg-walnut hover:shadow-md hover:-translate-y-0.5">
-                Get in Touch
-            </a>
-            <a href="{{ path('app_studio') }}"
-               class="px-10 py-4 bg-bone text-ink rounded-lg font-medium border border-stone/20 transition-all duration-200 hover:bg-putty hover:border-stone/30">
-                Read the Studio
-            </a>
-        </div>
-    </div>
-</section>
 
 {% endblock %}
