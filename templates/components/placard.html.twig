@@ -112,13 +112,12 @@
 {% endmacro %}
 
 {#
-  Timeline Placard - For project phases or milestones
+  Timeline Placard - Vertical timeline with architectural precision
 
   Usage:
     {{ placard.timeline([
-      {date: 'Jan 2024', event: 'Discovery & Architecture'},
-      {date: 'Feb 2024', event: 'Core Development'},
-      {date: 'Mar 2024', event: 'Launch'}
+      {date: '2022 – Present', event: 'Developer @ zu'},
+      {date: 'Feb 2020 – Oct 2021', event: 'Programmer Analyst @ University of Saskatchewan'}
     ]) }}
 
   Parameters:
@@ -126,12 +125,31 @@
     - class: Additional CSS classes (optional)
 #}
 {% macro timeline(items, class = '') %}
-  <div class="inset-panel p-6 {{ class }}">
-    <div class="space-y-4">
+  <div class="relative {{ class }}">
+    {# Vertical connector line - Prairie architectural detail #}
+    {% if items|length > 1 %}
+      <div class="absolute left-0 top-12 bottom-12 w-px bg-gradient-to-b from-stone/30 via-stone/60 to-stone/30 hidden md:block"></div>
+    {% endif %}
+
+    {# Timeline items as individual object cards #}
+    <div class="space-y-6">
       {% for item in items %}
-        <div class="flex items-baseline gap-4 pb-4 {% if not loop.last %}hairline-dark border-b{% endif %}">
-          <div class="museum-value text-accent min-w-[100px]">{{ item.date }}</div>
-          <div class="text-graphite">{{ item.event }}</div>
+        <div class="group relative">
+          {# Timeline dot - Architectural marker #}
+          <div class="absolute left-0 top-6 w-2.5 h-2.5 rounded-full bg-accent border-2 border-paper shadow-sm transition-all duration-300 group-hover:scale-125 group-hover:shadow-md hidden md:block z-10"></div>
+
+          {# Content card - Elevated object #}
+          <div class="md:ml-8 bg-bone rounded-lg border border-stone/10 p-6 transition-all duration-300 ease-out group-hover:-translate-y-0.5 shadow-[0_1px_3px_rgba(0,0,0,0.08),0_1px_2px_rgba(0,0,0,0.06)] group-hover:shadow-[0_4px_6px_rgba(0,0,0,0.08),0_2px_4px_rgba(0,0,0,0.06)]">
+            {# Date range - Museum label with tabular numerals #}
+            <div class="museum-value text-accent text-sm mb-3 tracking-wide">
+              {{ item.date }}
+            </div>
+
+            {# Role & Company - Primary information #}
+            <div class="text-lg text-ink leading-relaxed">
+              {{ item.event }}
+            </div>
+          </div>
         </div>
       {% endfor %}
     </div>
