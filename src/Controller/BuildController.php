@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Repository\ProjectRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -9,10 +10,12 @@ use Symfony\Component\Routing\Attribute\Route;
 final class BuildController extends AbstractController
 {
     #[Route('/build', name: 'app_build')]
-    public function index(): Response
+    public function index(ProjectRepository $projectRepository): Response
     {
-        // TODO: Fetch projects from database
-        $projects = [];
+        $projects = $projectRepository->findBy(
+            ['isPublished' => true],
+            ['publishedAt' => 'DESC']
+        );
 
         return $this->render('build/index.html.twig', [
             'projects' => $projects,

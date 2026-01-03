@@ -2,9 +2,6 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Collection;
-use App\Entity\Photo;
-use App\Entity\Post;
 use App\Entity\Project;
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -14,78 +11,91 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 class AppFixtures extends Fixture
 {
     public function __construct(
-        private readonly UserPasswordHasherInterface $passwordHasher
+        private UserPasswordHasherInterface $passwordHasher
     ) {
     }
 
     public function load(ObjectManager $manager): void
     {
-        // Create admin user for local development
+        // Create admin user
         $admin = new User();
-        $admin->setEmail('admin@samwilkinson.local');
+        $admin->setEmail('admin@example.com');
+        $admin->setPassword($this->passwordHasher->hashPassword($admin, 'admin'));
         $admin->setRoles(['ROLE_ADMIN']);
-        $admin->setPassword(
-            $this->passwordHasher->hashPassword($admin, 'admin')
-        );
         $manager->persist($admin);
 
-        // Create sample collections
-        $collection1 = new Collection();
-        $collection1->setName('Japan 2024');
-        $collection1->setSlug('japan-2024');
-        $collection1->setDescription('A journey through Tokyo, Kyoto, and the Japanese Alps.');
-        $collection1->setLocationName('Japan');
-        $collection1->setCountry('JP');
-        $collection1->setStartDate(new \DateTime('2024-03-15'));
-        $collection1->setEndDate(new \DateTime('2024-04-02'));
-        $collection1->setVisualStyle([
-            'spineColor' => '#E64A19',
-            'texture' => 'linen',
+        // Create Mind The Wait project
+        $mindTheWait = new Project();
+        $mindTheWait->setTitle('Mind The Wait');
+        $mindTheWait->setSlug('mind-the-wait');
+        $mindTheWait->setSummary('Restaurant queue management system with real-time SMS notifications and capacity tracking.');
+        $mindTheWait->setContent('# Mind The Wait
+
+A queue management system designed for restaurants to handle customer flow efficiently.
+
+## Features
+
+- Real-time SMS notifications via Twilio
+- Dynamic capacity tracking
+- Customer queue management
+- Wait time estimates
+
+## Technical Implementation
+
+Built with Symfony 7 and SQLite for zero-config deployment. The system sends SMS notifications to customers when their table is ready, reducing congestion in waiting areas.
+
+## Results
+
+- Sub-second notification delivery
+- Easy deployment with minimal infrastructure
+- Scalable queue management');
+        $mindTheWait->setTags(['Symfony 7', 'SQLite', 'Twilio API']);
+        $mindTheWait->setMetrics([
+            'role' => 'Solo Developer',
+            'constraint' => 'Sub-second notification delivery'
         ]);
-        $collection1->setSortOrder(1);
-        $manager->persist($collection1);
+        $mindTheWait->setUrl('https://mindthewait.example.com');
+        $mindTheWait->setGithubUrl('https://github.com/samwilk/mind-the-wait');
+        $mindTheWait->setIsPublished(true);
+        $mindTheWait->setPublishedAt(new \DateTime('2024-06-15'));
+        $mindTheWait->setSortOrder(1);
+        $manager->persist($mindTheWait);
 
-        // Create sample photos
-        for ($i = 1; $i <= 5; $i++) {
-            $photo = new Photo();
-            $photo->setFilename("japan-{$i}.jpg");
-            $photo->setTitle("Tokyo Scene #{$i}");
-            $photo->setCaption("Golden hour in Shibuya.");
-            $photo->setTakenAt(new \DateTime("2024-03-{$i} 17:30:00"));
-            $photo->setCollection($collection1);
-            $photo->setWidth(3000);
-            $photo->setHeight(2000);
-            $photo->calculateAspectRatio();
-            $photo->setExifData([
-                'camera' => 'Sony A7IV',
-                'lens' => 'Sony FE 35mm f/1.8',
-                'iso' => 400,
-            ]);
-            $photo->setIsPublished(true);
-            $manager->persist($photo);
-        }
+        // Create DevBox project
+        $devBox = new Project();
+        $devBox->setTitle('DevBox');
+        $devBox->setSlug('devbox');
+        $devBox->setSummary('Local development environment orchestrator for Symfony projects with one-command setup.');
+        $devBox->setContent('# DevBox
 
-        // Create sample post
-        $post1 = new Post();
-        $post1->setTitle('Building with Constraints');
-        $post1->setSlug('building-with-constraints');
-        $post1->setContent("# Building with Constraints\n\nConstraints are design tools.");
-        $post1->setExcerpt('Constraints are design tools.');
-        $post1->setIsPublished(true);
-        $post1->setTags(['development', 'philosophy']);
-        $manager->persist($post1);
+A development environment orchestrator that simplifies local Symfony project setup.
 
-        // Create sample project
-        $project1 = new Project();
-        $project1->setTitle('Personal Brand Site');
-        $project1->setSlug('personal-brand-site');
-        $project1->setSummary('Portfolio site with modernist aesthetic.');
-        $project1->setContent("# Personal Brand Site\n\nModernist portfolio.");
-        $project1->setTags(['Symfony', 'PHP', 'Tailwind']);
-        $project1->setIsPublished(true);
-        $project1->setIsFeatured(true);
-        $project1->setSortOrder(1);
-        $manager->persist($project1);
+## Features
+
+- One-command project initialization
+- Docker Compose integration
+- Environment variable management
+- Service orchestration (database, cache, mail)
+
+## Technical Implementation
+
+Built with PHP 8.3 and Symfony Console commands. DevBox wraps Docker Compose with intelligent defaults for Symfony projects, handling database setup, cache configuration, and service dependencies automatically.
+
+## Results
+
+- Zero-config initial setup
+- Consistent development environments across team
+- Reduced onboarding time for new developers');
+        $devBox->setTags(['PHP 8.3', 'Docker Compose', 'Symfony Console']);
+        $devBox->setMetrics([
+            'role' => 'Creator',
+            'constraint' => 'Zero-config initial setup'
+        ]);
+        $devBox->setGithubUrl('https://github.com/samwilk/devbox');
+        $devBox->setIsPublished(true);
+        $devBox->setPublishedAt(new \DateTime('2023-09-20'));
+        $devBox->setSortOrder(2);
+        $manager->persist($devBox);
 
         $manager->flush();
     }

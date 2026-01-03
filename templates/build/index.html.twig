@@ -22,17 +22,10 @@
             Build
         </h1>
 
-        {# Intro - Generous Line Height #}
-        <p class="text-xl md:text-2xl text-graphite max-w-3xl leading-[1.7] mb-20">
-            Full-stack developer specializing in Symfony, modern PHP, and pragmatic architecture.
-            Building systems that scale with clarity and precision.
-        </p>
-
-        {# Metrics - Museum Label Precision #}
-        <div class="grid grid-cols-3 gap-12 max-w-2xl mb-20">
-            {{ type.metric('12+', 'Years', '') }}
-            {{ type.metric('47', 'Projects', '') }}
-            {{ type.metric('99.8%', 'Uptime', '') }}
+        {# Metadata - Museum Label Precision #}
+        <div class="grid grid-cols-2 gap-12 max-w-2xl mb-20">
+            {{ type.pair('Location', 'Canada', '', 'vertical') }}
+            {{ type.pair('Current Focus', 'Symfony 7 & AI Integration', '', 'vertical') }}
         </div>
 
         {# Prairie Line - Architectural Separator #}
@@ -47,6 +40,7 @@
 <div class="h-24 md:h-32"></div>
 
 {# Featured Projects - Museum Exhibition Layout #}
+{% if projects|length > 0 %}
 <section class="max-w-7xl mx-auto px-8 pb-32">
     {# Section Header - Museum Typography #}
     <div class="mb-16">
@@ -56,48 +50,9 @@
         </h2>
     </div>
 
-    {% set mockProjects = [
-        {
-            title: 'Healthcare Portal Rebuild',
-            role: 'Lead Backend Developer',
-            year: '2024',
-            summary: 'Complete rebuild of patient portal serving 2M+ users with HIPAA compliance and real-time chat.',
-            tech: 'Symfony 7, PostgreSQL, Redis',
-            constraints: '99.99% uptime SLA',
-            slug: 'healthcare-portal'
-        },
-        {
-            title: 'E-Commerce Platform',
-            role: 'Technical Architect',
-            year: '2023',
-            summary: 'High-performance multi-tenant e-commerce platform with headless CMS and API-first architecture.',
-            tech: 'Symfony 6, Elasticsearch, RabbitMQ',
-            constraints: 'Sub-200ms p95 latency',
-            slug: 'ecommerce-platform'
-        },
-        {
-            title: 'Financial Dashboard',
-            role: 'Full-Stack Developer',
-            year: '2024',
-            summary: 'Real-time financial analytics dashboard with custom charting and data export capabilities.',
-            tech: 'Symfony 7, MariaDB, Chart.js',
-            constraints: 'Real-time data sync',
-            slug: 'financial-dashboard'
-        },
-        {
-            title: 'DevOps Automation Suite',
-            role: 'Platform Engineer',
-            year: '2023',
-            summary: 'Internal tooling for CI/CD pipelines, infrastructure provisioning, and deployment automation.',
-            tech: 'Symfony, Docker, Terraform',
-            constraints: 'Multi-cloud deployment',
-            slug: 'devops-suite'
-        }
-    ] %}
-
     {# Object Grid - Generous Gap for Breathing Room #}
     <div class="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16">
-        {% for project in mockProjects %}
+        {% for project in projects %}
             {# Museum Object Card #}
             <article class="object-card group relative bg-bone overflow-hidden transition-all duration-300 ease-out hover:-translate-y-1">
                 {# Visual Header - Restrained Gradient #}
@@ -106,11 +61,13 @@
                     <div class="absolute inset-0 opacity-[0.02]" style="background-image: url('data:image/svg+xml,%3Csvg width=\'200\' height=\'200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noise\'%3E%3CfeTurbulence baseFrequency=\'0.9\' /%3E%3C/filter%3E%3Crect width=\'200\' height=\'200\' filter=\'url(%23noise)\' opacity=\'0.3\' /%3E%3C/svg%3E');"></div>
 
                     {# Year Badge - Architectural Detail #}
+                    {% if project.publishedAt %}
                     <div class="absolute top-6 right-6">
                         <span class="museum-value bg-paper/90 backdrop-blur-sm px-4 py-2 rounded text-graphite text-sm border border-stone/20">
-                            {{ project.year }}
+                            {{ project.publishedAt|date('Y') }}
                         </span>
                     </div>
+                    {% endif %}
 
                     {# Minimal Accent Mark - Economy of Motion #}
                     <div class="absolute bottom-0 left-0 w-24 h-px bg-accent"></div>
@@ -126,10 +83,12 @@
                         {{ project.title }}
                     </h3>
 
-                    {# Role Label #}
+                    {# Role Label (from metrics) #}
+                    {% if project.metrics.role is defined %}
                     <div class="museum-label text-stone mb-6 tracking-wide">
-                        {{ project.role }}
+                        {{ project.metrics.role }}
                     </div>
+                    {% endif %}
 
                     {# Summary - Generous Leading #}
                     <p class="text-graphite leading-[1.7] mb-8">
@@ -140,16 +99,20 @@
                 {# Inset Caption Rail - Museum Placard Aesthetic #}
                 <div class="border-t border-stone/20 bg-putty/40 px-8 py-6">
                     {# Tech Stack Row #}
+                    {% if project.tags|length > 0 %}
                     <div class="flex items-baseline justify-between gap-4 mb-3">
                         <span class="museum-label text-stone text-xs tracking-wider">Stack</span>
-                        <span class="museum-value text-sm text-graphite text-right">{{ project.tech }}</span>
+                        <span class="museum-value text-sm text-graphite text-right">{{ project.tags|join(', ') }}</span>
                     </div>
+                    {% endif %}
 
                     {# Constraints Row - Hairline Separator #}
-                    <div class="flex items-baseline justify-between gap-4 pt-3 border-t border-stone/10">
+                    {% if project.metrics.constraint is defined %}
+                    <div class="flex items-baseline justify-between gap-4 {% if project.tags|length > 0 %}pt-3 border-t border-stone/10{% endif %}">
                         <span class="museum-label text-stone text-xs tracking-wider">Constraint</span>
-                        <span class="museum-value text-sm text-ink text-right">{{ project.constraints }}</span>
+                        <span class="museum-value text-sm text-ink text-right">{{ project.metrics.constraint }}</span>
                     </div>
+                    {% endif %}
                 </div>
 
                 {# Interaction Layer #}
@@ -168,6 +131,7 @@
         <div class="h-px bg-stone opacity-20 w-full"></div>
     </div>
 </div>
+{% endif %}
 
 {# Skills & Expertise - Terraced Layout #}
 <section class="bg-gradient-to-b from-paper via-daylight to-paper">
@@ -222,6 +186,8 @@
                 {{ type.label('Frontend', 'mb-6') }}
                 <div class="flex flex-wrap gap-3">
                     <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">JavaScript/TypeScript</span>
+                    <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">Vue</span>
+                    <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">React</span>
                     <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">Stimulus</span>
                     <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">Tailwind CSS</span>
                     <span class="px-4 py-2 bg-paper rounded-md text-sm text-graphite border border-stone/20">Twig</span>
@@ -248,11 +214,8 @@
     </div>
 
     {% set mockExperience = [
-        {date: '2022 – Present', event: 'Senior Backend Developer @ Healthcare Tech Startup'},
-        {date: '2019 – 2022', event: 'Full-Stack Developer @ E-Commerce Platform'},
-        {date: '2017 – 2019', event: 'PHP Developer @ Digital Agency'},
-        {date: '2015 – 2017', event: 'Junior Developer @ SaaS Company'},
-        {date: '2013 – 2015', event: 'Freelance Web Developer'}
+        {date: '2022 – Present', event: 'Developer @ zu'},
+        {date: 'Feb 2020 – Oct 2021', event: 'Programmer Analyst @ University of Saskatchewan'}
     ] %}
 
     {{ placard.timeline(mockExperience, 'max-w-4xl') }}
