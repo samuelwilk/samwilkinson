@@ -1,0 +1,77 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Error - Sam Wilkinson{% endblock %}
+
+{% block description %}An error occurred.{% endblock %}
+
+{% block body_class %}accent-signal{% endblock %}
+
+{% block body %}
+<div class="min-h-screen bg-paper flex items-center">
+    {# Error Content - Museum Aesthetic #}
+    <div class="max-w-5xl mx-auto px-8 py-24 md:py-32 w-full">
+        <div class="max-w-3xl">
+            {# Museum label overline #}
+            <div class="museum-label text-stone mb-6 tracking-wider">
+                Error
+            </div>
+
+            {# Hero title - Architectural typography #}
+            <h1 class="font-display text-7xl md:text-8xl lg:text-9xl font-normal text-ink mb-8 leading-none tracking-tight">
+                Oops
+            </h1>
+
+            {# Generic error message #}
+            <p class="text-xl md:text-2xl text-graphite max-w-2xl leading-relaxed mb-12">
+                Something unexpected happened. We've logged the issue and will look into it.
+            </p>
+
+            {# Subtle accent line - architectural detail #}
+            <div class="mb-12 w-24 h-px bg-signal"></div>
+
+            {# Navigation affordances #}
+            <nav class="space-y-3">
+                <p class="museum-label text-stone text-sm mb-6">Navigate to</p>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                    {# Home Card #}
+                    <a href="{{ path('app_home') }}" class="group block bg-bone hover:bg-putty border border-stone/20 rounded-lg px-5 py-4 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="museum-label text-ink text-sm">Home</span>
+                            <span class="text-signal text-lg transform group-hover:translate-x-1 transition-transform duration-200">→</span>
+                        </div>
+                        <p class="text-xs text-stone">Portfolio overview</p>
+                    </a>
+
+                    {# Build Card #}
+                    <a href="{{ path('app_build') }}" class="group block bg-bone hover:bg-putty border border-stone/20 rounded-lg px-5 py-4 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="museum-label text-ink text-sm">Build</span>
+                            <span class="text-signal text-lg transform group-hover:translate-x-1 transition-transform duration-200">→</span>
+                        </div>
+                        <p class="text-xs text-stone">Projects & case studies</p>
+                    </a>
+
+                    {# Stills Card #}
+                    <a href="{{ path('app_stills') }}" class="group block bg-bone hover:bg-putty border border-stone/20 rounded-lg px-5 py-4 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="museum-label text-ink text-sm">Stills</span>
+                            <span class="text-signal text-lg transform group-hover:translate-x-1 transition-transform duration-200">→</span>
+                        </div>
+                        <p class="text-xs text-stone">Photography collections</p>
+                    </a>
+
+                    {# Studio Card #}
+                    <a href="{{ path('app_studio') }}" class="group block bg-bone hover:bg-putty border border-stone/20 rounded-lg px-5 py-4 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="museum-label text-ink text-sm">Studio</span>
+                            <span class="text-signal text-lg transform group-hover:translate-x-1 transition-transform duration-200">→</span>
+                        </div>
+                        <p class="text-xs text-stone">Writing & reflection</p>
+                    </a>
+                </div>
+            </nav>
+        </div>
+    </div>
+</div>
+{% endblock %}
