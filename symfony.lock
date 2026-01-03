@@ -68,6 +68,9 @@
             "ref": "d1227d002b70d1a1f941d91845fcd7ac7fbfc929"
         }
     },
+    "liip/test-fixtures-bundle": {
+        "version": "3.7.0"
+    },
     "oneup/flysystem-bundle": {
         "version": "4.14",
         "recipe": {

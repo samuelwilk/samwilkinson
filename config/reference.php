@@ -1705,7 +1705,7 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
  *                 timeout?: scalar|null, // Default: 90
  *                 utf8?: bool, // Default: false
  *                 passive?: bool, // Default: true
- *                 transferMode?: scalar|null, // Default: null
+ *                 transferMode?: scalar|null, // Default: 2
  *                 systemType?: scalar|null, // Default: null
  *                 ignorePassiveAddress?: bool|null, // Default: null
  *                 timestampsOnUnixListingsEnabled?: bool, // Default: false
@@ -1782,6 +1782,14 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
  *         directory_visibility?: scalar|null,
  *     }>,
  * }
+ * @psalm-type LiipTestFixturesConfig = array{
+ *     cache_db?: array{
+ *         sqlite?: scalar|null, // Default: null
+ *         ...<mixed>
+ *     },
+ *     keep_database_and_schema?: bool, // Default: false
+ *     cache_metadata?: bool, // Default: true
+ * }
  * @psalm-type ConfigType = array{
  *     imports?: ImportsConfig,
  *     parameters?: ParametersConfig,
@@ -1821,6 +1829,7 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
  *         vich_uploader?: VichUploaderConfig,
  *         liip_imagine?: LiipImagineConfig,
  *         oneup_flysystem?: OneupFlysystemConfig,
+ *         liip_test_fixtures?: LiipTestFixturesConfig,
  *     },
  *     "when@prod"?: array{
  *         imports?: ImportsConfig,
@@ -1860,6 +1869,7 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
  *         vich_uploader?: VichUploaderConfig,
  *         liip_imagine?: LiipImagineConfig,
  *         oneup_flysystem?: OneupFlysystemConfig,
+ *         liip_test_fixtures?: LiipTestFixturesConfig,
  *     },
  *     ...<string, ExtensionType|array{ // extra keys must follow the when@%env% pattern or match an extension alias
  *         imports?: ImportsConfig,
