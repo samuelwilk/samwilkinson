@@ -236,13 +236,6 @@ jobs:
             docker compose -f docker-compose.prod.yml exec -T -u www-data app \
               php bin/console cache:clear
 
-            # Configure Caddy reverse proxy (one-time setup)
-            if [ ! -f "/etc/caddy/Caddyfile" ] || ! grep -q "samwilkinson.ca" /etc/caddy/Caddyfile; then
-              echo "⚙️  Configuring Caddy..."
-              sudo cp docker/caddy/Caddyfile.prod /etc/caddy/Caddyfile
-              sudo systemctl reload caddy
-            fi
-
             # Show container status
             echo "📊 Container status:"
             docker compose -f docker-compose.prod.yml ps
@@ -252,14 +245,18 @@ jobs:
 
       - name: Health check
         run: |
-          sleep 5
+          echo "⏳ Waiting for services to stabilize..."
+          sleep 10
+
           # Check via IP (until DNS is switched)
+          echo "🔍 Checking health endpoint..."
           HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" -H "Host: samwilkinson.ca" http://${{ secrets.SERVER_IP }}/health || echo "000")
+
           if [ "$HTTP_CODE" = "200" ]; then
             echo "✅ Health check passed (HTTP $HTTP_CODE)"
           else
             echo "❌ Health check failed (HTTP $HTTP_CODE)"
-            # Don't fail deployment on health check failure (Caddy might not be configured yet)
+            # Don't fail deployment on first deploy (Caddy might still be getting certs)
             echo "⚠️  Warning: Health check failed, but continuing"
           fi
 

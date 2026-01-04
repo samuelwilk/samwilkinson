@@ -105,32 +105,12 @@ resource "hcloud_server" "web" {
       - curl
       - wget
       - unzip
-      - software-properties-common
       - apt-transport-https
       - ca-certificates
       - gnupg
       - lsb-release
 
     runcmd:
-      # Add PHP 8.3 repository
-      - add-apt-repository ppa:ondrej/php -y
-      - apt-get update
-
-      # Install PHP 8.3 and extensions
-      - apt-get install -y php8.3 php8.3-fpm php8.3-cli php8.3-mbstring php8.3-xml php8.3-sqlite3 php8.3-gd php8.3-intl php8.3-opcache php8.3-curl php8.3-zip
-
-      # Install Composer
-      - curl -sS https://getcomposer.org/installer | php
-      - mv composer.phar /usr/local/bin/composer
-      - chmod +x /usr/local/bin/composer
-
-      # Install Caddy
-      - apt install -y debian-keyring debian-archive-keyring
-      - curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg
-      - curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | tee /etc/apt/sources.list.d/caddy-stable.list
-      - apt-get update
-      - apt-get install -y caddy
-
       # Install Docker
       - install -m 0755 -d /etc/apt/keyrings
       - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
@@ -143,30 +123,16 @@ resource "hcloud_server" "web" {
 
       # Create application directory
       - mkdir -p /var/www/samwilkinson
-      - chown -R www-data:www-data /var/www
 
-      # Configure PHP-FPM
-      - sed -i 's/pm.max_children = 5/pm.max_children = 10/' /etc/php/8.3/fpm/pool.d/www.conf
-      - sed -i 's/;pm.max_requests = 500/pm.max_requests = 500/' /etc/php/8.3/fpm/pool.d/www.conf
-
-      # Enable OPcache
-      - echo "opcache.enable=1" >> /etc/php/8.3/fpm/conf.d/10-opcache.ini
-      - echo "opcache.memory_consumption=128" >> /etc/php/8.3/fpm/conf.d/10-opcache.ini
-      - echo "opcache.interned_strings_buffer=8" >> /etc/php/8.3/fpm/conf.d/10-opcache.ini
-      - echo "opcache.max_accelerated_files=10000" >> /etc/php/8.3/fpm/conf.d/10-opcache.ini
-
-      # Restart services
-      - systemctl restart php8.3-fpm
-      - systemctl enable php8.3-fpm caddy
-
-      # Create deployment user
+      # Create deployment user with docker access
       - useradd -m -s /bin/bash deploy
+      - usermod -aG docker deploy
       - mkdir -p /home/deploy/.ssh
       - echo "${var.ssh_public_key}" > /home/deploy/.ssh/authorized_keys
       - chown -R deploy:deploy /home/deploy/.ssh
       - chmod 700 /home/deploy/.ssh
       - chmod 600 /home/deploy/.ssh/authorized_keys
-      - usermod -aG www-data deploy
+      - chown -R deploy:deploy /var/www/samwilkinson
 
       # Install fail2ban for SSH protection
       - apt-get install -y fail2ban
@@ -182,14 +148,15 @@ resource "hcloud_server" "web" {
 
           Environment: ${var.environment}
           Managed by: Terraform
+          Architecture: Docker Compose (Caddy + Symfony)
 
           Application: /var/www/samwilkinson
-          Logs: /var/log/caddy/, /var/log/php8.3-fpm.log
+          Logs: docker compose -f /var/www/samwilkinson/docker-compose.prod.yml logs
 
           Quick commands:
-            - Deploy: cd /var/www/samwilkinson && ./deploy.sh
-            - Logs: tail -f /var/log/caddy/access.log
-            - Restart: systemctl restart php8.3-fpm caddy
+            - Status: docker compose -f /var/www/samwilkinson/docker-compose.prod.yml ps
+            - Logs: docker compose -f /var/www/samwilkinson/docker-compose.prod.yml logs -f
+            - Restart: docker compose -f /var/www/samwilkinson/docker-compose.prod.yml restart
 
   EOT
 

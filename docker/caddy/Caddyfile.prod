@@ -1,19 +1,12 @@
-# Production Caddyfile - Host Caddy reverse proxy to Docker
-# Deploy this to /etc/caddy/Caddyfile on the server
+# Production Caddyfile - Caddy in Docker
+# Reverse proxy to PHP-FPM app container
 
 samwilkinson.ca, www.samwilkinson.ca {
     # Automatic HTTPS via Let's Encrypt
     encode gzip zstd
 
-    # Reverse proxy to Docker PHP-FPM container
-    reverse_proxy localhost:9000 {
-        # PHP-FPM expects FastCGI, not HTTP
-        # So we need to handle PHP files specially
-        transport fastcgi
-    }
-
-    # Static file handling (bypass Docker for performance)
-    root * /var/www/samwilkinson/public
+    # Static files served by Caddy from volume mount
+    root * /var/www/html/public
 
     @static {
         file
@@ -32,8 +25,8 @@ samwilkinson.ca, www.samwilkinson.ca {
         # Try the file, otherwise send to Symfony
         try_files {path} /index.php?{query}
 
-        # FastCGI to Docker container
-        php_fastcgi localhost:9000 {
+        # FastCGI to app container via Docker network
+        php_fastcgi app:9000 {
             root /var/www/html/public
             env APP_ENV prod
         }
