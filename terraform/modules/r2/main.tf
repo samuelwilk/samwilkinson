@@ -90,7 +90,7 @@ output "configuration_instructions" {
 
     3. (Optional) Configure custom domain for CDN:
        - R2 → ${var.bucket_name} → Settings → Custom Domains
-       - Add: cdn.samwilkinson.com
-       - Update .env.prod: PHOTO_CDN_URL=https://cdn.samwilkinson.com
+       - Add: cdn.samwilkinson.ca
+       - Update .env.prod: PHOTO_CDN_URL=https://cdn.samwilkinson.ca
   EOT
 }

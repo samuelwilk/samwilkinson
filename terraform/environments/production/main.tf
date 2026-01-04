@@ -1,4 +1,4 @@
-# Production Infrastructure for samwilkinson.com
+# Production Infrastructure for samwilkinson.ca
 # Terraform configuration for VPS + Cloudflare R2 storage
 
 terraform {

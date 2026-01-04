@@ -39,24 +39,75 @@ firebase hosting:clone samwilkinson-ca:live /tmp/firebase-backup
 # https://console.firebase.google.com/ → Hosting → Files
 ```
 
+Skipped - i am not authenticated with firebase on this laptop. I have lost the login through the console but still able
+to login through my google account.
+
 ### 2. Document Current Configuration
 
 Document your current setup:
 - Firebase project ID
+  - portfolio-fff2c
 - Custom domain configuration
+  - not sure where this is in firebase
 - Environment variables (if any)
+  - N/A
 - Redirects/rewrites rules
+  - None
 - Security headers
+  - none as I am aware
 
 ### 3. Check DNS Records
 
 ```bash
 # Current DNS records
 dig samwilkinson.ca
+```
+```
+; <<>> DiG 9.10.6 <<>> samwilkinson.ca
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 6651
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 512
+;; QUESTION SECTION:
+;samwilkinson.ca.               IN      A
+
+;; ANSWER SECTION:
+samwilkinson.ca.        12654   IN      A       199.36.158.100
+
+;; Query time: 21 msec
+;; SERVER: 2604:3d00:f420:8::a#53(2604:3d00:f420:8::a)
+;; WHEN: Sat Jan 03 21:28:24 CST 2026
+;; MSG SIZE  rcvd: 60
+```
+```
 dig www.samwilkinson.ca
 
 # Note current IPs and CNAME targets
 ```
+```
+; <<>> DiG 9.10.6 <<>> www.samwilkinson.ca
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NXDOMAIN, id: 45491
+;; flags: qr rd ra; QUERY: 1, ANSWER: 0, AUTHORITY: 1, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 512
+;; QUESTION SECTION:
+;www.samwilkinson.ca.           IN      A
+
+;; AUTHORITY SECTION:
+samwilkinson.ca.        300     IN      SOA     ns-cloud-c1.googledomains.com. cloud-dns-hostmaster.google.com. 14 21600 3600 259200 300
+
+;; Query time: 70 msec
+;; SERVER: 2604:3d00:f420:8::a#53(2604:3d00:f420:8::a)
+;; WHEN: Sat Jan 03 21:29:59 CST 2026
+;; MSG SIZE  rcvd: 141
+```
+
 
 ### 4. Inform Users (Optional)
 
@@ -65,6 +116,7 @@ If you have significant traffic, consider:
 - Temporary maintenance notice
 - Status page update
 
+no significat traffic, done time is fine!
 ---
 
 ## Migration Steps
@@ -80,29 +132,58 @@ If you have significant traffic, consider:
 2. **Add samwilkinson.ca to Cloudflare**
    - Dashboard → Add Site
    - Enter: `samwilkinson.ca`
-   - Select Free plan
+   - Click Add Site → Select Free plan
 
-3. **Copy existing DNS records**
-   Cloudflare will scan and import your current DNS records from Firebase.
+3. **Review DNS Records Scan**
 
-   **Important:** DO NOT change nameservers yet! Just set up the zone.
+   Cloudflare will scan your current DNS from Google Domains and should detect:
 
-4. **Note Cloudflare Information**
-   Save these for later:
-   - Zone ID (samwilkinson.ca → Overview → API section)
-   - Account ID (R2 → Overview)
-   - Nameservers (you'll use these later)
+   ```
+   Type: A
+   Name: @ (root domain)
+   Content: 199.36.158.100 (current Firebase IP)
+   Proxy: OFF (gray cloud)
+   TTL: Auto
+   ```
+
+   **Verify this record appears.** If it doesn't, manually add it:
+   - Type: A
+   - Name: `@`
+   - IPv4 address: `199.36.158.100`
+   - Proxy status: DNS only (gray cloud, NOT orange)
+   - TTL: Auto
+
+   **Note:** You don't have a `www` subdomain currently (dig showed NXDOMAIN), so don't add one yet. Terraform will create it.
+
+4. **CRITICAL: Do NOT change nameservers yet!**
+
+   Cloudflare will show you nameservers to use. **Write them down but DO NOT update your domain registrar yet.**
+
+   Your site will stay on Firebase until Step 10 (nameserver change).
+
+5. **Note Cloudflare Information**
+
+   Save these values (you'll need them for Terraform):
+
+   - **Zone ID**: Dashboard → samwilkinson.ca → Overview → scroll to API section on right sidebar
+   - **Account ID**: Dashboard → R2 → Overview (or Workers & Pages → Overview)
+   - **Nameservers**: Shown after adding site (e.g., `aaron.ns.cloudflare.com`, `june.ns.cloudflare.com`)
+
+   Keep Cloudflare tab open - you'll need to create an API token next.
 
 #### Step 2: Create Cloudflare API Token
 
 1. Go to: https://dash.cloudflare.com/profile/api-tokens
 2. Click "Create Token"
 3. Use "Edit zone DNS" template
-4. Permissions:
-   - Zone → DNS → Edit
-   - Account → Cloudflare R2 → Edit
-5. Zone Resources: Include → Specific zone → samwilkinson.ca
-6. Create Token and save it securely
+4. Configure permissions:
+   - **Zone → DNS → Edit**
+   - Zone Resources: **Include → Specific zone → samwilkinson.ca**
+5. Click "Continue to summary"
+6. Click "Create Token"
+7. **IMPORTANT:** Copy the token immediately and save it securely (you won't see it again)
+
+**Note about R2:** We'll create R2 bucket and credentials separately. The DNS token is sufficient for Terraform to manage your domain records.
 
 #### Step 3: Get Hetzner API Token
 
