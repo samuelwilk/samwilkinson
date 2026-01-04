@@ -74,7 +74,27 @@ fixtures:
 # Test Database Commands
 # ========================================
 
-# Drop and recreate test database (SQLite)
+# Drop and recreate test database (SQLite) - CI/native
+test-db-reset-native:
+	@echo "Resetting test database..."
+	@mkdir -p var/data
+	APP_ENV=test php bin/console doctrine:schema:drop --force --full-database 2>/dev/null || true
+	APP_ENV=test php bin/console doctrine:schema:create
+	@echo "Test database reset complete"
+
+# Load fixtures into test database - CI/native
+test-fixtures-native:
+	@echo "Loading test fixtures..."
+	APP_ENV=test php bin/console doctrine:fixtures:load --no-interaction
+	@echo "Test fixtures loaded successfully"
+
+# Run PHPUnit tests with fresh database and fixtures - CI/native
+test-phpunit-native: test-db-reset-native test-fixtures-native
+	@echo "Running PHPUnit test suite..."
+	php bin/phpunit
+	@echo "All tests complete!"
+
+# Drop and recreate test database (SQLite) - Docker
 test-db-reset:
 	@echo "Resetting test database..."
 	docker compose exec app mkdir -p var/data
@@ -82,19 +102,19 @@ test-db-reset:
 	docker compose exec app sh -c "APP_ENV=test php bin/console doctrine:schema:create"
 	@echo "Test database reset complete"
 
-# Load fixtures into test database
+# Load fixtures into test database - Docker
 test-fixtures:
 	@echo "Loading test fixtures..."
 	docker compose exec app sh -c "APP_ENV=test php bin/console doctrine:fixtures:load --no-interaction"
 	@echo "Test fixtures loaded successfully"
 
-# Run PHPUnit tests with fresh database and fixtures
+# Run PHPUnit tests with fresh database and fixtures - Docker
 test-phpunit: test-db-reset test-fixtures
 	@echo "Running PHPUnit test suite..."
 	docker compose exec app php bin/phpunit
 	@echo "All tests complete!"
 
-# Convenience target for running all tests
+# Convenience target for running all tests (use -native for CI)
 test: test-phpunit
 
 # Run tests with coverage (requires xdebug)
