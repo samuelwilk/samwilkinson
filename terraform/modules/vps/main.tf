@@ -149,14 +149,16 @@ resource "hcloud_server" "web" {
           Environment: ${var.environment}
           Managed by: Terraform
           Architecture: Docker Compose (Caddy + Symfony)
+          Deploy user: deploy (docker group)
 
           Application: /var/www/samwilkinson
-          Logs: docker compose -f /var/www/samwilkinson/docker-compose.prod.yml logs
+          Deployment: Automated via GitHub Actions
 
-          Quick commands:
-            - Status: docker compose -f /var/www/samwilkinson/docker-compose.prod.yml ps
-            - Logs: docker compose -f /var/www/samwilkinson/docker-compose.prod.yml logs -f
-            - Restart: docker compose -f /var/www/samwilkinson/docker-compose.prod.yml restart
+          Quick commands (run as deploy user):
+            - Status: cd /var/www/samwilkinson && docker compose -f docker-compose.prod.yml ps
+            - Logs: cd /var/www/samwilkinson && docker compose -f docker-compose.prod.yml logs -f
+            - Restart: cd /var/www/samwilkinson && docker compose -f docker-compose.prod.yml restart
+            - Shell: cd /var/www/samwilkinson && docker compose -f docker-compose.prod.yml exec app sh
 
   EOT
 
