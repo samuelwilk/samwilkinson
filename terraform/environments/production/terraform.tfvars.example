@@ -1,0 +1,24 @@
+# Production Environment Variables
+# Copy to terraform.tfvars and fill in with real values
+
+# Hetzner Cloud API Token
+# Get from: https://console.hetzner.cloud/ → Security → API Tokens
+hetzner_api_token = "YOUR_HETZNER_API_TOKEN"
+
+# Cloudflare API Token
+# Get from: https://dash.cloudflare.com/profile/api-tokens
+# Permissions needed: Zone.DNS (Edit), Account.R2 (Edit)
+cloudflare_api_token = "YOUR_CLOUDFLARE_API_TOKEN"
+
+# Cloudflare Account ID
+# Get from: https://dash.cloudflare.com/ → R2 → Overview
+cloudflare_account_id = "YOUR_CLOUDFLARE_ACCOUNT_ID"
+
+# Cloudflare Zone ID for samwilkinson.com
+# Get from: https://dash.cloudflare.com/ → samwilkinson.com → Overview → API
+cloudflare_zone_id = "YOUR_CLOUDFLARE_ZONE_ID"
+
+# SSH Public Key for server access
+# Generate with: ssh-keygen -t ed25519 -C "your_email@example.com"
+# Then: cat ~/.ssh/id_ed25519.pub
+ssh_public_key = "ssh-ed25519 AAAAC3... your_email@example.com"
