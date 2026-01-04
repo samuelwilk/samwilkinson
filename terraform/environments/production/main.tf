@@ -73,8 +73,8 @@ module "vps" {
   source = "../../modules/vps"
 
   server_name    = "samwilkinson-prod"
-  server_type    = "cpx11"  # 2 vCPU, 2GB RAM, 40GB SSD - €4.51/month
-  location       = "nbg1"    # Nuremberg, Germany
+  server_type    = "cx23"    # Available on Hetzner website
+  location       = "nbg1"    # Nuremberg, Germany (eu-central)
   ssh_public_key = var.ssh_public_key
   environment    = "production"
 }

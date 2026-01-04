@@ -1,6 +1,15 @@
 # Cloudflare R2 Storage Module
 # Provisions R2 bucket for photo storage with access credentials
 
+terraform {
+  required_providers {
+    cloudflare = {
+      source  = "cloudflare/cloudflare"
+      version = "~> 4.0"
+    }
+  }
+}
+
 variable "cloudflare_account_id" {
   description = "Cloudflare account ID"
   type        = string
@@ -23,24 +32,9 @@ resource "cloudflare_r2_bucket" "photos" {
   location   = "WEUR"  # Western Europe (automatic redundancy)
 }
 
-# API Token for R2 access
-resource "cloudflare_api_token" "r2_access" {
-  name = "${var.bucket_name}-access-token"
-
-  policy {
-    permission_groups = [
-      data.cloudflare_api_token_permission_groups.all.r2["Workers R2 Storage Write"],
-      data.cloudflare_api_token_permission_groups.all.r2["Workers R2 Storage Read"],
-    ]
-
-    resources = {
-      "com.cloudflare.edge.r2.bucket.${var.cloudflare_account_id}_default_${var.bucket_name}" = "*"
-    }
-  }
-}
-
-# Permission groups data source
-data "cloudflare_api_token_permission_groups" "all" {}
+# Note: R2 API tokens must be created manually via Cloudflare Dashboard
+# Dashboard → R2 → Manage R2 API Tokens → Create API Token
+# This is because creating API tokens requires additional Cloudflare permissions
 
 # Outputs
 output "bucket_name" {
