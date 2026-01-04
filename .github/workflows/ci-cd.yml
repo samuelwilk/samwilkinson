@@ -52,6 +52,9 @@ jobs:
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress --no-interaction
 
+      - name: Build Tailwind CSS
+        run: php bin/console tailwind:build
+
       - name: Run test suite
         run: make test-phpunit-native
 
@@ -126,21 +129,23 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Download Tailwind CLI
-        run: |
-          mkdir -p tailwind
-          curl -sLO https://github.com/tailwindlabs/tailwindcss/releases/latest/download/tailwindcss-linux-x64
-          mv tailwindcss-linux-x64 tailwind/tailwindcss
-          chmod +x tailwind/tailwindcss
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          tools: composer:v2
 
-      - name: Build production CSS
-        run: cd tailwind && ./tailwindcss -i input.css -o ../public/css/app.css --minify
+      - name: Install dependencies
+        run: composer install --no-dev --prefer-dist --no-progress --no-interaction
+
+      - name: Build Tailwind CSS
+        run: php bin/console tailwind:build
 
       - name: Upload built assets
         uses: actions/upload-artifact@v4
         with:
           name: built-assets
-          path: public/css/app.css
+          path: var/tailwind/app.built.css
           retention-days: 7
 
   # ==========================================
@@ -159,12 +164,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Download built assets
-        uses: actions/download-artifact@v4
-        with:
-          name: built-assets
-          path: public/css/
 
       - name: Setup SSH
         uses: webfactory/ssh-agent@v0.9.0
@@ -242,6 +241,11 @@ jobs:
               docker compose -f docker-compose.prod.yml exec -T -u www-data app \
                 php bin/console doctrine:fixtures:load --no-interaction || true
             fi
+
+            # Build Tailwind CSS
+            echo "🎨 Building Tailwind CSS..."
+            docker compose -f docker-compose.prod.yml exec -T -u www-data app \
+              php bin/console tailwind:build
 
             # Clear cache
             echo "🧹 Clearing cache..."
