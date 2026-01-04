@@ -138,6 +138,8 @@ jobs:
           tools: composer:v2
 
       - name: Install dependencies
+        env:
+          APP_ENV: prod
         run: composer install --no-dev --prefer-dist --no-progress --no-interaction
 
       - name: Build Tailwind CSS
