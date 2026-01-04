@@ -1,4 +1,4 @@
-.PHONY: up down shell install migrate tailwind build-prod clean restart logs
+.PHONY: up down shell install migrate tailwind build-prod clean restart logs fixtures test-db-reset test-fixtures test-phpunit test test-coverage
 
 # Start containers
 up:
@@ -64,3 +64,41 @@ db-create:
 # Run migrations and load fixtures (if any)
 db-setup: db-create migrate
 	@echo "Database setup complete"
+
+# Load fixtures (development)
+fixtures:
+	php bin/console doctrine:fixtures:load --no-interaction
+	@echo "Fixtures loaded successfully"
+
+# ========================================
+# Test Database Commands
+# ========================================
+
+# Drop and recreate test database (SQLite)
+test-db-reset:
+	@echo "Resetting test database..."
+	@mkdir -p var/data
+	APP_ENV=test php bin/console doctrine:schema:drop --force --full-database 2>/dev/null || true
+	APP_ENV=test php bin/console doctrine:schema:create
+	@echo "Test database reset complete"
+
+# Load fixtures into test database
+test-fixtures:
+	@echo "Loading test fixtures..."
+	APP_ENV=test php bin/console doctrine:fixtures:load --no-interaction
+	@echo "Test fixtures loaded successfully"
+
+# Run PHPUnit tests with fresh database and fixtures
+test-phpunit: test-db-reset test-fixtures
+	@echo "Running PHPUnit test suite..."
+	php bin/phpunit
+	@echo "All tests complete!"
+
+# Convenience target for running all tests
+test: test-phpunit
+
+# Run tests with coverage (requires xdebug)
+test-coverage:
+	@echo "Running tests with coverage..."
+	XDEBUG_MODE=coverage php bin/phpunit --coverage-html var/coverage
+	@echo "Coverage report generated in var/coverage/"
