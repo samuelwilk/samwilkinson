@@ -107,13 +107,17 @@ ENV APP_ENV=prod
 ENV APP_DEBUG=0
 
 # Create required directories
-RUN mkdir -p var/cache var/log var/data public/assets assets/vendor
+RUN mkdir -p var/cache var/log var/data public/assets public/bundles assets/vendor
 
 # Install vendor JavaScript assets (AssetMapper importmap)
 # Downloads @hotwired/stimulus, @hotwired/turbo, etc. to assets/vendor/
 # Note: This requires network access during build, but versions are pinned in importmap.php
 # so builds are deterministic. This is the standard Symfony AssetMapper workflow.
 RUN php bin/console importmap:install
+
+# Install Symfony bundle assets (EasyAdmin, etc.) to public/bundles/
+# This copies CSS/JS from vendor/ bundles into public/bundles/
+RUN php bin/console assets:install --no-interaction
 
 # Build Tailwind CSS (if TailwindBundle is present)
 # Compiles to var/tailwind/app.built.css

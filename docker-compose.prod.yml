@@ -35,7 +35,7 @@ services:
     # Health check (use HTTPS since HTTP redirects with 308)
     # Must send Host header to match Caddyfile site block
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "--no-check-certificate", "--header=Host: samwilkinson.ca", "https://localhost:443/health"]
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "--no-check-certificate", "--header", "Host: samwilkinson.ca", "https://localhost:443/health"]
       interval: 30s
       timeout: 3s
       retries: 3
