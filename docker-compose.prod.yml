@@ -16,7 +16,9 @@ services:
     # Caddy configuration and data
     volumes:
       - ./docker/caddy/Caddyfile.prod:/etc/caddy/Caddyfile:ro
-      - ./public:/var/www/html/public:ro
+      # Don't mount ./public - use compiled assets from Docker image
+      # Only mount uploads directory for user content persistence
+      - ./public/uploads:/var/www/html/public/uploads:ro
       - caddy_data:/data
       - caddy_config:/config
 
@@ -78,7 +80,9 @@ services:
       - ./src:/var/www/html/src:ro
       - ./config:/var/www/html/config:ro
       - ./templates:/var/www/html/templates:ro
-      - ./public:/var/www/html/public:ro
+      # Don't mount entire public/ - use compiled assets from Docker image
+      # Only mount uploads for user content persistence
+      - ./public/uploads:/var/www/html/public/uploads
       - ./bin:/var/www/html/bin:ro
       - ./migrations:/var/www/html/migrations:ro
 

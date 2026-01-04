@@ -218,13 +218,13 @@ jobs:
           TRUSTED_PROXIES=127.0.0.1,REMOTE_ADDR
           ENV_EOF
 
-            # Prepare database directory with correct permissions
-            # Note: var/cache and var/log use named Docker volumes
-            # var/tailwind is built into the Docker image
-            echo "📁 Preparing database directory..."
-            mkdir -p var/data
-            chown -R 1000:1000 var/data
-            chmod -R 775 var/data
+            # Prepare persistent directories with correct permissions
+            # var/cache and var/log use what's in Docker image (ephemeral)
+            # var/tailwind and public/assets are built into the Docker image
+            echo "📁 Preparing persistent directories..."
+            mkdir -p var/data public/uploads
+            chown -R 1000:1000 var/data public/uploads
+            chmod -R 775 var/data public/uploads
 
             # Stop existing containers
             echo "🛑 Stopping existing containers..."
