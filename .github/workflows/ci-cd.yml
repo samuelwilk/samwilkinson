@@ -20,6 +20,9 @@ jobs:
     name: Run Tests
     runs-on: ubuntu-latest
 
+    env:
+      APP_ENV: test
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -64,6 +67,9 @@ jobs:
     name: Code Quality Checks
     runs-on: ubuntu-latest
 
+    env:
+      APP_ENV: test
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -95,6 +101,9 @@ jobs:
   security:
     name: Security Audit
     runs-on: ubuntu-latest
+
+    env:
+      APP_ENV: test
 
     steps:
       - name: Checkout code
