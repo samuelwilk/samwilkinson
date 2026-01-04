@@ -242,24 +242,24 @@ jobs:
 
             # Run migrations (creates schema if it doesn't exist)
             echo "🗄️  Running database migrations..."
-            docker compose -f docker-compose.prod.yml exec -T -u www-data app \
+            docker compose -f docker-compose.prod.yml exec -T app \
               php bin/console doctrine:migrations:migrate --no-interaction
 
             # Load fixtures (only on first deploy)
             if [ ! -f "/var/www/samwilkinson/var/data/database.sqlite" ]; then
               echo "📦 Loading fixtures..."
-              docker compose -f docker-compose.prod.yml exec -T -u www-data app \
+              docker compose -f docker-compose.prod.yml exec -T app \
                 php bin/console doctrine:fixtures:load --no-interaction || true
             fi
 
             # Build Tailwind CSS
             echo "🎨 Building Tailwind CSS..."
-            docker compose -f docker-compose.prod.yml exec -T -u www-data app \
+            docker compose -f docker-compose.prod.yml exec -T app \
               php bin/console tailwind:build
 
             # Clear cache
             echo "🧹 Clearing cache..."
-            docker compose -f docker-compose.prod.yml exec -T -u www-data app \
+            docker compose -f docker-compose.prod.yml exec -T app \
               php bin/console cache:clear
 
             # Show container status
