@@ -214,21 +214,10 @@ jobs:
             $COMPOSE exec -T app \
               php bin/console doctrine:migrations:migrate --no-interaction
 
-            # Load fixtures AFTER migrations (only once, tracked by marker file)
-            echo "🔎 Checking if fixtures already loaded..."
-            FIXTURES_LOADED=$($COMPOSE exec -T app sh -c \
-              'test -f /srv/app/var/data/.fixtures_loaded && echo yes || echo no')
-
-            if [ "$FIXTURES_LOADED" = "no" ]; then
-              echo "📦 First deploy detected: loading fixtures..."
-              $COMPOSE exec -T app \
-                php bin/console doctrine:fixtures:load --no-interaction || true
-              $COMPOSE exec -T app sh -c \
-                'touch /srv/app/var/data/.fixtures_loaded'
-              echo "✅ Fixtures loaded and marked complete"
-            else
-              echo "⏭️  Fixtures already loaded, skipping"
-            fi
+            # NOTE: Fixtures are NOT loaded in production
+            # Use console commands to create admin user and API tokens:
+            #   docker compose -p samwilkinson -f docker-compose.prod.yml exec app php bin/console app:create-admin
+            #   docker compose -p samwilkinson -f docker-compose.prod.yml exec app php bin/console app:create-api-token
 
             # Warm cache with runtime env vars/secrets
             echo "🧹 Warming production cache..."
