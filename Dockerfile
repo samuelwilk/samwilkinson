@@ -111,11 +111,12 @@ RUN sed -i 's/listen = 127.0.0.1:9000/listen = 9000/g' /usr/local/etc/php-fpm.d/
     sed -i 's/;pm.max_requests = 500/pm.max_requests = 500/g' /usr/local/etc/php-fpm.d/www.conf
 
 # Copy application from builder
-COPY --from=builder --chown=www-data:www-data /var/www/html /var/www/html
+# Use 1000:1000 to match the runtime user in docker-compose.prod.yml
+COPY --from=builder --chown=1000:1000 /var/www/html /var/www/html
 
-# Create runtime directories
+# Create runtime directories with correct ownership
 RUN mkdir -p var/data var/cache var/log public/uploads && \
-    chown -R www-data:www-data var public/uploads && \
+    chown -R 1000:1000 var public/uploads && \
     chmod -R 775 var public/uploads
 
 # Health check script
@@ -126,8 +127,8 @@ RUN echo '#!/bin/sh' > /usr/local/bin/php-fpm-healthcheck && \
 # Security: Remove unnecessary packages
 RUN apk del apk-tools
 
-# Switch to non-root user
-USER www-data
+# Switch to non-root user (matches docker-compose.prod.yml user: "1000:1000")
+USER 1000:1000
 
 EXPOSE 9000
 
