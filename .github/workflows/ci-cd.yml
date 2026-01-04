@@ -184,7 +184,7 @@ jobs:
           APP_SECRET=${{ secrets.APP_SECRET }}
           DATABASE_URL="sqlite:///%kernel.project_dir%/var/data/database.sqlite"
           TRUSTED_HOSTS=^samwilkinson\\.ca$,^www\\.samwilkinson\\.ca$
-          TRUSTED_PROXIES=127.0.0.1,REMOTE_ADDR
+          TRUSTED_PROXIES=172.20.0.0/24,REMOTE_ADDR
           ENV_EOF
 
             # Prepare persistent directories with correct permissions

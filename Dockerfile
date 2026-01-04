@@ -144,9 +144,9 @@ RUN sed -i 's/listen = 127.0.0.1:9000/listen = 9000/g' /usr/local/etc/php-fpm.d/
 COPY --from=builder --chown=1000:1000 /srv/app /srv/app
 
 # Create runtime directories with correct ownership
-# var/data persists via volume mount
+# var/data and var/sessions persist via volume mounts
 # var/cache and var/log are ephemeral (rebuilt from image on restart)
-RUN mkdir -p var/data var/cache var/log public/uploads && \
+RUN mkdir -p var/data var/sessions var/cache var/log public/uploads && \
     chown -R 1000:1000 var public/uploads && \
     chmod -R 775 var public/uploads
 

@@ -1,0 +1,16 @@
+framework:
+    # Production session configuration
+    # See https://symfony.com/doc/current/reference/configuration/framework.html#session
+    session:
+        # Store sessions in filesystem (SQLite DB is for app data only)
+        handler_id: session.handler.native_file
+        save_path: '%kernel.project_dir%/var/sessions'
+
+        # Cookie settings for HTTPS and security
+        cookie_secure: auto  # Automatically use secure cookies on HTTPS
+        cookie_httponly: true
+        cookie_samesite: lax
+
+        # Session lifetime: 30 days for admin convenience
+        cookie_lifetime: 2592000
+        gc_maxlifetime: 2592000
