@@ -111,6 +111,8 @@ RUN mkdir -p var/cache var/log var/data public/assets assets/vendor
 
 # Install vendor JavaScript assets (AssetMapper importmap)
 # Downloads @hotwired/stimulus, @hotwired/turbo, etc. to assets/vendor/
+# Note: This requires network access during build, but versions are pinned in importmap.php
+# so builds are deterministic. This is the standard Symfony AssetMapper workflow.
 RUN php bin/console importmap:install
 
 # Build Tailwind CSS (if TailwindBundle is present)

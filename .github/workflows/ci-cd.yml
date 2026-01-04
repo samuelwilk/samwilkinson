@@ -202,29 +202,29 @@ jobs:
             echo "🔨 Building Docker images..."
             docker compose -f docker-compose.prod.yml build --pull --no-cache
 
-            # Start containers
+            # Start containers and wait for health checks
             echo "🚀 Starting containers..."
-            docker compose -f docker-compose.prod.yml up -d
-
-            # Wait for containers to be healthy
-            echo "⏳ Waiting for container health checks..."
-            sleep 10
-
-            # Check if database exists BEFORE migrations (flag for first deploy)
-            echo "🔎 Checking if DB already exists..."
-            DB_EXISTS=$(docker compose -f docker-compose.prod.yml exec -T app sh -c \
-              'test -f /srv/app/var/data/database.sqlite && echo yes || echo no')
+            docker compose -f docker-compose.prod.yml up -d --wait
 
             # Run migrations (creates schema if it doesn't exist, or migrates existing)
             echo "🗄️  Running database migrations..."
             docker compose -f docker-compose.prod.yml exec -T app \
               php bin/console doctrine:migrations:migrate --no-interaction
 
-            # Load fixtures AFTER migrations (only on first deploy)
-            if [ "$DB_EXISTS" = "no" ]; then
+            # Load fixtures AFTER migrations (only once, tracked by marker file)
+            echo "🔎 Checking if fixtures already loaded..."
+            FIXTURES_LOADED=$(docker compose -f docker-compose.prod.yml exec -T app sh -c \
+              'test -f /srv/app/var/data/.fixtures_loaded && echo yes || echo no')
+
+            if [ "$FIXTURES_LOADED" = "no" ]; then
               echo "📦 First deploy detected: loading fixtures..."
               docker compose -f docker-compose.prod.yml exec -T app \
                 php bin/console doctrine:fixtures:load --no-interaction || true
+              docker compose -f docker-compose.prod.yml exec -T app sh -c \
+                'touch /srv/app/var/data/.fixtures_loaded'
+              echo "✅ Fixtures loaded and marked complete"
+            else
+              echo "⏭️  Fixtures already loaded, skipping"
             fi
 
             # Warm cache with runtime env vars/secrets
