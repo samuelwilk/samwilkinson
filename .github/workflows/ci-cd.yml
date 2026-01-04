@@ -43,11 +43,11 @@ jobs:
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
           restore-keys: ${{ runner.os }}-composer-
 
+      - name: Create required directories
+        run: mkdir -p var/data var/cache var/log
+
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress --no-interaction
-
-      - name: Create test database directory
-        run: mkdir -p var/data
 
       - name: Run test suite
         run: make test-phpunit
@@ -75,6 +75,9 @@ jobs:
           extensions: mbstring, xml
           coverage: none
           tools: composer:v2, php-cs-fixer, phpstan
+
+      - name: Create required directories
+        run: mkdir -p var/data var/cache var/log
 
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress
