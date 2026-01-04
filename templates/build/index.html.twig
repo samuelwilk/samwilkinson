@@ -46,7 +46,7 @@
     <div class="mb-16">
         {{ type.overline('Selected Work', 'mb-4 text-stone') }}
         <h2 class="font-display text-3xl md:text-4xl text-ink tracking-tight">
-            Case Studies
+            Projects
         </h2>
     </div>
 
@@ -76,7 +76,7 @@
                 {# Content Area - Museum Label Hierarchy #}
                 <div class="p-8">
                     {# Overline #}
-                    {{ type.overline('Case Study', 'mb-4 text-stone') }}
+                    {{ type.overline('Project', 'mb-4 text-stone') }}
 
                     {# Title - Restrained Hover Color Change #}
                     <h3 class="font-display text-2xl md:text-3xl text-ink mb-4 leading-tight tracking-tight group-hover:text-graphite transition-colors duration-200">
@@ -118,7 +118,7 @@
                 {# Interaction Layer #}
                 <a href="{{ path('app_build_show', {slug: project.slug}) }}"
                    class="absolute inset-0 z-10"
-                   aria-label="View {{ project.title }} case study">
+                   aria-label="View {{ project.title }} project">
                 </a>
             </article>
         {% endfor %}
