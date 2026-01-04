@@ -218,11 +218,13 @@ jobs:
           TRUSTED_PROXIES=127.0.0.1,REMOTE_ADDR
           ENV_EOF
 
-            # Prepare writable directories with correct permissions
-            echo "📁 Preparing writable directories..."
-            mkdir -p var/data var/cache var/log
-            chown -R 1000:1000 var
-            chmod -R 775 var
+            # Prepare database directory with correct permissions
+            # Note: var/cache and var/log use named Docker volumes
+            # var/tailwind is built into the Docker image
+            echo "📁 Preparing database directory..."
+            mkdir -p var/data
+            chown -R 1000:1000 var/data
+            chmod -R 775 var/data
 
             # Stop existing containers
             echo "🛑 Stopping existing containers..."
@@ -251,11 +253,6 @@ jobs:
               docker compose -f docker-compose.prod.yml exec -T app \
                 php bin/console doctrine:fixtures:load --no-interaction || true
             fi
-
-            # Build Tailwind CSS
-            echo "🎨 Building Tailwind CSS..."
-            docker compose -f docker-compose.prod.yml exec -T app \
-              php bin/console tailwind:build
 
             # Clear cache
             echo "🧹 Clearing cache..."

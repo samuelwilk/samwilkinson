@@ -92,8 +92,10 @@ RUN composer dump-autoload --no-dev --optimize --classmap-authoritative
 RUN mkdir -p assets/vendor && \
     APP_ENV=prod php bin/console importmap:install
 
-# Note: Tailwind CSS is built in the running container using TailwindBundle
-# See deployment workflow: docker compose exec app php bin/console tailwind:build
+# Build Tailwind CSS during image creation
+# TailwindBundle compiles CSS to var/tailwind/app.built.css
+RUN mkdir -p var/tailwind && \
+    APP_ENV=prod php bin/console tailwind:build
 
 # ===================================
 # Production Stage - Minimal, Secure
