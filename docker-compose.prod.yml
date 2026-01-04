@@ -1,0 +1,96 @@
+# Production Docker Compose Configuration
+# Secure, production-ready setup with Caddy reverse proxy on host
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: prod
+    container_name: samwilkinson-app
+    restart: unless-stopped
+
+    # Security: Run as non-root user
+    user: "1000:1000"
+
+    # Resource limits
+    deploy:
+      resources:
+        limits:
+          cpus: '1.5'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+
+    # Environment
+    env_file:
+      - .env.prod
+    environment:
+      APP_ENV: prod
+      APP_DEBUG: 0
+
+    # Volumes - minimal, specific mounts
+    volumes:
+      # Application code (read-only in production)
+      - ./src:/var/www/html/src:ro
+      - ./config:/var/www/html/config:ro
+      - ./templates:/var/www/html/templates:ro
+      - ./public:/var/www/html/public:ro
+      - ./bin:/var/www/html/bin:ro
+      - ./migrations:/var/www/html/migrations:ro
+
+      # Writable directories
+      - ./var:/var/www/html/var
+      - app-cache:/var/www/html/var/cache
+      - app-log:/var/www/html/var/log
+
+      # SQLite database (persistent)
+      - ./var/data:/var/www/html/var/data
+
+    # Expose to host Caddy (not to public)
+    ports:
+      - "127.0.0.1:9000:9000"
+
+    # Health check
+    healthcheck:
+      test: ["CMD", "php-fpm-healthcheck"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 40s
+
+    # Security options
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - SETUID
+      - SETGID
+      - DAC_OVERRIDE
+
+    # Logging
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+    # Network
+    networks:
+      - app-network
+
+volumes:
+  app-cache:
+    driver: local
+  app-log:
+    driver: local
+
+networks:
+  app-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/24

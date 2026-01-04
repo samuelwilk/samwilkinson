@@ -1,50 +1,132 @@
-FROM php:8.3-fpm-alpine
+# ===================================
+# Base Stage - Shared Dependencies
+# ===================================
+FROM php:8.3-fpm-alpine AS base
 
 # Install system dependencies
 RUN apk add --no-cache \
-    git \
     curl \
-    zip \
-    unzip \
+    libpng \
+    libjpeg-turbo \
+    freetype \
+    oniguruma \
+    libzip \
+    icu-libs \
+    sqlite-libs \
+    fcgi
+
+# Install PHP extensions
+RUN apk add --no-cache --virtual .build-deps \
     libpng-dev \
     libjpeg-turbo-dev \
     freetype-dev \
     oniguruma-dev \
     libzip-dev \
     icu-dev \
-    sqlite-dev
-
-# Install PHP extensions
-RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
+    sqlite-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) \
-        pdo \
         pdo_sqlite \
         mbstring \
         exif \
-        pcntl \
-        bcmath \
         gd \
         zip \
-        intl
+        intl \
+        opcache \
+    && apk del .build-deps
 
 # Install Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Set working directory
 WORKDIR /var/www/html
 
-# Copy custom PHP configuration
+# ===================================
+# Development Stage
+# ===================================
+FROM base AS dev
+
+# Install dev dependencies
+RUN apk add --no-cache \
+    git \
+    zip \
+    unzip
+
+# Copy custom PHP configuration (development)
 COPY docker/php/custom.ini /usr/local/etc/php/conf.d/custom.ini
 
-# Configure PHP-FPM to listen on port 9000
+# Configure PHP-FPM
 RUN sed -i 's/listen = 127.0.0.1:9000/listen = 9000/g' /usr/local/etc/php-fpm.d/www.conf
 
-# Create necessary directories
-RUN mkdir -p var/data var/cache var/log public/uploads
-
-# Set permissions
-RUN chown -R www-data:www-data /var/www/html
+# Create directories
+RUN mkdir -p var/data var/cache var/log public/uploads && \
+    chown -R www-data:www-data /var/www/html
 
 EXPOSE 9000
+CMD ["php-fpm"]
+
+# ===================================
+# Builder Stage - Install Dependencies
+# ===================================
+FROM base AS builder
+
+# Copy composer files
+COPY composer.json composer.lock symfony.lock ./
+
+# Install production dependencies (no dev packages)
+RUN composer install \
+    --no-dev \
+    --no-scripts \
+    --no-interaction \
+    --prefer-dist \
+    --optimize-autoloader \
+    --classmap-authoritative
+
+# Copy application code
+COPY . .
+
+# Build production assets (Tailwind)
+RUN mkdir -p public/css && \
+    if [ -f tailwind/tailwindcss ]; then \
+        chmod +x tailwind/tailwindcss && \
+        cd tailwind && ./tailwindcss -i input.css -o ../public/css/app.css --minify; \
+    fi
+
+# ===================================
+# Production Stage - Minimal, Secure
+# ===================================
+FROM base AS prod
+
+# Production PHP configuration
+COPY docker/php/prod.ini /usr/local/etc/php/conf.d/prod.ini
+
+# Configure PHP-FPM for production
+RUN sed -i 's/listen = 127.0.0.1:9000/listen = 9000/g' /usr/local/etc/php-fpm.d/www.conf && \
+    sed -i 's/pm.max_children = 5/pm.max_children = 10/g' /usr/local/etc/php-fpm.d/www.conf && \
+    sed -i 's/;pm.max_requests = 500/pm.max_requests = 500/g' /usr/local/etc/php-fpm.d/www.conf
+
+# Copy application from builder
+COPY --from=builder --chown=www-data:www-data /var/www/html /var/www/html
+
+# Create runtime directories
+RUN mkdir -p var/data var/cache var/log public/uploads && \
+    chown -R www-data:www-data var public/uploads && \
+    chmod -R 775 var public/uploads
+
+# Health check script
+RUN echo '#!/bin/sh' > /usr/local/bin/php-fpm-healthcheck && \
+    echo 'SCRIPT_NAME=/ping SCRIPT_FILENAME=/ping REQUEST_METHOD=GET cgi-fcgi -bind -connect 127.0.0.1:9000' >> /usr/local/bin/php-fpm-healthcheck && \
+    chmod +x /usr/local/bin/php-fpm-healthcheck
+
+# Security: Remove unnecessary packages
+RUN apk del apk-tools
+
+# Switch to non-root user
+USER www-data
+
+EXPOSE 9000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
+    CMD php-fpm-healthcheck || exit 1
 
 CMD ["php-fpm"]

@@ -1,6 +1,15 @@
 # VPS Module - Hetzner Cloud Server
 # Provisions a Ubuntu 24.04 server with PHP 8.3, Caddy, and required dependencies
 
+terraform {
+  required_providers {
+    hcloud = {
+      source  = "hetznercloud/hcloud"
+      version = "~> 1.45"
+    }
+  }
+}
+
 variable "server_name" {
   description = "Name of the server"
   type        = string
@@ -13,9 +22,9 @@ variable "server_type" {
 }
 
 variable "location" {
-  description = "Server location (nbg1, fsn1, hel1, ash, hil)"
+  description = "Server location (fsn1, nbg1, hel1, ash, hil)"
   type        = string
-  default     = "nbg1"  # Nuremberg
+  default     = "fsn1"  # Falkenstein, Germany
 }
 
 variable "ssh_public_key" {
@@ -121,6 +130,16 @@ resource "hcloud_server" "web" {
       - curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | tee /etc/apt/sources.list.d/caddy-stable.list
       - apt-get update
       - apt-get install -y caddy
+
+      # Install Docker
+      - install -m 0755 -d /etc/apt/keyrings
+      - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+      - chmod a+r /etc/apt/keyrings/docker.gpg
+      - echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+      - apt-get update
+      - apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+      - systemctl enable docker
+      - systemctl start docker
 
       # Create application directory
       - mkdir -p /var/www/samwilkinson

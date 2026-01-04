@@ -1,0 +1,67 @@
+# Production Caddyfile - Host Caddy reverse proxy to Docker
+# Deploy this to /etc/caddy/Caddyfile on the server
+
+samwilkinson.ca, www.samwilkinson.ca {
+    # Automatic HTTPS via Let's Encrypt
+    encode gzip zstd
+
+    # Reverse proxy to Docker PHP-FPM container
+    reverse_proxy localhost:9000 {
+        # PHP-FPM expects FastCGI, not HTTP
+        # So we need to handle PHP files specially
+        transport fastcgi
+    }
+
+    # Static file handling (bypass Docker for performance)
+    root * /var/www/samwilkinson/public
+
+    @static {
+        file
+        path *.css *.js *.jpg *.jpeg *.png *.gif *.svg *.woff *.woff2 *.ttf *.ico *.webp
+    }
+
+    header @static Cache-Control "public, max-age=31536000, immutable"
+    file_server @static
+
+    # Try files, fallback to index.php (Symfony front controller)
+    @notStatic {
+        not path *.css *.js *.jpg *.jpeg *.png *.gif *.svg *.woff *.woff2 *.ttf *.ico *.webp
+    }
+
+    route @notStatic {
+        # Try the file, otherwise send to Symfony
+        try_files {path} /index.php?{query}
+
+        # FastCGI to Docker container
+        php_fastcgi localhost:9000 {
+            root /var/www/html/public
+            env APP_ENV prod
+        }
+    }
+
+    # Security headers
+    header {
+        Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "SAMEORIGIN"
+        X-XSS-Protection "1; mode=block"
+        Referrer-Policy "strict-origin-when-cross-origin"
+        Permissions-Policy "geolocation=(), microphone=(), camera=()"
+        -Server  # Remove server header
+    }
+
+    # Logging
+    log {
+        output file /var/log/caddy/samwilkinson-access.log {
+            roll_size 100mb
+            roll_keep 5
+            roll_keep_for 720h
+        }
+        format json
+    }
+
+    # Health check endpoint (optional)
+    handle /health {
+        respond "OK" 200
+    }
+}
