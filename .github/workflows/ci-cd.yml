@@ -240,15 +240,10 @@ jobs:
             echo "⏳ Waiting for container health check..."
             sleep 10
 
-            # Create database if needed
-            echo "🗄️  Setting up database..."
+            # Run migrations (creates schema if it doesn't exist)
+            echo "🗄️  Running database migrations..."
             docker compose -f docker-compose.prod.yml exec -T -u www-data app \
-              php bin/console doctrine:schema:create --if-not-exists || true
-
-            # Run migrations
-            echo "📊 Running migrations..."
-            docker compose -f docker-compose.prod.yml exec -T -u www-data app \
-              php bin/console doctrine:migrations:migrate --no-interaction || true
+              php bin/console doctrine:migrations:migrate --no-interaction
 
             # Load fixtures (only on first deploy)
             if [ ! -f "/var/www/samwilkinson/var/data/database.sqlite" ]; then
