@@ -1,8 +1,10 @@
 :80 {
-    root * /var/www/html/public
+    root * /srv/app/public
 
     # Enable PHP-FPM
-    php_fastcgi app:9000
+    php_fastcgi app:9000 {
+        root /srv/app/public
+    }
 
     # Enable file server for static assets
     file_server

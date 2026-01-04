@@ -5,11 +5,12 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      target: dev
     container_name: samwilkinson_app
-    working_dir: /var/www/html
+    working_dir: /srv/app
     volumes:
-      - ./:/var/www/html
-      - ./var/data:/var/www/html/var/data
+      - ./:/srv/app
+      - ./var/data:/srv/app/var/data
     environment:
       - APP_SECRET=change_me_in_production
       - DATABASE_URL=sqlite:///%kernel.project_dir%/var/data/database.sqlite
@@ -20,12 +21,13 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      target: dev
     container_name: samwilkinson_messenger
-    working_dir: /var/www/html
+    working_dir: /srv/app
     command: php bin/console messenger:consume async --time-limit=3600 --memory-limit=128M
     volumes:
-      - ./:/var/www/html
-      - ./var/data:/var/www/html/var/data
+      - ./:/srv/app
+      - ./var/data:/srv/app/var/data
     environment:
       - APP_SECRET=change_me_in_production
       - DATABASE_URL=sqlite:///%kernel.project_dir%/var/data/database.sqlite
@@ -42,7 +44,7 @@ services:
       - "8000:80"
       - "8443:443"
     volumes:
-      - ./:/var/www/html
+      - ./:/srv/app
       - ./Caddyfile:/etc/caddy/Caddyfile
       - caddy_data:/data
       - caddy_config:/config

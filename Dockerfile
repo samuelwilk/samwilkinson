@@ -1,5 +1,20 @@
 # ===================================
-# Base Stage - Shared Dependencies
+# Multi-stage Dockerfile for Symfony + AssetMapper + Caddy
+# Produces two runtime images:
+#   - php_runtime: PHP-FPM application
+#   - caddy_runtime: Caddy with baked-in public/ assets
+# ===================================
+
+# ===================================
+# Multi-stage Dockerfile for Symfony + AssetMapper + Caddy
+# Targets:
+#   - dev: Development with bind mounts
+#   - php_runtime: Production PHP-FPM application
+#   - caddy_runtime: Production Caddy with baked-in assets
+# ===================================
+
+# ===================================
+# Base Stage - Shared PHP Dependencies
 # ===================================
 FROM php:8.3-fpm-alpine AS base
 
@@ -38,7 +53,7 @@ RUN apk add --no-cache --virtual .build-deps \
 # Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-WORKDIR /var/www/html
+WORKDIR /srv/app
 
 # ===================================
 # Development Stage
@@ -59,17 +74,17 @@ RUN sed -i 's/listen = 127.0.0.1:9000/listen = 9000/g' /usr/local/etc/php-fpm.d/
 
 # Create directories
 RUN mkdir -p var/data var/cache var/log public/uploads && \
-    chown -R www-data:www-data /var/www/html
+    chown -R www-data:www-data /srv/app
 
 EXPOSE 9000
 CMD ["php-fpm"]
 
 # ===================================
-# Builder Stage - Install Dependencies
+# Builder Stage - Install Dependencies & Compile Assets
 # ===================================
 FROM base AS builder
 
-# Copy composer files
+# Copy composer files first (layer caching)
 COPY composer.json composer.lock symfony.lock ./
 
 # Install production dependencies (no dev packages)
@@ -84,30 +99,37 @@ RUN composer install \
 # Copy application code
 COPY . .
 
-# Regenerate autoloader now that application code is present
+# Regenerate autoloader with application code present
 RUN composer dump-autoload --no-dev --optimize --classmap-authoritative
 
-# Install vendor JavaScript assets (importmap)
-# Downloads @hotwired/stimulus, @hotwired/turbo, three.js to assets/vendor/
-RUN mkdir -p assets/vendor && \
-    APP_ENV=prod php bin/console importmap:install
+# Set production environment for asset compilation
+ENV APP_ENV=prod
+ENV APP_DEBUG=0
 
-# Build Tailwind CSS during image creation
-# TailwindBundle compiles CSS to var/tailwind/app.built.css
-RUN mkdir -p var/tailwind && \
-    APP_ENV=prod php bin/console tailwind:build
+# Create required directories
+RUN mkdir -p var/cache var/log var/data public/assets assets/vendor
+
+# Install vendor JavaScript assets (AssetMapper importmap)
+# Downloads @hotwired/stimulus, @hotwired/turbo, etc. to assets/vendor/
+RUN php bin/console importmap:install
+
+# Build Tailwind CSS (if TailwindBundle is present)
+# Compiles to var/tailwind/app.built.css
+RUN php bin/console tailwind:build
 
 # Compile AssetMapper assets into public/assets/
-# This creates versioned assets and manifest files for production
-RUN mkdir -p public/assets && \
-    APP_ENV=prod php bin/console asset-map:compile
+# Creates versioned files + manifest.json + importmap.json
+RUN php bin/console asset-map:compile
+
+# Clear cache (warmup happens at runtime when secrets/env are available)
+RUN php bin/console cache:clear --env=prod
 
 # ===================================
-# Production Stage - Minimal, Secure
+# PHP Runtime - Production PHP-FPM
 # ===================================
-FROM base AS prod
+FROM base AS php_runtime
 
-# Production PHP configuration
+# Copy production PHP configuration
 COPY docker/php/prod.ini /usr/local/etc/php/conf.d/prod.ini
 
 # Configure PHP-FPM for production
@@ -115,11 +137,13 @@ RUN sed -i 's/listen = 127.0.0.1:9000/listen = 9000/g' /usr/local/etc/php-fpm.d/
     sed -i 's/pm.max_children = 5/pm.max_children = 10/g' /usr/local/etc/php-fpm.d/www.conf && \
     sed -i 's/;pm.max_requests = 500/pm.max_requests = 500/g' /usr/local/etc/php-fpm.d/www.conf
 
-# Copy application from builder
-# Use 1000:1000 to match the runtime user in docker-compose.prod.yml
-COPY --from=builder --chown=1000:1000 /var/www/html /var/www/html
+# Copy application from builder (includes vendor, compiled assets, warmed cache)
+# Use 1000:1000 to match runtime user
+COPY --from=builder --chown=1000:1000 /srv/app /srv/app
 
 # Create runtime directories with correct ownership
+# var/data persists via volume mount
+# var/cache and var/log are ephemeral (rebuilt from image on restart)
 RUN mkdir -p var/data var/cache var/log public/uploads && \
     chown -R 1000:1000 var public/uploads && \
     chmod -R 775 var public/uploads
@@ -132,7 +156,7 @@ RUN echo '#!/bin/sh' > /usr/local/bin/php-fpm-healthcheck && \
 # Security: Remove unnecessary packages
 RUN apk del apk-tools
 
-# Switch to non-root user (matches docker-compose.prod.yml user: "1000:1000")
+# Switch to non-root user
 USER 1000:1000
 
 EXPOSE 9000
@@ -142,3 +166,27 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
     CMD php-fpm-healthcheck || exit 1
 
 CMD ["php-fpm"]
+
+# ===================================
+# Caddy Runtime - Static File Server
+# ===================================
+FROM caddy:2-alpine AS caddy_runtime
+
+# Copy ONLY the public directory from php_runtime
+# This includes:
+#   - public/index.php (Symfony front controller)
+#   - public/assets/ (compiled AssetMapper assets with manifest)
+#   - public/bundles/ (public bundle assets)
+#   - public/fonts/, public/css/ (any static assets)
+# Excludes:
+#   - public/uploads/ (mounted as volume in production)
+COPY --from=php_runtime /srv/app/public /srv/app/public
+
+# Caddy runs as root by default, which is fine for read-only serving
+# Public directory is immutable in production
+
+EXPOSE 80 443 443/udp
+
+# Caddy health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
+    CMD wget --no-verbose --tries=1 --spider http://localhost:80/health || exit 1

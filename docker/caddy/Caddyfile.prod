@@ -1,35 +1,30 @@
-# Production Caddyfile - Caddy in Docker
-# Reverse proxy to PHP-FPM app container
+# Production Caddyfile - Serves static assets from baked-in /srv/app/public
+# Forwards dynamic requests to PHP-FPM app container
 
 samwilkinson.ca, www.samwilkinson.ca {
     # Automatic HTTPS via Let's Encrypt
     encode gzip zstd
 
-    # Static files served by Caddy from volume mount
-    root * /var/www/html/public
+    # Root directory (baked into Caddy image from php_runtime)
+    root * /srv/app/public
 
-    @static {
-        file
-        path *.css *.js *.jpg *.jpeg *.png *.gif *.svg *.woff *.woff2 *.ttf *.ico *.webp
+    # Long cache for AssetMapper digested assets
+    @assets path /assets/*
+    header @assets Cache-Control "public, max-age=31536000, immutable"
+
+    # PHP-FPM for Symfony (includes automatic try_files for front controller)
+    php_fastcgi app:9000 {
+        root /srv/app/public
     }
 
-    header @static Cache-Control "public, max-age=31536000, immutable"
-    file_server @static
-
-    # Try files, fallback to index.php (Symfony front controller)
-    @notStatic {
-        not path *.css *.js *.jpg *.jpeg *.png *.gif *.svg *.woff *.woff2 *.ttf *.ico *.webp
+    # Serve static files (with precompressed support for .br/.zst/.gz)
+    file_server {
+        precompressed br zstd gzip
     }
 
-    route @notStatic {
-        # Try the file, otherwise send to Symfony
-        try_files {path} /index.php?{query}
-
-        # FastCGI to app container via Docker network
-        php_fastcgi app:9000 {
-            root /var/www/html/public
-            env APP_ENV prod
-        }
+    # Health check endpoint (served by Caddy directly)
+    handle /health {
+        respond "OK" 200
     }
 
     # Security headers
@@ -45,16 +40,8 @@ samwilkinson.ca, www.samwilkinson.ca {
 
     # Logging
     log {
-        output file /var/log/caddy/samwilkinson-access.log {
-            roll_size 100mb
-            roll_keep 5
-            roll_keep_for 720h
-        }
-        format json
-    }
-
-    # Health check endpoint (optional)
-    handle /health {
-        respond "OK" 200
+        output stdout
+        format console
+        level INFO
     }
 }

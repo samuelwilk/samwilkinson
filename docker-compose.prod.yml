@@ -1,10 +1,14 @@
 # Production Docker Compose Configuration
-# Secure, production-ready setup with Caddy in Docker
+# Clean architecture: assets baked into Caddy image, minimal volumes
 
 services:
-  web:
-    image: caddy:2-alpine
-    container_name: samwilkinson-web
+  caddy:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: caddy_runtime
+    image: samwilkinson-caddy:latest
+    container_name: samwilkinson-caddy
     restart: unless-stopped
 
     # Expose HTTP/HTTPS to public
@@ -13,12 +17,13 @@ services:
       - "443:443"
       - "443:443/udp"  # HTTP/3
 
-    # Caddy configuration and data
+    # Volumes: ONLY Caddyfile config and persistent data
+    # public/ is baked into the image (no bind mount needed!)
     volumes:
       - ./docker/caddy/Caddyfile.prod:/etc/caddy/Caddyfile:ro
-      # Don't mount ./public - use compiled assets from Docker image
-      # Only mount uploads directory for user content persistence
-      - ./public/uploads:/var/www/html/public/uploads:ro
+      # Mount uploads for user-generated content
+      - ./public/uploads:/srv/app/public/uploads:ro
+      # Caddy data (certificates, config)
       - caddy_data:/data
       - caddy_config:/config
 
@@ -50,7 +55,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      target: prod
+      target: php_runtime
+    image: samwilkinson-app:latest
     container_name: samwilkinson-app
     restart: unless-stopped
 
@@ -74,24 +80,16 @@ services:
       APP_ENV: prod
       APP_DEBUG: 0
 
-    # Volumes - minimal, specific mounts
+    # Volumes: ONLY persistent data directories
+    # Code, vendor, cache, compiled assets are ALL in the image
     volumes:
-      # Application code (read-only in production)
-      - ./src:/var/www/html/src:ro
-      - ./config:/var/www/html/config:ro
-      - ./templates:/var/www/html/templates:ro
-      # Don't mount entire public/ - use compiled assets from Docker image
-      # Only mount uploads for user content persistence
-      - ./public/uploads:/var/www/html/public/uploads
-      - ./bin:/var/www/html/bin:ro
-      - ./migrations:/var/www/html/migrations:ro
-
-      # Only mount var/data for database persistence
-      # var/cache, var/log, and var/tailwind use what's in the Docker image (ephemeral)
-      - ./var/data:/var/www/html/var/data
+      # Database persistence (SQLite)
+      - ./var/data:/srv/app/var/data
+      # User uploads persistence
+      - ./public/uploads:/srv/app/public/uploads
 
     # No ports exposed - only accessible via Docker network
-    # Caddy (web service) proxies to app:9000
+    # Caddy proxies to app:9000
 
     # Health check
     healthcheck:

@@ -123,39 +123,8 @@ jobs:
       - name: Security audit
         run: composer audit
 
-  build-assets:
-    name: Build Production Assets
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: ${{ env.PHP_VERSION }}
-          tools: composer:v2
-
-      - name: Create required directories
-        run: mkdir -p var/data var/cache var/log
-
-      - name: Install dependencies
-        env:
-          APP_ENV: prod
-        run: composer install --no-dev --prefer-dist --no-progress --no-interaction
-
-      - name: Build Tailwind CSS
-        env:
-          APP_ENV: prod
-        run: php bin/console tailwind:build
-
-      - name: Upload built assets
-        uses: actions/upload-artifact@v4
-        with:
-          name: built-assets
-          path: var/tailwind/app.built.css
-          retention-days: 7
+  # NOTE: build-assets job removed - assets are now compiled during Docker build on server
+  # This eliminates CI/CD artifact uploads since deployment builds images with baked-in assets
 
   # ==========================================
   # Continuous Deployment
@@ -164,7 +133,7 @@ jobs:
   deploy-production:
     name: Deploy to Production
     runs-on: ubuntu-latest
-    needs: [test, code-quality, security, build-assets]
+    needs: [test, code-quality, security]
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     environment:
       name: production
@@ -219,8 +188,7 @@ jobs:
           ENV_EOF
 
             # Prepare persistent directories with correct permissions
-            # var/cache and var/log use what's in Docker image (ephemeral)
-            # var/tailwind and public/assets are built into the Docker image
+            # Everything else (code, vendor, cache, compiled assets) is baked into images
             echo "📁 Preparing persistent directories..."
             mkdir -p var/data public/uploads
             chown -R 1000:1000 var/data public/uploads
@@ -230,36 +198,42 @@ jobs:
             echo "🛑 Stopping existing containers..."
             docker compose -f docker-compose.prod.yml down || true
 
-            # Build production image
-            echo "🔨 Building Docker image..."
+            # Build production images (both php_runtime and caddy_runtime)
+            echo "🔨 Building Docker images..."
             docker compose -f docker-compose.prod.yml build --pull --no-cache
 
             # Start containers
             echo "🚀 Starting containers..."
             docker compose -f docker-compose.prod.yml up -d
 
-            # Wait for container to be healthy
-            echo "⏳ Waiting for container health check..."
+            # Wait for containers to be healthy
+            echo "⏳ Waiting for container health checks..."
             sleep 10
 
-            # Run migrations (creates schema if it doesn't exist)
+            # Check if database exists BEFORE migrations (flag for first deploy)
+            echo "🔎 Checking if DB already exists..."
+            DB_EXISTS=$(docker compose -f docker-compose.prod.yml exec -T app sh -c \
+              'test -f /srv/app/var/data/database.sqlite && echo yes || echo no')
+
+            # Run migrations (creates schema if it doesn't exist, or migrates existing)
             echo "🗄️  Running database migrations..."
             docker compose -f docker-compose.prod.yml exec -T app \
               php bin/console doctrine:migrations:migrate --no-interaction
 
-            # Load fixtures (only on first deploy)
-            if [ ! -f "/var/www/samwilkinson/var/data/database.sqlite" ]; then
-              echo "📦 Loading fixtures..."
+            # Load fixtures AFTER migrations (only on first deploy)
+            if [ "$DB_EXISTS" = "no" ]; then
+              echo "📦 First deploy detected: loading fixtures..."
               docker compose -f docker-compose.prod.yml exec -T app \
                 php bin/console doctrine:fixtures:load --no-interaction || true
             fi
 
-            # Assets are already compiled in Docker image (via Dockerfile)
-            # No need to rebuild Tailwind or compile asset-map at runtime
-
-            echo "🧹 Warming cache..."
+            # Warm cache with runtime env vars/secrets
+            echo "🧹 Warming production cache..."
             docker compose -f docker-compose.prod.yml exec -T app \
               php bin/console cache:warmup
+
+            # Assets compiled during Docker build (tailwind:build, asset-map:compile)
+            # Cache warmed at runtime (needs secrets/env vars)
 
             # Show container status
             echo "📊 Container status:"
