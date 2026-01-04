@@ -57,7 +57,7 @@ variable "cloudflare_account_id" {
 }
 
 variable "cloudflare_zone_id" {
-  description = "Cloudflare zone ID for samwilkinson.com"
+  description = "Cloudflare zone ID for samwilkinson.ca"
   type        = string
 }
 
@@ -143,7 +143,7 @@ output "deployment_instructions" {
     2. Run setup script: curl -sSL https://raw.githubusercontent.com/YOUR_USERNAME/samwilkinson/main/scripts/server-setup.sh | bash
     3. Deploy application: cd /var/www/samwilkinson && ./deploy.sh
     4. Configure R2 credentials in .env.prod
-    5. Test site: https://samwilkinson.com
+    5. Test site: https://samwilkinson.ca
 
     DNS Configuration:
     - @ (root) → ${module.vps.server_ip}

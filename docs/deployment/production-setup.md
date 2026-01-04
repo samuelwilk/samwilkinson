@@ -143,7 +143,7 @@ APP_ENV=prod php bin/console cache:warmup
 Create `/etc/caddy/Caddyfile`:
 
 ```caddy
-samwilkinson.com, www.samwilkinson.com {
+samwilkinson.ca, www.samwilkinson.ca {
     # Automatic HTTPS via Let's Encrypt
     root * /var/www/samwilkinson/public
 
@@ -387,7 +387,7 @@ sudo systemctl start fail2ban
 
 Caddy handles SSL automatically via Let's Encrypt. Verify:
 ```bash
-curl -I https://samwilkinson.com
+curl -I https://samwilkinson.ca
 # Should see: Strict-Transport-Security header
 ```
 
@@ -450,7 +450,7 @@ sudo systemctl reload php8.3-fpm
 4. Set up monitoring and alerts
 5. Test thoroughly before going live
 
-**Production URL:** https://samwilkinson.com
+**Production URL:** https://samwilkinson.ca
 
 ---
 

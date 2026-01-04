@@ -142,7 +142,7 @@ jobs:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     environment:
       name: production
-      url: https://samwilkinson.com
+      url: https://samwilkinson.ca
 
     steps:
       - name: Checkout code
@@ -199,7 +199,7 @@ jobs:
       - name: Health check
         run: |
           sleep 5
-          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" https://samwilkinson.com/health || echo "000")
+          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" https://samwilkinson.ca/health || echo "000")
           if [ "$HTTP_CODE" = "200" ]; then
             echo "✅ Health check passed (HTTP $HTTP_CODE)"
           else

@@ -158,7 +158,7 @@ resource "hcloud_server" "web" {
         content: |
 
           ╔══════════════════════════════════════════╗
-          ║   samwilkinson.com Production Server    ║
+          ║    samwilkinson.ca Production Server    ║
           ╚══════════════════════════════════════════╝
 
           Environment: ${var.environment}

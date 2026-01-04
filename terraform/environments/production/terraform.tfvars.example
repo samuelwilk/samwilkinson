@@ -14,8 +14,8 @@ cloudflare_api_token = "YOUR_CLOUDFLARE_API_TOKEN"
 # Get from: https://dash.cloudflare.com/ → R2 → Overview
 cloudflare_account_id = "YOUR_CLOUDFLARE_ACCOUNT_ID"
 
-# Cloudflare Zone ID for samwilkinson.com
-# Get from: https://dash.cloudflare.com/ → samwilkinson.com → Overview → API
+# Cloudflare Zone ID for samwilkinson.ca
+# Get from: https://dash.cloudflare.com/ → samwilkinson.ca → Overview → API
 cloudflare_zone_id = "YOUR_CLOUDFLARE_ZONE_ID"
 
 # SSH Public Key for server access

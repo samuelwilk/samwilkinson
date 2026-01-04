@@ -1,6 +1,6 @@
 # Infrastructure as Code - Terraform
 
-Terraform configuration for provisioning production infrastructure for samwilkinson.com.
+Terraform configuration for provisioning production infrastructure for samwilkinson.ca.
 
 ---
 
@@ -40,7 +40,7 @@ Terraform configuration for provisioning production infrastructure for samwilkin
 
 3. **Cloudflare Account**
    - Sign up: https://dash.cloudflare.com/sign-up
-   - Add domain: samwilkinson.com
+   - Add domain: samwilkinson.ca
    - Create API token: Profile → API Tokens → Create Token
    - Permissions: Zone.DNS (Edit), Account.R2 (Edit)
 
@@ -163,7 +163,7 @@ APP_ENV=prod php bin/console cache:clear
 Create `/etc/caddy/Caddyfile`:
 
 ```caddy
-samwilkinson.com, www.samwilkinson.com {
+samwilkinson.ca, www.samwilkinson.ca {
     root * /var/www/samwilkinson/public
     encode gzip
 
@@ -192,7 +192,7 @@ systemctl reload caddy
 ### 4. Test Site
 
 ```bash
-curl -I https://samwilkinson.com
+curl -I https://samwilkinson.ca
 # Should return 200 OK with HTTPS
 ```
 
@@ -223,8 +223,8 @@ AWS_REGION=auto
 ### (Optional) Custom CDN Domain
 
 1. R2 → samwilkinson-photos → Settings → Custom Domains
-2. Add: `cdn.samwilkinson.com`
-3. Update `.env.prod`: `PHOTO_CDN_URL=https://cdn.samwilkinson.com`
+2. Add: `cdn.samwilkinson.ca`
+3. Update `.env.prod`: `PHOTO_CDN_URL=https://cdn.samwilkinson.ca`
 
 ---
 
@@ -315,8 +315,8 @@ tail -f /var/log/cloud-init-output.log
 **Issue: DNS not resolving**
 ```bash
 # Verify DNS records
-dig samwilkinson.com
-dig www.samwilkinson.com
+dig samwilkinson.ca
+dig www.samwilkinson.ca
 
 # Check Cloudflare dashboard for DNS propagation
 ```

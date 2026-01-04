@@ -71,7 +71,7 @@ fi
 
 # Step 8: Health check
 echo -e "${YELLOW}🏥 Running health check...${NC}"
-HEALTH_URL="https://samwilkinson.com/health"
+HEALTH_URL="https://samwilkinson.ca/health"
 if command -v curl &> /dev/null; then
     HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" "$HEALTH_URL" || echo "000")
     if [ "$HTTP_CODE" = "200" ]; then
@@ -88,6 +88,6 @@ echo -e "${GREEN}✅ Deployment complete!${NC}"
 echo ""
 echo "Next steps:"
 echo "  - Check logs: tail -f var/log/prod.log"
-echo "  - Monitor site: https://samwilkinson.com"
+echo "  - Monitor site: https://samwilkinson.ca"
 echo "  - Test critical paths: /build, /stills, /studio"
 echo ""
