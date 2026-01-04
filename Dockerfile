@@ -97,6 +97,11 @@ RUN mkdir -p assets/vendor && \
 RUN mkdir -p var/tailwind && \
     APP_ENV=prod php bin/console tailwind:build
 
+# Compile AssetMapper assets into public/assets/
+# This creates versioned assets and manifest files for production
+RUN mkdir -p public/assets && \
+    APP_ENV=prod php bin/console asset-map:compile
+
 # ===================================
 # Production Stage - Minimal, Secure
 # ===================================
