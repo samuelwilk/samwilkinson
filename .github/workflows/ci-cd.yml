@@ -232,7 +232,7 @@ jobs:
 
             # Build production image
             echo "🔨 Building Docker image..."
-            docker compose -f docker-compose.prod.yml build --pull
+            docker compose -f docker-compose.prod.yml build --pull --no-cache
 
             # Start containers
             echo "🚀 Starting containers..."
