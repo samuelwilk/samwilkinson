@@ -194,33 +194,36 @@ jobs:
             chown -R 1000:1000 var/data public/uploads
             chmod -R 775 var/data public/uploads
 
-            # Stop existing containers
-            echo "🛑 Stopping existing containers..."
-            docker compose -f docker-compose.prod.yml down || true
+            # Use explicit project name to prevent orphans and ensure consistent naming
+            COMPOSE="docker compose -p samwilkinson -f docker-compose.prod.yml"
+
+            # Stop existing containers and remove orphans (old renamed services)
+            echo "🛑 Stopping existing containers and cleaning orphans..."
+            $COMPOSE down --remove-orphans || true
 
             # Build production images (both php_runtime and caddy_runtime)
             echo "🔨 Building Docker images..."
-            docker compose -f docker-compose.prod.yml build --pull --no-cache
+            $COMPOSE build --pull --no-cache
 
             # Start containers and wait for health checks
             echo "🚀 Starting containers..."
-            docker compose -f docker-compose.prod.yml up -d --wait
+            $COMPOSE up -d --wait
 
             # Run migrations (creates schema if it doesn't exist, or migrates existing)
             echo "🗄️  Running database migrations..."
-            docker compose -f docker-compose.prod.yml exec -T app \
+            $COMPOSE exec -T app \
               php bin/console doctrine:migrations:migrate --no-interaction
 
             # Load fixtures AFTER migrations (only once, tracked by marker file)
             echo "🔎 Checking if fixtures already loaded..."
-            FIXTURES_LOADED=$(docker compose -f docker-compose.prod.yml exec -T app sh -c \
+            FIXTURES_LOADED=$($COMPOSE exec -T app sh -c \
               'test -f /srv/app/var/data/.fixtures_loaded && echo yes || echo no')
 
             if [ "$FIXTURES_LOADED" = "no" ]; then
               echo "📦 First deploy detected: loading fixtures..."
-              docker compose -f docker-compose.prod.yml exec -T app \
+              $COMPOSE exec -T app \
                 php bin/console doctrine:fixtures:load --no-interaction || true
-              docker compose -f docker-compose.prod.yml exec -T app sh -c \
+              $COMPOSE exec -T app sh -c \
                 'touch /srv/app/var/data/.fixtures_loaded'
               echo "✅ Fixtures loaded and marked complete"
             else
@@ -229,7 +232,7 @@ jobs:
 
             # Warm cache with runtime env vars/secrets
             echo "🧹 Warming production cache..."
-            docker compose -f docker-compose.prod.yml exec -T app \
+            $COMPOSE exec -T app \
               php bin/console cache:warmup
 
             # Assets compiled during Docker build (tailwind:build, asset-map:compile)
@@ -237,7 +240,7 @@ jobs:
 
             # Show container status
             echo "📊 Container status:"
-            docker compose -f docker-compose.prod.yml ps
+            $COMPOSE ps
 
             echo "✅ Deployment complete!"
           ENDSSH
