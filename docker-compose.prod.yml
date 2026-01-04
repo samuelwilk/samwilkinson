@@ -83,10 +83,8 @@ services:
       - ./migrations:/var/www/html/migrations:ro
 
       # Only mount var/data for database persistence
-      # var/cache, var/log, and var/tailwind use what's in the Docker image
+      # var/cache, var/log, and var/tailwind use what's in the Docker image (ephemeral)
       - ./var/data:/var/www/html/var/data
-      - app-cache:/var/www/html/var/cache
-      - app-log:/var/www/html/var/log
 
     # No ports exposed - only accessible via Docker network
     # Caddy (web service) proxies to app:9000
@@ -125,10 +123,6 @@ volumes:
   caddy_data:
     driver: local
   caddy_config:
-    driver: local
-  app-cache:
-    driver: local
-  app-log:
     driver: local
 
 networks:
