@@ -84,12 +84,8 @@ RUN composer install \
 # Copy application code
 COPY . .
 
-# Build production assets (Tailwind)
-RUN mkdir -p public/css && \
-    if [ -f tailwind/tailwindcss ]; then \
-        chmod +x tailwind/tailwindcss && \
-        cd tailwind && ./tailwindcss -i input.css -o ../public/css/app.css --minify; \
-    fi
+# Note: Tailwind CSS is built in the running container using TailwindBundle
+# See deployment workflow: docker compose exec app php bin/console tailwind:build
 
 # ===================================
 # Production Stage - Minimal, Secure
