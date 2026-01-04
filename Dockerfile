@@ -84,6 +84,9 @@ RUN composer install \
 # Copy application code
 COPY . .
 
+# Regenerate autoloader now that application code is present
+RUN composer dump-autoload --no-dev --optimize --classmap-authoritative
+
 # Note: Tailwind CSS is built in the running container using TailwindBundle
 # See deployment workflow: docker compose exec app php bin/console tailwind:build
 
