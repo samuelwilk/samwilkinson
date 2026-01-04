@@ -218,6 +218,12 @@ jobs:
           TRUSTED_PROXIES=127.0.0.1,REMOTE_ADDR
           ENV_EOF
 
+            # Prepare writable directories with correct permissions
+            echo "📁 Preparing writable directories..."
+            mkdir -p var/data var/cache var/log
+            chown -R 1000:1000 var
+            chmod -R 775 var
+
             # Stop existing containers
             echo "🛑 Stopping existing containers..."
             docker compose -f docker-compose.prod.yml down || true
