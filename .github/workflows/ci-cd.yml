@@ -137,6 +137,9 @@ jobs:
           php-version: ${{ env.PHP_VERSION }}
           tools: composer:v2
 
+      - name: Create required directories
+        run: mkdir -p var/data var/cache var/log
+
       - name: Install dependencies
         env:
           APP_ENV: prod
