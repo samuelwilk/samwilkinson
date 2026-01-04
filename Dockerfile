@@ -87,6 +87,11 @@ COPY . .
 # Regenerate autoloader now that application code is present
 RUN composer dump-autoload --no-dev --optimize --classmap-authoritative
 
+# Install vendor JavaScript assets (importmap)
+# Downloads @hotwired/stimulus, @hotwired/turbo, three.js to assets/vendor/
+RUN mkdir -p assets/vendor && \
+    APP_ENV=prod php bin/console importmap:install
+
 # Note: Tailwind CSS is built in the running container using TailwindBundle
 # See deployment workflow: docker compose exec app php bin/console tailwind:build
 
