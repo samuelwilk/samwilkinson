@@ -254,10 +254,18 @@ jobs:
                 php bin/console doctrine:fixtures:load --no-interaction || true
             fi
 
-            # Clear cache
-            echo "🧹 Clearing cache..."
+            # Build Tailwind CSS and compile assets (per TailwindBundle docs)
+            echo "🎨 Building Tailwind CSS..."
             docker compose -f docker-compose.prod.yml exec -T app \
-              php bin/console cache:clear
+              php bin/console tailwind:build --minify
+
+            echo "📦 Compiling asset map..."
+            docker compose -f docker-compose.prod.yml exec -T app \
+              php bin/console asset-map:compile
+
+            echo "🧹 Warming cache..."
+            docker compose -f docker-compose.prod.yml exec -T app \
+              php bin/console cache:warmup
 
             # Show container status
             echo "📊 Container status:"
