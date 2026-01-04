@@ -53,6 +53,8 @@ jobs:
         run: composer install --prefer-dist --no-progress --no-interaction
 
       - name: Build Tailwind CSS
+        env:
+          APP_ENV: prod
         run: php bin/console tailwind:build
 
       - name: Run test suite
@@ -139,6 +141,8 @@ jobs:
         run: composer install --no-dev --prefer-dist --no-progress --no-interaction
 
       - name: Build Tailwind CSS
+        env:
+          APP_ENV: prod
         run: php bin/console tailwind:build
 
       - name: Upload built assets
