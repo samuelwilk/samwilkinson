@@ -82,13 +82,8 @@ services:
       - ./bin:/var/www/html/bin:ro
       - ./migrations:/var/www/html/migrations:ro
 
-      # Writable directories
+      # Writable directory with cache, log, and SQLite database
       - ./var:/var/www/html/var
-      - app-cache:/var/www/html/var/cache
-      - app-log:/var/www/html/var/log
-
-      # SQLite database (persistent)
-      - ./var/data:/var/www/html/var/data
 
     # No ports exposed - only accessible via Docker network
     # Caddy (web service) proxies to app:9000
@@ -124,10 +119,6 @@ services:
       - app-network
 
 volumes:
-  app-cache:
-    driver: local
-  app-log:
-    driver: local
   caddy_data:
     driver: local
   caddy_config:
