@@ -10,6 +10,7 @@ use App\Enum\PublishStatus;
 use App\Repository\CollectionRepository;
 use App\Repository\PhotoRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
@@ -33,6 +34,7 @@ class PhotoUploadService
         private readonly GeocodingService $geocodingService,
         private readonly CollectionMetadataAggregator $metadataAggregator,
         private readonly SluggerInterface $slugger,
+        private readonly LoggerInterface $logger,
     ) {
     }
 
@@ -143,6 +145,13 @@ class PhotoUploadService
                 }
             } catch (\Exception $e) {
                 $stats['failed']++;
+                // Log the detailed error for debugging
+                $this->logger->error('Failed to process photo', [
+                    'filename' => $file->getClientOriginalName(),
+                    'error' => $e->getMessage(),
+                    'exception_class' => get_class($e),
+                    'trace' => $e->getTraceAsString(),
+                ]);
                 // Continue processing other photos
                 continue;
             }
