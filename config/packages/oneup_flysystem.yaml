@@ -13,3 +13,4 @@ oneup_flysystem:
         r2:
             adapter: r2_adapter
             visibility: private
+            mount: r2
