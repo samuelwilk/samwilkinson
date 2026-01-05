@@ -1,4 +1,8 @@
 liip_imagine:
+    # Suppress deprecation warnings for Twig integration
+    twig:
+        mode: lazy
+
     resolvers:
         default:
             web_path:
