@@ -1,4 +1,6 @@
 vich_uploader:
+    storage: flysystem
+
     mappings:
         photos:
             # Production: Use Cloudflare R2 via Flysystem
