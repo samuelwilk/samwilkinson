@@ -18,10 +18,12 @@ final class StillsController extends AbstractController
     #[Route('/stills', name: 'app_stills')]
     public function index(CollectionRepository $collectionRepository): Response
     {
-        // Fetch collections ordered by sortOrder ASC, then startDate DESC
+        // Fetch only published collections ordered by sortOrder ASC, then startDate DESC
         $collections = $collectionRepository->createQueryBuilder('c')
             ->leftJoin('c.photos', 'p')
             ->addSelect('p')
+            ->where('c.isPublished = :published')
+            ->setParameter('published', true)
             ->orderBy('c.sortOrder', 'ASC')
             ->addOrderBy('c.startDate', 'DESC')
             ->getQuery()
