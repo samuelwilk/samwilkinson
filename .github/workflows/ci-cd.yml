@@ -193,6 +193,7 @@ jobs:
           R2_ENDPOINT=${{ secrets.R2_ENDPOINT }}
           R2_ACCESS_KEY_ID=${{ secrets.R2_ACCESS_KEY_ID }}
           R2_SECRET_ACCESS_KEY=${{ secrets.R2_SECRET_ACCESS_KEY }}
+          MESSENGER_TRANSPORT_DSN=doctrine://default?auto_setup=0
           ENV_EOF
 
             # Prepare persistent directories with correct permissions

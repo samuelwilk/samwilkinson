@@ -122,6 +122,73 @@ services:
     networks:
       - app-network
 
+  messenger:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: php_runtime
+    image: samwilkinson-app:latest
+    container_name: samwilkinson-messenger
+    restart: unless-stopped
+
+    # Security: Run as non-root user
+    user: "1000:1000"
+
+    # Resource limits
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+
+    # Environment
+    env_file:
+      - .env.prod
+    environment:
+      APP_ENV: prod
+      APP_DEBUG: 0
+
+    # Volumes: Same as app for queue access and temp files
+    volumes:
+      - ./var/data:/srv/app/var/data
+      - ./public/uploads:/srv/app/public/uploads
+
+    # Command: Run messenger worker
+    command: php bin/console messenger:consume async --time-limit=3600 --memory-limit=256M
+
+    # Depends on app for database/queue
+    depends_on:
+      app:
+        condition: service_healthy
+
+    # Health check: verify process is running
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "messenger:consume"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+
+    # Security options
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+
+    # Logging
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+    # Network
+    networks:
+      - app-network
+
 volumes:
   caddy_data:
     driver: local
