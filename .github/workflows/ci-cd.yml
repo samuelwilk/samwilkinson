@@ -156,6 +156,10 @@ jobs:
       - name: Deploy to server with Docker
         env:
           APP_SECRET: ${{ secrets.APP_SECRET }}
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+          R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
         run: |
           ssh ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'ENDSSH'
             set -e
@@ -185,6 +189,10 @@ jobs:
           DATABASE_URL="sqlite:///%kernel.project_dir%/var/data/database.sqlite"
           TRUSTED_HOSTS=^samwilkinson\\.ca$,^www\\.samwilkinson\\.ca$
           TRUSTED_PROXIES=172.20.0.0/24,REMOTE_ADDR
+          R2_BUCKET=${{ secrets.R2_BUCKET }}
+          R2_ENDPOINT=${{ secrets.R2_ENDPOINT }}
+          R2_ACCESS_KEY_ID=${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY=${{ secrets.R2_SECRET_ACCESS_KEY }}
           ENV_EOF
 
             # Prepare persistent directories with correct permissions
