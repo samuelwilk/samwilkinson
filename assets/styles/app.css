@@ -895,4 +895,48 @@
   .tabular-nums {
     font-variant-numeric: tabular-nums;
   }
+
+  /* Photo loading spinner - Modernist minimal */
+  .photo-loading-spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40px;
+    height: 40px;
+    border: 2px solid color-mix(in srgb, var(--color-stone) 20%, transparent);
+    border-top-color: var(--color-cognac);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    opacity: 1;
+    transition: opacity 300ms ease-out;
+  }
+
+  .photo-loading-spinner.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  @keyframes spin {
+    to {
+      transform: translate(-50%, -50%) rotate(360deg);
+    }
+  }
+
+  /* Reduced motion: subtle pulse instead of rotation */
+  @media (prefers-reduced-motion: reduce) {
+    .photo-loading-spinner {
+      animation: pulse 2s ease-in-out infinite;
+      border-top-color: var(--color-cognac);
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        opacity: 0.4;
+      }
+      50% {
+        opacity: 1;
+      }
+    }
+  }
 }

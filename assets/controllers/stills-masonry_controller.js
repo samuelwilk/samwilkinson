@@ -6,7 +6,7 @@ import { Controller } from '@hotwired/stimulus';
  * Balances column heights by placing each image in the shortest column
  */
 export default class extends Controller {
-    static targets = ['item', 'grid'];
+    static targets = ['item', 'grid', 'spinner'];
     static values = {
         columns: { type: Number, default: 3 }, // Desktop default
         gap: { type: Number, default: 24 },     // Gap in pixels
@@ -91,11 +91,19 @@ export default class extends Controller {
         const src = img.dataset.src;
         if (!src) return;
 
+        // Find the spinner within this item
+        const spinner = item.querySelector('.photo-loading-spinner');
+
         // Create new image to preload
         const loader = new Image();
         loader.onload = () => {
             img.src = src;
             img.removeAttribute('data-src');
+
+            // Hide spinner
+            if (spinner) {
+                spinner.classList.add('hidden');
+            }
 
             // Fade in animation (unless reduced motion)
             if (!this.prefersReducedMotion) {
@@ -106,6 +114,13 @@ export default class extends Controller {
                 img.offsetHeight;
 
                 img.style.opacity = '1';
+            }
+        };
+
+        loader.onerror = () => {
+            // Hide spinner on error too
+            if (spinner) {
+                spinner.classList.add('hidden');
             }
         };
 

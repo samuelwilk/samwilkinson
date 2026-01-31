@@ -248,6 +248,9 @@
 
                         {# Image with lazy loading #}
                         <div class="relative overflow-hidden" style="padding-bottom: {{ (1 / (photo.aspectRatio ?? 1.5)) * 100 }}%;">
+                            {# Loading spinner #}
+                            <div class="photo-loading-spinner" data-stills-masonry-target="spinner"></div>
+
                             <img
                                 data-src="{{ '/uploads/photos/' ~ photo.filename }}"
                                 alt="{{ photo.title ?? collection.name ~ ' - Photo ' ~ loop.index }}"

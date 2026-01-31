@@ -75,6 +75,9 @@
                         {# Image or color placeholder with museum label overlay #}
                         <div class="relative overflow-hidden" style="padding-bottom: {{ (1 / (coverPhoto ? (coverPhoto.aspectRatio ?? 1.5) : 1.5)) * 100 }}%;">
                             {% if coverPhoto and coverPhoto.isPublished %}
+                                {# Loading spinner #}
+                                <div class="photo-loading-spinner"></div>
+
                                 <img
                                     data-src="{{ '/uploads/photos/' ~ coverPhoto.filename }}"
                                     alt="{{ collection.name }}"

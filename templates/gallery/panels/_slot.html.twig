@@ -1,11 +1,16 @@
 {# Shared slot template for rendering a single photo within a panel #}
 <div class="absolute slot-photo"
      style="left: {{ slot.x }}%; top: {{ slot.y }}%; width: {{ slot.w }}%; height: {{ slot.h }}%; transform: rotate({{ slot.rot }}deg); z-index: {{ slot.z }};">
+    {# Loading spinner #}
+    <div class="photo-loading-spinner" data-spinner></div>
+
     <img
         src="{{ slot.photo.url }}"
         alt="{{ slot.photo.alt|default('') }}"
-        class="w-full h-full object-contain"
+        class="w-full h-full object-contain photo-slot-img"
         loading="lazy"
         decoding="async"
+        onload="this.previousElementSibling?.classList.add('hidden')"
+        onerror="this.previousElementSibling?.classList.add('hidden')"
     />
 </div>
