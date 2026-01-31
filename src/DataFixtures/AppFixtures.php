@@ -6,6 +6,7 @@ use App\Entity\Collection;
 use App\Entity\Photo;
 use App\Entity\Post;
 use App\Entity\Project;
+use App\Entity\SocialLink;
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
@@ -170,6 +171,23 @@ Reflections on building software from 2020 to 2025.
         $collection2->setSortOrder(2);
         $collection2->setVisualStyle(['color' => '#D32F2F', 'texture' => 'canvas']);
         $manager->persist($collection2);
+
+        // Create social links
+        $instagram = new SocialLink();
+        $instagram->setPlatform('Instagram');
+        $instagram->setUrl('https://instagram.com/samwilk');
+        $instagram->setIcon('instagram');
+        $instagram->setSortOrder(1);
+        $instagram->setIsVisible(true);
+        $manager->persist($instagram);
+
+        $linkedin = new SocialLink();
+        $linkedin->setPlatform('LinkedIn');
+        $linkedin->setUrl('https://linkedin.com/in/samwilk');
+        $linkedin->setIcon('linkedin');
+        $linkedin->setSortOrder(2);
+        $linkedin->setIsVisible(true);
+        $manager->persist($linkedin);
 
         $manager->flush();
     }

@@ -6,6 +6,7 @@ use App\Entity\Collection;
 use App\Entity\Photo;
 use App\Entity\Post;
 use App\Entity\Project;
+use App\Entity\SocialLink;
 use App\Repository\CollectionRepository;
 use App\Repository\PhotoRepository;
 use App\Repository\PostRepository;
@@ -77,6 +78,7 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Posts', 'fa fa-file-text', Post::class);
 
         yield MenuItem::section('Site');
+        yield MenuItem::linkToCrud('Social Links', 'fa fa-share-alt', SocialLink::class);
         yield MenuItem::linkToRoute('Back to Site', 'fa fa-arrow-left', 'app_home');
     }
 }
