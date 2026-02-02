@@ -954,7 +954,7 @@
     border: 2px solid color-mix(in srgb, var(--color-stone) 20%, transparent);
     border-top-color: var(--color-cognac);
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation: photo-spinner-spin 1s linear infinite;
     opacity: 1;
     transition: opacity 300ms ease-out;
   }
@@ -964,7 +964,7 @@
     pointer-events: none;
   }
 
-  @keyframes spin {
+  @keyframes photo-spinner-spin {
     from {
       transform: translate(-50%, -50%) rotate(0deg);
     }
