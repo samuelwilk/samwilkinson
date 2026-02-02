@@ -19,6 +19,9 @@
 /assets/vendor/
 ###< symfony/asset-mapper ###
 
+# User uploads (photos, files, etc.) - generated at runtime
+/public/uploads/
+
 ###> terraform ###
 # Local Terraform state files
 **/.terraform/
