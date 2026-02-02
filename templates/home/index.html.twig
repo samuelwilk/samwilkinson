@@ -98,20 +98,6 @@
         </div>
     </section>
 
-    {# Footer - Architectural restraint #}
-    <footer class="max-w-7xl mx-auto px-8 py-16 border-t border-stone/20">
-        <div class="flex flex-col md:flex-row justify-between items-center gap-6">
-            <div class="text-center md:text-left">
-                <p class="museum-label text-stone text-xs mb-2">
-                    Built with Symfony {{ constant('Symfony\\Component\\HttpKernel\\Kernel::VERSION') }} & Tailwind CSS
-                </p>
-            </div>
-
-            {# Year mark - Subtle architectural detail #}
-            <div class="museum-value text-stone text-sm tabular-nums">
-                {{ "now"|date("Y") }}
-            </div>
-        </div>
-    </footer>
+    {# Footer handled by global component in base.html.twig #}
 </div>
 {% endblock %}
