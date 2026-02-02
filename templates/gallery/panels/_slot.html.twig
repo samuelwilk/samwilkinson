@@ -7,10 +7,10 @@
     <img
         src="{{ slot.photo.url }}"
         alt="{{ slot.photo.alt|default('') }}"
-        class="w-full h-full object-contain photo-slot-img"
+        class="w-full h-full object-contain photo-slot-img opacity-0 transition-opacity duration-300"
         loading="lazy"
         decoding="async"
-        onload="this.previousElementSibling?.classList.add('hidden')"
+        onload="this.previousElementSibling?.classList.add('hidden'); this.style.opacity='1';"
         onerror="this.previousElementSibling?.classList.add('hidden')"
     />
 </div>
