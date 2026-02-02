@@ -901,7 +901,7 @@
    * ======================================== */
 
   .site-footer {
-    background-color: var(--color-bone);
+    background-color: var(--color-paper);
     border-top: 1px solid color-mix(in srgb, var(--color-stone) 15%, transparent);
     margin-top: 6rem;
   }
