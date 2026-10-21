@@ -16,7 +16,8 @@
 # ===================================
 # Base Stage - Shared PHP Dependencies
 # ===================================
-FROM php:8.3-fpm-alpine AS base
+# Pinned to 8.3.36+: fixes PHP2Shell RCEs (CVE-2026-109618, CVE-2026-109619)
+FROM php:8.3.36-fpm-alpine AS base
 
 # Install system dependencies
 RUN apk add --no-cache \
