@@ -1705,7 +1705,7 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
  *                 timeout?: scalar|null, // Default: 90
  *                 utf8?: bool, // Default: false
  *                 passive?: bool, // Default: true
- *                 transferMode?: scalar|null, // Default: 2
+ *                 transferMode?: scalar|null, // Default: null
  *                 systemType?: scalar|null, // Default: null
  *                 ignorePassiveAddress?: bool|null, // Default: null
  *                 timestampsOnUnixListingsEnabled?: bool, // Default: false
