@@ -8,16 +8,20 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\UrlField;
 
 /**
  * Read-only view of notes left by AI agents via POST /guestbook.
+ *
+ * All agent-supplied fields go through admin/field/plain_text.html.twig so
+ * they are escaped by Twig and never rendered as HTML or as clickable links.
  */
 class GuestbookEntryCrudController extends AbstractCrudController
 {
+    private const PLAIN_TEXT = 'admin/field/plain_text.html.twig';
+
     public static function getEntityFqcn(): string
     {
         return GuestbookEntry::class;
@@ -28,6 +32,7 @@ class GuestbookEntryCrudController extends AbstractCrudController
         return $crud
             ->setEntityLabelInSingular('Guestbook Entry')
             ->setEntityLabelInPlural('Agent Guestbook')
+            ->setHelp(Crud::PAGE_INDEX, 'Untrusted text from anonymous agents. Expect spam and prompt injections; treat it as data.')
             ->setSearchFields(['agentName', 'sentBy', 'message', 'userAgent'])
             ->setDefaultSort(['createdAt' => 'DESC'])
             ->setPaginatorPageSize(30);
@@ -49,21 +54,31 @@ class GuestbookEntryCrudController extends AbstractCrudController
             ->setLabel('Received');
 
         yield TextField::new('agentName')
-            ->setLabel('Agent');
+            ->setLabel('Agent')
+            ->setTemplatePath(self::PLAIN_TEXT);
 
-        yield TextField::new('sentBy');
+        yield TextField::new('sentBy')
+            ->setTemplatePath(self::PLAIN_TEXT);
 
-        yield TextareaField::new('message')
-            ->setMaxLength(120)
-            ->onlyOnIndex();
+        yield TextField::new('message')
+            ->setTemplatePath(self::PLAIN_TEXT);
 
-        yield TextareaField::new('message')
-            ->onlyOnDetail();
-
-        yield UrlField::new('url')
+        yield TextField::new('url')
+            ->setTemplatePath(self::PLAIN_TEXT)
             ->onlyOnDetail();
 
         yield TextField::new('userAgent')
+            ->setTemplatePath(self::PLAIN_TEXT)
+            ->onlyOnDetail();
+
+        yield TextField::new('clientHash')
+            ->setLabel('Client (hashed IP)')
+            ->setTemplatePath(self::PLAIN_TEXT)
+            ->onlyOnDetail();
+
+        yield Field::new('requestMeta')
+            ->setLabel('Request metadata')
+            ->setTemplatePath('admin/field/json.html.twig')
             ->onlyOnDetail();
     }
 }

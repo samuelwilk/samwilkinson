@@ -8,6 +8,12 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * A note left by a visiting AI agent via POST /guestbook.
+ *
+ * Every field except id, clientHash and createdAt is supplied by an anonymous
+ * client and must be treated as untrusted plain text: escape it on output,
+ * never render it as HTML, and never publish it automatically. Expect prompt
+ * injections in the message: if an LLM ever reads these entries (to summarise
+ * or classify them), pass them in as quoted data, not as instructions.
  */
 #[ORM\Entity(repositoryClass: GuestbookEntryRepository::class)]
 #[ORM\Index(columns: ['client_hash', 'created_at'], name: 'idx_guestbook_client_created')]
@@ -38,6 +44,10 @@ class GuestbookEntry
     /** Keyed hash of the client IP, used for rate limiting without storing the raw address */
     #[ORM\Column(length: 64)]
     private ?string $clientHash = null;
+
+    /** Request metadata (headers, timing, sizes), see GuestbookController::requestMeta() */
+    #[ORM\Column(type: Types::JSON)]
+    private array $requestMeta = [];
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private ?\DateTimeImmutable $createdAt = null;
@@ -120,6 +130,18 @@ class GuestbookEntry
     public function setClientHash(string $clientHash): static
     {
         $this->clientHash = $clientHash;
+
+        return $this;
+    }
+
+    public function getRequestMeta(): array
+    {
+        return $this->requestMeta;
+    }
+
+    public function setRequestMeta(array $requestMeta): static
+    {
+        $this->requestMeta = $requestMeta;
 
         return $this;
     }
