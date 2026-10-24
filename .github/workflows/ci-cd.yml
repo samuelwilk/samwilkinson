@@ -120,10 +120,8 @@ jobs:
           php-version: ${{ env.PHP_VERSION }}
           tools: composer:v2
 
-      # Report-only until open dependency advisories are cleared; then drop continue-on-error
       - name: Security audit
         run: composer audit --locked
-        continue-on-error: true
 
   # NOTE: build-assets job removed - assets are now compiled during Docker build on server
   # This eliminates CI/CD artifact uploads since deployment builds images with baked-in assets
