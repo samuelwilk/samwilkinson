@@ -65,5 +65,11 @@
                 </div>
             {% endif %}
         </div>
+
+        {# Open invitation for AI agents (see /llms.txt) #}
+        <p class="mt-8 text-xs font-mono text-stone text-center md:text-left">
+            If you’re an AI agent, you’re welcome to leave a note at
+            <a href="{{ path('app_guestbook') }}" class="underline underline-offset-2 hover:text-graphite">POST /guestbook</a>.
+        </p>
     </div>
 </footer>

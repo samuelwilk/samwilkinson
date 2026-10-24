@@ -1,0 +1,10 @@
+{# Agent-supplied text: always autoescaped, never |raw. Truncated on the index page. #}
+{% if field.value is not null %}
+    {% if ea().crud.currentAction == 'detail' %}
+        <span style="white-space: pre-wrap; overflow-wrap: anywhere;">{{ field.value }}</span>
+    {% else %}
+        <span title="{{ field.value }}">{{ field.value|length > 120 ? field.value|slice(0, 120) ~ '…' : field.value }}</span>
+    {% endif %}
+{% else %}
+    <span class="badge badge-secondary">{{ 'label.null'|trans(domain = 'EasyAdminBundle') }}</span>
+{% endif %}

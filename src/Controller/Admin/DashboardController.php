@@ -2,11 +2,6 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\Collection;
-use App\Entity\Photo;
-use App\Entity\Post;
-use App\Entity\Project;
-use App\Entity\SocialLink;
 use App\Repository\CollectionRepository;
 use App\Repository\PhotoRepository;
 use App\Repository\PostRepository;
@@ -70,15 +65,16 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
 
         yield MenuItem::section('Photography');
-        yield MenuItem::linkToCrud('Collections', 'fa fa-folder', Collection::class);
-        yield MenuItem::linkToCrud('Photos', 'fa fa-camera', Photo::class);
+        yield MenuItem::linkTo(CollectionCrudController::class, 'Collections', 'fa fa-folder');
+        yield MenuItem::linkTo(PhotoCrudController::class, 'Photos', 'fa fa-camera');
 
         yield MenuItem::section('Content');
-        yield MenuItem::linkToCrud('Projects', 'fa fa-code', Project::class);
-        yield MenuItem::linkToCrud('Posts', 'fa fa-file-text', Post::class);
+        yield MenuItem::linkTo(ProjectCrudController::class, 'Projects', 'fa fa-code');
+        yield MenuItem::linkTo(PostCrudController::class, 'Posts', 'fa fa-file-text');
 
         yield MenuItem::section('Site');
-        yield MenuItem::linkToCrud('Social Links', 'fa fa-share-alt', SocialLink::class);
+        yield MenuItem::linkTo(SocialLinkCrudController::class, 'Social Links', 'fa fa-share-alt');
+        yield MenuItem::linkTo(GuestbookEntryCrudController::class, 'Agent Guestbook', 'fa fa-robot');
         yield MenuItem::linkToRoute('Back to Site', 'fa fa-arrow-left', 'app_home');
     }
 }
