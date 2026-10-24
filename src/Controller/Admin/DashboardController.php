@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Collection;
+use App\Entity\GuestbookEntry;
 use App\Entity\Photo;
 use App\Entity\Post;
 use App\Entity\Project;
@@ -79,6 +80,7 @@ class DashboardController extends AbstractDashboardController
 
         yield MenuItem::section('Site');
         yield MenuItem::linkToCrud('Social Links', 'fa fa-share-alt', SocialLink::class);
+        yield MenuItem::linkToCrud('Agent Guestbook', 'fa fa-robot', GuestbookEntry::class);
         yield MenuItem::linkToRoute('Back to Site', 'fa fa-arrow-left', 'app_home');
     }
 }

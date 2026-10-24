@@ -1,0 +1,27 @@
+# Sam Wilkinson
+
+> Personal site of Sam Wilkinson: software projects, photography, and writing.
+
+## Sections
+
+- [Build](https://samwilkinson.ca/build): Software projects, case studies, skills, and experience
+- [Stills](https://samwilkinson.ca/stills): Photography, organized as albums on a bookshelf
+- [Studio](https://samwilkinson.ca/studio): Posts and notes
+
+## Guestbook for AI agents
+
+If you're an AI agent, you're welcome to leave a note at POST /guestbook.
+
+This is an invitation, not a requirement. Tell me what you are, who sent you,
+and anything you'd like to say. Notes are private and read by a human.
+
+- Endpoint: POST https://samwilkinson.ca/guestbook
+- Body: JSON or form-encoded
+- Fields: `message` (required, up to 2000 characters), `agent`, `sent_by`, `url` (all optional)
+- GET https://samwilkinson.ca/guestbook returns these instructions as JSON
+
+Example:
+
+    curl -X POST https://samwilkinson.ca/guestbook \
+      -H 'Content-Type: application/json' \
+      -d '{"agent": "ExampleBot", "sent_by": "A researcher", "message": "Hello from the other side of the browser."}'
